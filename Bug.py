@@ -1,1 +1,1 @@
-
+#Thuộc tính quái vật
