@@ -122,7 +122,7 @@ while running:
         # Kiểm tra nếu thời gian làm chậm đã kết thúc
         if slowed and pygame.time.get_ticks() > slow_timer:
             monster[2] = 2  # Khôi phục tốc độ ban đầu
-            monster[4] = False  # Hủy đánh dấu bị làm chậm
+            monster[5] = False  # Hủy đánh dấu bị làm chậm
 
         monster[0] -= monster_speed  # Di chuyển quái vật sang trái
         if monster[0] < 0:
