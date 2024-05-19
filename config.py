@@ -28,7 +28,7 @@ bullet_speed = 5
 # Giá tiền mua tháp và vật làm chậm
 tower_cost = 50
 slow_cost = 100
-
+slow_placed = False
 # Giá nâng cấp tháp
 upgrade_cost = 200
 
