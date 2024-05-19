@@ -42,8 +42,8 @@ class Bug:
     def apply_slow_effect():
         for monster in monsters:
             monster[2] = 1  # Giảm tốc độ quái vật
-            monster[4] = True  # Đánh dấu bị làm chậm
-            monster[5] = pygame.time.get_ticks() + 10000  # Thiết lập thời gian kết thúc làm chậm
+            monster[5] = True  # Đánh dấu bị làm chậm
+            monster[6] = pygame.time.get_ticks() + 10000  # Thiết lập thời gian kết thúc làm chậm
     
     def draw_health_bar(x,y,health, max_health):
         # Calculate health bar
