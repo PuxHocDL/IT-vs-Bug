@@ -16,8 +16,14 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == Bug.spawn_monster_event:
-            Bug.create_monster(monsters)
+        elif event.type == Bug.spawn_BUG_event:
+            Bug.create_BUG(BUGs)
+        elif event.type == Bug.spawn_big_BUG_event: 
+            Bug.create_big_BUG(BUGs)
+        elif event.type == Bug.spawn_triangle_BUG_event: 
+            Bug.create_triangle_BUG(BUGs)
+        elif event.type == Bug.spawn_hexagon_BUG_event:
+            Bug.create_hexagon_BUG(BUGs)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
             if placing_tower:
@@ -28,7 +34,7 @@ while running:
                     placing_tower = False
             elif placing_slow:
                 if gold.gold >= slow_cost:
-                    Bug.apply_slow_effect(monsters)  # Áp dụng hiệu ứng làm chậm cho tất cả quái vật
+                    Bug.apply_slow_effect(BUGs)  # Áp dụng hiệu ứng làm chậm cho tất cả quái vật
                     slow_placed_time = pygame.time.get_ticks()
                     slow_placed = True
                     slow_position = (mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
@@ -60,7 +66,7 @@ while running:
 
     # Danh sách tạm thời để lưu các đạn và quái vật cần xóa
     bullets_to_remove = []
-    monsters_to_remove = []
+    BUGs_to_remove = []
 
     # Cập nhật vị trí và vẽ đạn
     for bullet in bullets:
@@ -71,9 +77,9 @@ while running:
             bullet[0] += bullet_speed * math.cos(bullet[2])
             bullet[1] += bullet_speed * math.sin(bullet[2])
         elif level == 3:
-            if monsters:
-                nearest_monster = min(monsters, key=lambda m: math.hypot(m.x - bullet[0], m.y - bullet[1]))
-                bullet[2] = math.atan2(nearest_monster.y - bullet[1], nearest_monster.x - bullet[0])
+            if BUGs:
+                nearest_BUG = min(BUGs, key=lambda m: math.hypot(m.x - bullet[0], m.y - bullet[1]))
+                bullet[2] = math.atan2(nearest_BUG.y - bullet[1], nearest_BUG.x - bullet[0])
             bullet[0] += bullet_speed * math.cos(bullet[2])
             bullet[1] += bullet_speed * math.sin(bullet[2])
 
@@ -81,43 +87,44 @@ while running:
         Bullet.draw_bullet(bullet[0], bullet[1])
 
         # Kiểm tra va chạm giữa đạn và quái vật
-        for monster in monsters:
-            monster_rect = pygame.Rect(monster.x, monster.y, MONSTER_SIZE, MONSTER_SIZE)
-            if Interact.check_collision(bullet_rect, monster_rect):
+        for BUG in BUGs:
+            BUG_rect = pygame.Rect(BUG.x, BUG.y, BUG.BUG_SIZE, BUG.BUG_SIZE)
+            if Interact.check_collision(bullet_rect, BUG_rect):
                 bullets_to_remove.append(bullet)
-                monster.health -= 10  # Giảm máu quái vật mỗi khi bị bắn
-                if monster.health <= 0:
-                    monsters_to_remove.append(monster)
+                BUG.health -= 20  # Giảm máu quái vật mỗi khi bị bắn
+                if BUG.health <= 0:
+                    BUGs_to_remove.append(BUG)
                     gold .gold+= 10  # Nhận vàng khi tiêu diệt quái vật
                 break
 
         # Xóa đạn nếu ra khỏi màn hình
-        if bullet[0] < 0 or bullet[0] > WIDTH or bullet[1] < 0 or bullet[1] > HEIGHT:
+        if bullet[0] < 10 or bullet[0] > WIDTH or bullet[1] < 0 or bullet[1] > HEIGHT:
             bullets_to_remove.append(bullet)
 
     # Xóa các đạn và quái vật đã va chạm hoặc ra khỏi màn hình
     for bullet in bullets_to_remove:
         if bullet in bullets:
             bullets.remove(bullet)
-    for monster in monsters_to_remove:
-        if monster in monsters:
-            monsters.remove(monster)
+    for BUG in BUGs_to_remove:
+        if BUG in BUGs:
+            BUGs.remove(BUG)
 
     # Cập nhật vị trí và vẽ quái vật
-    for monster in monsters:
-        monster_speed = monster.speed  # Tốc độ hiện tại của quái vật
-        Bug.draw_health_bar(monster.x, monster.y, monster.health, monster.max_health)
+    for BUG in BUGs:
+        BUG_speed = BUG.speed  # Tốc độ hiện tại của quái vật
+        BUG.update()
+        Bug.draw_health_bar(BUG.x, BUG.y, BUG)
 
         # Kiểm tra nếu thời gian làm chậm đã kết thúc
-        if monster.slowed and pygame.time.get_ticks() > monster.slow_timer:
-            monster.speed = 2  # Khôi phục tốc độ ban đầu
-            monster.slowed = False  # Hủy đánh dấu bị làm chậm
+        if BUG.slowed and pygame.time.get_ticks() > BUG.slow_timer:
+            BUG.speed = 2  # Khôi phục tốc độ ban đầu
+            BUG.slowed = False  # Hủy đánh dấu bị làm chậm
 
-        monster.x -= monster_speed  # Di chuyển quái vật sang trái
-        if monster.x < 0:
-            monsters_to_remove.append(monster)
+        BUG.x -= BUG_speed  # Di chuyển quái vật sang trái
+        if BUG.x < 0:
+            BUGs_to_remove.append(BUG)
         else:
-            Bug.draw_monster(monster.x, monster.y)
+            Bug.draw_BUG(BUG.x, BUG.y,BUG)
 
     # Vẽ thông tin vàng và nút mua tháp
     tower_game.draw_gold()
