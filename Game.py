@@ -1,3 +1,4 @@
+import os
 import pygame
 import math
 from config import *
@@ -5,14 +6,24 @@ from Bug import Bug
 from Interact import Interact
 from Bullet import Bullet
 from Tower_2 import *
+from Grid import Grid
 # Vòng lặp chính của game
 slow_placed_time = 0
 slow_placed = False
 running = True
 clock = pygame.time.Clock()
+
+tile_imgs = [pygame.image.load(os.path.join("assets", "grass1.jpg")), pygame.image.load(os.path.join("assets", "grass2.jpg"))]
+
+grid = Grid(WIDTH, HEIGHT, tile_imgs)
 while running:
     clock.tick(FPS)
     screen.fill(WHITE)
+
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    buy_tower_btn.change_color((mouse_x, mouse_y))
+    buy_slow_btn.change_color((mouse_x, mouse_y))
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -25,13 +36,15 @@ while running:
         elif event.type == Bug.spawn_hexagon_BUG_event:
             Bug.create_hexagon_BUG(BUGs)
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = event.pos
             if placing_tower:
                 if gold.gold >= tower_cost:
-                    basic_tower.create_basic_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2)
-                    shoot_counters.append(0)
-                    gold.gold -= tower_cost
-                    placing_tower = False
+                    grid_x, grid_y = grid.convert(mouse_x, mouse_y)
+                    if (grid_x, grid_y) != (-1, -1):
+                        basic_tower.create_basic_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2)
+                        grid.add_object(grid_x, grid_y)
+                        shoot_counters.append(0)
+                        gold.gold -= tower_cost
+                        placing_tower = False
             elif placing_slow:
                 if gold.gold >= slow_cost:
                     Bug.apply_slow_effect(BUGs)  # Áp dụng hiệu ứng làm chậm cho tất cả quái vật
@@ -40,10 +53,12 @@ while running:
                     slow_position = (mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
                     gold.gold -= slow_cost
                     placing_slow = False
-            elif 10 <= mouse_x <= 240 and HEIGHT - 60 <= mouse_y <= HEIGHT - 10:
+            elif buy_tower_btn.check_for_input((mouse_x, mouse_y)):
+                buy_tower_btn.click_color()
                 placing_tower = True
                 placing_slow = False
-            elif 250 <= mouse_x <= 480 and HEIGHT - 60 <= mouse_y <= HEIGHT - 10:
+            elif buy_slow_btn.check_for_input((mouse_x, mouse_y)):
+                buy_slow_btn.click_color()
                 placing_slow = True
                 placing_tower = False
             else:
@@ -54,8 +69,9 @@ while running:
                         break
 
     # Vẽ tháp
-    for tower in towers:
-        tower.draw_tower()
+    #for tower in towers:
+    #    tower.draw_tower()
+    grid.draw(screen)
     
     # Tạo đạn từ các tháp với khoảng thời gian delay
     for i, tower in enumerate(towers):
@@ -126,10 +142,6 @@ while running:
         else:
             Bug.draw_BUG(BUG.x, BUG.y,BUG)
 
-    # Vẽ thông tin vàng và nút mua tháp
-    tower_game.draw_gold()
-    tower_game.draw_buy_tower_button()
-    tower_game.draw_buy_slow_button()
 
     # Hiển thị vị trí đặt tháp hoặc vật làm chậm nếu đang ở chế độ đặt
     if placing_tower:
@@ -145,6 +157,11 @@ while running:
             tower_game.draw_slow(*slow_position)
         else:
             slow_placed = False  # Reset flag sau 1 giây
+
+    # Vẽ thông tin vàng và nút mua tháp
+    tower_game.draw_gold()
+    buy_tower_btn.draw(screen)
+    buy_slow_btn.draw(screen)
 
     # Cập nhật màn hình
     pygame.display.flip()
