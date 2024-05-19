@@ -6,6 +6,8 @@ from Interact import Interact
 from Bullet import Bullet
 from Tower import tower_game
 # Vòng lặp chính của game
+slow_placed_time = 0
+slow_placed = False
 running = True
 clock = pygame.time.Clock()
 while running:
