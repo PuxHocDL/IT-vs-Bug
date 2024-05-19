@@ -15,7 +15,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == Bug.spawn_monster_event:
-                Bug.create_monster(100,100)
+                Bug.create_monster(monsters)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
             if placing_tower:
@@ -92,11 +92,11 @@ while running:
        # Kiểm tra va chạm giữa đạn và quái vật
         for monster in monsters:
             
-            monster_rect = pygame.Rect(monster[0], monster[1], MONSTER_SIZE, MONSTER_SIZE)
+            monster_rect = pygame.Rect(monster.x, monster.y, MONSTER_SIZE, MONSTER_SIZE)
             if Interact.check_collision(bullet_rect, monster_rect):
                 bullets_to_remove.append(bullet)
-                monster[3]-= 10  # Giảm máu quái vật mỗi khi bị bắn
-                if monster[3] <= 0:
+                monster.health-= 10  # Giảm máu quái vật mỗi khi bị bắn
+                if monster.health <= 0:
                     monsters_to_remove.append(monster)
                     gold += 10  # Nhận vàng khi tiêu diệt quái vật
                 break
@@ -115,20 +115,20 @@ while running:
 
     # Cập nhật vị trí và vẽ quái vật
     for monster in monsters:
-        monster_speed = monster[2]  # Tốc độ hiện tại của quái vật
-        monster_x, monster_y, monster_speed, monster_health, max_health, slowed, slow_timer = monster
-        Bug.draw_health_bar(monster[0],monster[1],monster[3],monster[4])
+        monster_speed = monster.speed  # Tốc độ hiện tại của quái vật
+        # monster_x, monster_y, monster_speed, monster_health, max_health, slowed, slow_timer = monster
+        Bug.draw_health_bar(monster.x,monster.y,monster.health,monster.max_health)
 
         # Kiểm tra nếu thời gian làm chậm đã kết thúc
-        if slowed and pygame.time.get_ticks() > slow_timer:
-            monster[2] = 2  # Khôi phục tốc độ ban đầu
-            monster[5] = False  # Hủy đánh dấu bị làm chậm
+        if monster.slowed and pygame.time.get_ticks() > monster.slow_timer:
+            monster.speed = 2  # Khôi phục tốc độ ban đầu
+            monster.slowed = False  # Hủy đánh dấu bị làm chậm
 
-        monster[0] -= monster_speed  # Di chuyển quái vật sang trái
-        if monster[0] < 0:
+        monster.x -= monster_speed  # Di chuyển quái vật sang trái
+        if monster.x < 0:
             monsters_to_remove.append(monster)
         else:
-            Bug.draw_monster(monster[0], monster[1])
+            Bug.draw_monster(monster.x, monster.y)
 
     # Vẽ thông tin vàng và nút mua tháp
     tower_game.draw_gold()
