@@ -8,11 +8,6 @@ from Tower import tower_game
 # Vòng lặp chính của game
 running = True
 clock = pygame.time.Clock()
-
-# Biến để lưu thời gian hiện tại và thời gian đặt vật làm chậm
-slow_placed_time = 0
-slow_placed = False
-
 while running:
     clock.tick(FPS)
     screen.fill(WHITE)
@@ -20,7 +15,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == Bug.spawn_monster_event:
-                Bug.create_monster()
+                Bug.create_monster(100,100)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
             if placing_tower:
@@ -52,7 +47,6 @@ while running:
     # Vẽ tháp
     for tower in towers:
         tower_game.draw_tower(tower[0], tower[1], tower[2])
-
     # Tạo đạn từ các tháp với khoảng thời gian delay
     for i, tower in enumerate(towers):
         shoot_counters[i] += 1
@@ -95,13 +89,16 @@ while running:
         bullet_rect = pygame.Rect(bullet[0], bullet[1], BULLET_SIZE, BULLET_SIZE)
         Bullet.draw_bullet(bullet[0], bullet[1])
 
-        # Kiểm tra va chạm giữa đạn và quái vật
+       # Kiểm tra va chạm giữa đạn và quái vật
         for monster in monsters:
+            
             monster_rect = pygame.Rect(monster[0], monster[1], MONSTER_SIZE, MONSTER_SIZE)
             if Interact.check_collision(bullet_rect, monster_rect):
                 bullets_to_remove.append(bullet)
-                monsters_to_remove.append(monster)
-                gold += 10  # Nhận vàng khi tiêu diệt quái vật
+                monster[3]-= 10  # Giảm máu quái vật mỗi khi bị bắn
+                if monster[3] <= 0:
+                    monsters_to_remove.append(monster)
+                    gold += 10  # Nhận vàng khi tiêu diệt quái vật
                 break
 
         # Xóa đạn nếu ra khỏi màn hình
@@ -119,7 +116,8 @@ while running:
     # Cập nhật vị trí và vẽ quái vật
     for monster in monsters:
         monster_speed = monster[2]  # Tốc độ hiện tại của quái vật
-        monster_x, monster_y, monster_speed, monster_health, slowed, slow_timer = monster
+        monster_x, monster_y, monster_speed, monster_health, max_health, slowed, slow_timer = monster
+        Bug.draw_health_bar(monster[0],monster[1],monster[3],monster[4])
 
         # Kiểm tra nếu thời gian làm chậm đã kết thúc
         if slowed and pygame.time.get_ticks() > slow_timer:
