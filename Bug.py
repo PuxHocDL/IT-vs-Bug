@@ -25,10 +25,10 @@ class Bug:
         self.slow_timer = pygame.time.get_ticks() + 10000 
     
     # Hàm tạo quái vật mới
-    def create_monster():
+    def create_monster(health,cur):
         monster_x = WIDTH
         monster_y = random.randint(0, HEIGHT - MONSTER_SIZE)
-        monsters.append([monster_x, monster_y, 2, 100, False, 0])  # Tốc độ ban đầu của quái vật là 2, máu của quái vật là 100, thêm flag bị làm chậm và thời gian hết hiệu lực
+        monsters.append([monster_x, monster_y, 2, health, cur, False, 0])  # Tốc độ ban đầu của quái vật là 2, máu của quái vật là 100, thêm flag bị làm chậm và thời gian hết hiệu lực
 
         # Khởi tạo bộ đếm thời gian để tạo quái vật mới
     spawn_monster_event = pygame.USEREVENT + 1
@@ -44,3 +44,13 @@ class Bug:
             monster[2] = 1  # Giảm tốc độ quái vật
             monster[4] = True  # Đánh dấu bị làm chậm
             monster[5] = pygame.time.get_ticks() + 10000  # Thiết lập thời gian kết thúc làm chậm
+    
+    def draw_health_bar(x,y,health, max_health):
+        # Calculate health bar
+        health_bar_length = MONSTER_SIZE
+        health_bar_height = 5
+        fill = (health /max_health) * health_bar_length
+        outline_rect = pygame.Rect(x,y - 10, health_bar_length, health_bar_height)
+        fill_rect = pygame.Rect(x, y - 10, fill, health_bar_height)
+        pygame.draw.rect(screen, GREEN, fill_rect)
+        pygame.draw.rect(screen, BLACK, outline_rect, 1)
