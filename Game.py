@@ -4,7 +4,8 @@ from config import *
 from Bug import Bug
 from Interact import Interact
 from Bullet import Bullet
-from Tower import tower_game
+from Tower_2 import *
+
 # Vòng lặp chính của game
 slow_placed_time = 0
 slow_placed = False
@@ -17,18 +18,18 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == Bug.spawn_monster_event:
-                Bug.create_monster(monsters)
+            Bug.create_monster(monsters)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
             if placing_tower:
                 if gold >= tower_cost:
-                    towers.append((mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2, 1))  # Thêm cấp độ của tháp
+                    basic_tower.create_basic_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2)
                     shoot_counters.append(0)
                     gold -= tower_cost
                     placing_tower = False
             elif placing_slow:
                 if gold >= slow_cost:
-                    Bug.apply_slow_effect()  # Áp dụng hiệu ứng làm chậm cho tất cả quái vật
+                    Bug.apply_slow_effect(monsters)  # Áp dụng hiệu ứng làm chậm cho tất cả quái vật
                     slow_placed_time = pygame.time.get_ticks()
                     slow_placed = True
                     slow_position = (mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
@@ -42,31 +43,20 @@ while running:
                 placing_tower = False
             else:
                 for i, tower in enumerate(towers):
-                    tower_rect = pygame.Rect(tower[0], tower[1], TOWER_SIZE, TOWER_SIZE)
+                    tower_rect = pygame.Rect(tower.x, tower.y, TOWER_SIZE, TOWER_SIZE)
                     if tower_rect.collidepoint(mouse_x, mouse_y):
                         tower_game.upgrade_tower(i)
                         break
+
     # Vẽ tháp
     for tower in towers:
-        tower_game.draw_tower(tower[0], tower[1], tower[2])
+        tower.draw_tower()
+    
     # Tạo đạn từ các tháp với khoảng thời gian delay
     for i, tower in enumerate(towers):
         shoot_counters[i] += 1
         if shoot_counters[i] >= shoot_delay:
-            bullet_x = tower[0] + TOWER_SIZE // 2 - BULLET_SIZE // 2
-            bullet_y = tower[1] + TOWER_SIZE // 2 - BULLET_SIZE // 2
-            if tower[2] == 1:  # Basic tower
-                bullets.append([bullet_x, bullet_y, 0, tower[2]])  # Thêm cấp độ của đạn
-            elif tower[2] == 2:  # Advanced tower
-                for angle in [-0.2, 0, 0.2]:  # Bắn ra 3 viên đạn tỏa ra 3 hướng
-                    bullets.append([bullet_x, bullet_y, angle, tower[2]])
-            elif tower[2] == 3:  # Elite tower
-                if monsters:
-                    nearest_monster = min(monsters, key=lambda m: math.hypot(m[0] - bullet_x, m[1] - bullet_y))
-                    angle = math.atan2(nearest_monster[1] - bullet_y, nearest_monster[0] - bullet_x)
-                else:
-                    angle = 0
-                bullets.append([bullet_x, bullet_y, angle, tower[2]])  # Đạn đuổi
+            tower.shoot()
             shoot_counters[i] = 0
 
     # Danh sách tạm thời để lưu các đạn và quái vật cần xóa
@@ -83,21 +73,20 @@ while running:
             bullet[1] += bullet_speed * math.sin(bullet[2])
         elif level == 3:
             if monsters:
-                nearest_monster = min(monsters, key=lambda m: math.hypot(m[0] - bullet[0], m[1] - bullet[1]))
-                bullet[2] = math.atan2(nearest_monster[1] - bullet[1], nearest_monster[0] - bullet[0])
+                nearest_monster = min(monsters, key=lambda m: math.hypot(m.x - bullet[0], m.y - bullet[1]))
+                bullet[2] = math.atan2(nearest_monster.y - bullet[1], nearest_monster.x - bullet[0])
             bullet[0] += bullet_speed * math.cos(bullet[2])
             bullet[1] += bullet_speed * math.sin(bullet[2])
 
         bullet_rect = pygame.Rect(bullet[0], bullet[1], BULLET_SIZE, BULLET_SIZE)
         Bullet.draw_bullet(bullet[0], bullet[1])
 
-       # Kiểm tra va chạm giữa đạn và quái vật
+        # Kiểm tra va chạm giữa đạn và quái vật
         for monster in monsters:
-            
             monster_rect = pygame.Rect(monster.x, monster.y, MONSTER_SIZE, MONSTER_SIZE)
             if Interact.check_collision(bullet_rect, monster_rect):
                 bullets_to_remove.append(bullet)
-                monster.health-= 10  # Giảm máu quái vật mỗi khi bị bắn
+                monster.health -= 10  # Giảm máu quái vật mỗi khi bị bắn
                 if monster.health <= 0:
                     monsters_to_remove.append(monster)
                     gold += 10  # Nhận vàng khi tiêu diệt quái vật
@@ -118,8 +107,7 @@ while running:
     # Cập nhật vị trí và vẽ quái vật
     for monster in monsters:
         monster_speed = monster.speed  # Tốc độ hiện tại của quái vật
-        # monster_x, monster_y, monster_speed, monster_health, max_health, slowed, slow_timer = monster
-        Bug.draw_health_bar(monster.x,monster.y,monster.health,monster.max_health)
+        Bug.draw_health_bar(monster.x, monster.y, monster.health, monster.max_health)
 
         # Kiểm tra nếu thời gian làm chậm đã kết thúc
         if monster.slowed and pygame.time.get_ticks() > monster.slow_timer:
