@@ -1,17 +1,17 @@
 from config import *
+import math
 from collections import defaultdict
 
 class basic_tower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
     def __init__(self, x, y):
-        global gold
         self.x = x
         self.y = y
         self.level = 1
         self.cost = 50  # Giá mua tháp
         self.color_for_levels = {1: BLUE, 2: YELLOW, 3: RED}
         self.tower_type = "Tower"
-        gold -= self.cost
+        
     
     def draw_tower(self):
         """Vẽ tháp"""
@@ -28,10 +28,9 @@ class basic_tower:
     
     def upgrade(index):
         """Nâng cấp tháp"""
-        global gold
-        if gold >= upgrade_cost and towers[index].level < 3:
+        if gold.gold >= upgrade_cost and towers[index].level < 3:
             towers[index].level += 1
-            gold -= upgrade_cost
+            gold.gold -= upgrade_cost
     
     def shoot(self):
         """Tháp bắn đạn"""
@@ -52,12 +51,11 @@ class basic_tower:
 class slow_tower(basic_tower):
     """Tháp làm chậm, kế thừa từ basic_tower, làm chậm tốc độ di chuyển của quái"""
     def __init__(self, x, y):
-        global gold
         super().__init__(x, y)
         self.cost = 100
         self.color_for_levels = defaultdict(lambda: PURPLE)  # Màu là PURPLE cho mọi cấp
         self.tower_type = "Slow"
-        gold -= self.cost - 50  # Vì hàm super đã trừ gold đi 50 rồi nên phải cộng lại
+        gold.gold -= self.cost - 50  # Vì hàm super đã trừ gold đi 50 rồi nên phải cộng lại
     
     def shoot(self):
         """Làm chậm tốc độ quái trên sân"""
@@ -80,7 +78,7 @@ class tower_game:
     """Các chức năng liên quan đến game tháp"""
     def draw_gold():
         """Vẽ thông tin vàng"""
-        gold_text = font.render(f"Gold: {gold}", True, BLACK)
+        gold_text = font.render(f"Gold: {gold.gold}", True, BLACK)
         screen.blit(gold_text, (10, 10))
     
     def draw_tower(x, y, level):
