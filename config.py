@@ -31,9 +31,8 @@ slow_cost = 100
 slow_placed = False
 # Giá nâng cấp tháp
 upgrade_cost = 200
-
-# Số lượng vàng ban đầu
-gold = 3000
+class gold:
+    gold = 3000
 
 # Tần suất bắn đạn (tính bằng khung hình)
 shoot_delay = 60
