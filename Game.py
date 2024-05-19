@@ -5,7 +5,6 @@ from Bug import Bug
 from Interact import Interact
 from Bullet import Bullet
 from Tower_2 import *
-
 # Vòng lặp chính của game
 slow_placed_time = 0
 slow_placed = False
@@ -22,18 +21,18 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
             if placing_tower:
-                if gold >= tower_cost:
+                if gold.gold >= tower_cost:
                     basic_tower.create_basic_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2)
                     shoot_counters.append(0)
-                    gold -= tower_cost
+                    gold.gold -= tower_cost
                     placing_tower = False
             elif placing_slow:
-                if gold >= slow_cost:
+                if gold.gold >= slow_cost:
                     Bug.apply_slow_effect(monsters)  # Áp dụng hiệu ứng làm chậm cho tất cả quái vật
                     slow_placed_time = pygame.time.get_ticks()
                     slow_placed = True
                     slow_position = (mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
-                    gold -= slow_cost
+                    gold.gold -= slow_cost
                     placing_slow = False
             elif 10 <= mouse_x <= 240 and HEIGHT - 60 <= mouse_y <= HEIGHT - 10:
                 placing_tower = True
@@ -89,7 +88,7 @@ while running:
                 monster.health -= 10  # Giảm máu quái vật mỗi khi bị bắn
                 if monster.health <= 0:
                     monsters_to_remove.append(monster)
-                    gold += 10  # Nhận vàng khi tiêu diệt quái vật
+                    gold .gold+= 10  # Nhận vàng khi tiêu diệt quái vật
                 break
 
         # Xóa đạn nếu ra khỏi màn hình
