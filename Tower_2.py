@@ -41,9 +41,9 @@ class basic_tower:
         elif self.level == 2:
             bullets.extend([[bullet_x, bullet_y, angle, self.level] for angle in [-0.2, 0, 0.2]])  # Đạn cuồng cung
         else:
-            if monsters:
-                nearest_monster = min(monsters, key=lambda m: math.hypot(m.x - bullet_x, m.y - bullet_y))
-                angle = math.atan2(nearest_monster.y - bullet_y, nearest_monster.x - bullet_x)
+            if BUGs:
+                nearest_BUG = min(BUGs, key=lambda m: math.hypot(m.x - bullet_x, m.y - bullet_y))
+                angle = math.atan2(nearest_BUG.y - bullet_y, nearest_BUG.x - bullet_x)
             else:
                 angle = 0
             bullets.append([bullet_x, bullet_y, angle, self.level])  # Đạn đuổi
@@ -59,10 +59,10 @@ class slow_tower(basic_tower):
     
     def shoot(self):
         """Làm chậm tốc độ quái trên sân"""
-        for monster in monsters:
-            monster.speed = 1  # Giảm tốc độ quái vật
-            monster.slowed = True  # Đánh dấu bị làm chậm
-            monster.slow_timer = pygame.time.get_ticks() + 10000  # Thiết lập thời gian kết thúc làm chậm
+        for BUG in BUGs:
+            BUG.speed = 1  # Giảm tốc độ quái vật
+            BUG.slowed = True  # Đánh dấu bị làm chậm
+            BUG.slow_timer = pygame.time.get_ticks() + 10000  # Thiết lập thời gian kết thúc làm chậm
     
     def draw_buy_slow_button():
         """Vẽ nút mua vật làm chậm"""
