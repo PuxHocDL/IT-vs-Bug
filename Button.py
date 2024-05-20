@@ -38,7 +38,6 @@ class Button():
             position (tuple): (x, y) position of the mouse.
         """
         if position[0] in range(self.__text_rect.left, self.__text_rect.right) and position[1] in range(self.__text_rect.top, self.__text_rect.bottom):
-            print("Lmao")
             return True
         return False
 

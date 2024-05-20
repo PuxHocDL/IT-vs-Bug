@@ -80,9 +80,12 @@ class Grid:
         Returns:
             (x, y): the xy position of the Grid. (-1, -1) if the passed position is beyond Grid's position or the Cell already has an object.
         """
-        if x < 50 or x > 50 + self.__size*self.__cols or y > self.__screen_height - 50 or y < self.__screen_height - 50 - self.__size*self.__rows:
-            return -1, -1
-        return (y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, (x-50)//self.__size
+       # if x < 50 or x > 50 + self.__size*self.__cols or y > self.__screen_height - 50 or y < self.__screen_height - 50 - self.__size*self.__rows:
+       #     return -1, -1
+        x, y = (y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, (x-50)//self.__size
+        if x in range(self.__cols) and y in range(self.__rows) and not self.__cells[x][y]:
+            return x, y
+        return -1, -1
 
 
     def draw(self, screen):
