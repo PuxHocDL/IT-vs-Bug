@@ -5,7 +5,7 @@ from config import *
 from Bug import Bug
 from Interact import Interact
 from Bullet import Bullet
-from Tower_2 import *
+from tower_2 import *
 from Grid import Grid
 # Vòng lặp chính của game
 slow_placed_time = 0
@@ -40,7 +40,7 @@ while running:
                 if gold.gold >= tower_cost:
                     grid_x, grid_y = grid.convert(mouse_x, mouse_y)
                     if (grid_x, grid_y) != (-1, -1):
-                        basic_tower.create_basic_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2)
+                        Basic_tower.create_basic_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2)
                         grid.add_object(grid_x, grid_y)
                         shoot_counters.append(0)
                         gold.gold -= tower_cost
@@ -65,7 +65,7 @@ while running:
                 for i, tower in enumerate(towers):
                     tower_rect = pygame.Rect(tower.x, tower.y, TOWER_SIZE, TOWER_SIZE)
                     if tower_rect.collidepoint(mouse_x, mouse_y):
-                        tower_game.upgrade_tower(i)
+                        Tower_game.upgrade_tower(i)
                         break
 
     # Vẽ tháp
@@ -146,20 +146,20 @@ while running:
     # Hiển thị vị trí đặt tháp hoặc vật làm chậm nếu đang ở chế độ đặt
     if placing_tower:
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        tower_game.draw_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2, 1)
+        Tower_game.draw_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2, 1)
     elif placing_slow:
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        tower_game.draw_slow(mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
+        Tower_game.draw_slow(mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
     
     # Vẽ vật làm chậm nếu đã được đặt và chỉ trong vòng 1 giây
     if slow_placed:
         if pygame.time.get_ticks() - slow_placed_time <= 1000:  # 1 giây
-            tower_game.draw_slow(*slow_position)
+            Tower_game.draw_slow(*slow_position)
         else:
             slow_placed = False  # Reset flag sau 1 giây
 
     # Vẽ thông tin vàng và nút mua tháp
-    tower_game.draw_gold()
+    Tower_game.draw_gold()
     buy_tower_btn.draw(screen)
     buy_slow_btn.draw(screen)
 
