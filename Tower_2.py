@@ -2,7 +2,7 @@ from config import *
 import math
 from collections import defaultdict
 
-class basic_tower:
+class Basic_tower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
     def __init__(self, x, y):
         self.x = x
@@ -11,27 +11,16 @@ class basic_tower:
         self.cost = 50  # Giá mua tháp
         self.color_for_levels = {1: BLUE, 2: YELLOW, 3: RED}
         self.tower_type = "Tower"
-        
-    
-    def draw_tower(self):
-        """Vẽ tháp"""
-        pygame.draw.rect(screen, self.color_for_levels[self.level], (self.x, self.y, TOWER_SIZE, TOWER_SIZE))
-    
+        self.health=100
+        self.image=None
     def create_basic_tower(x, y): 
-        towers.append(basic_tower(x, y))
-    
-    def draw_buy_button():
-        """Vẽ nút mua tháp"""
-        pygame.draw.rect(screen, GREEN, (10, HEIGHT - 60, 230, 50))
-        buy_text = font.render("Buy Tower - $50", True, WHITE)
-        screen.blit(buy_text, (20, HEIGHT - 50))
-    
+        towers.append(Basic_tower(x, y))
     def upgrade(index):
+        global gold
         """Nâng cấp tháp"""
         if gold.gold >= upgrade_cost and towers[index].level < 3:
             towers[index].level += 1
             gold.gold -= upgrade_cost
-    
     def shoot(self):
         """Tháp bắn đạn"""
         bullet_x = self.x + TOWER_SIZE // 2 - BULLET_SIZE // 2
@@ -48,33 +37,21 @@ class basic_tower:
                 angle = 0
             bullets.append([bullet_x, bullet_y, angle, self.level])  # Đạn đuổi
 
-class slow_tower(basic_tower):
+class Slow_tower(Basic_tower):
     """Tháp làm chậm, kế thừa từ basic_tower, làm chậm tốc độ di chuyển của quái"""
     def __init__(self, x, y):
         super().__init__(x, y)
         self.cost = 100
         self.color_for_levels = defaultdict(lambda: PURPLE)  # Màu là PURPLE cho mọi cấp
         self.tower_type = "Slow"
-        gold.gold -= self.cost - 50  # Vì hàm super đã trừ gold đi 50 rồi nên phải cộng lại
-    
     def shoot(self):
         """Làm chậm tốc độ quái trên sân"""
         for BUG in BUGs:
             BUG.speed = 1  # Giảm tốc độ quái vật
             BUG.slowed = True  # Đánh dấu bị làm chậm
             BUG.slow_timer = pygame.time.get_ticks() + 10000  # Thiết lập thời gian kết thúc làm chậm
-    
-    def draw_buy_slow_button():
-        """Vẽ nút mua vật làm chậm"""
-        pygame.draw.rect(screen, PURPLE, (250, HEIGHT - 60, 230, 50))
-        buy_text = font.render("Buy Slow - $100", True, WHITE)
-        screen.blit(buy_text, (260, HEIGHT - 50))
-    
-    def draw_slow(x, y):
-        """Vẽ vật làm chậm"""
-        pygame.draw.rect(screen, PURPLE, (x, y, SLOW_SIZE, SLOW_SIZE))
 
-class tower_game:
+class Tower_game:
     """Các chức năng liên quan đến game tháp"""
     def draw_gold():
         """Vẽ thông tin vàng"""
@@ -85,19 +62,9 @@ class tower_game:
         """Vẽ tháp ở vị trí x, y với cấp độ level"""
         color_for_levels = {1: BLUE, 2: YELLOW, 3: RED}
         pygame.draw.rect(screen, color_for_levels[level], (x, y, TOWER_SIZE, TOWER_SIZE))
-    
     def upgrade_tower(index):
         """Nâng cấp tháp tại vị trí index"""
-        basic_tower.upgrade(index)
-    
-    def draw_buy_tower_button():
-        """Vẽ nút mua tháp"""
-        basic_tower.draw_buy_button()
-    
-    def draw_buy_slow_button():
-        """Vẽ nút mua vật làm chậm"""
-        slow_tower.draw_buy_slow_button()
-    
+        Basic_tower.upgrade(index)
     def draw_slow(x, y):
         """Vẽ vật làm chậm ở vị trí x, y"""
-        slow_tower.draw_slow(x, y)
+        pygame.draw.rect(screen, PURPLE, (x, y, TOWER_SIZE, TOWER_SIZE))
