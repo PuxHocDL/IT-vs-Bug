@@ -68,7 +68,7 @@ class Bug:
         bug_y = random.randint(100, HEIGHT - 100)
         bugs.append(Bug(bug_x, bug_y, 0.5, 400, 400, 80, shape="hexagon"))
 
-
+    @staticmethod
     def draw_BUG(x, y, bug):
         if bug.shape == "rec":
             pygame.draw.rect(screen, mediumaquamarine, (x, y, bug.BUG_SIZE, bug.BUG_SIZE))

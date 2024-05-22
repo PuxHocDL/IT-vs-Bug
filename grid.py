@@ -1,5 +1,5 @@
 import pygame
-import Colors
+import colors
 
 class Cell:
     """
@@ -103,7 +103,7 @@ class Grid:
                 x = x_offset + j*self.__size
                 y = y_offset + i*self.__size
                 screen.blit(pygame.transform.scale(self.__imgs[img_counter%len(self.__imgs)], (self.__size, self.__size)), (x, y))
-                pygame.draw.rect(screen, Colors.gray, [x, y, self.__size, self.__size], 1)
+                pygame.draw.rect(screen, colors.gray, [x, y, self.__size, self.__size], 1)
                 img_counter += 1
 
                 if self.__cells[i][j] is not None:
@@ -111,4 +111,4 @@ class Grid:
                     if cell_img:
                         screen.blit(cell_img, (x, y))
                     else:
-                        pygame.draw.rect(screen, Colors.red, [x, y, self.__size, self.__size])
+                        pygame.draw.rect(screen, colors.red, [x, y, self.__size, self.__size])

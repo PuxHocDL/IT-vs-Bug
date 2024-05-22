@@ -2,7 +2,7 @@ from config import *
 import math
 from collections import defaultdict
 
-class Basic_tower:
+class BasicTower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
     def __init__(self, x, y):
         self.x = x
@@ -14,7 +14,7 @@ class Basic_tower:
         self.health=100
         self.image=None
     def create_basic_tower(x, y): 
-        towers.append(Basic_tower(x, y))
+        towers.append(BasicTower(x, y))
     def upgrade(index):
         global gold
         """Nâng cấp tháp"""
@@ -37,7 +37,7 @@ class Basic_tower:
                 angle = 0
             bullets.append([bullet_x, bullet_y, angle, self.level])  # Đạn đuổi
 
-class Slow_tower(Basic_tower):
+class SlowTower(BasicTower):
     """Tháp làm chậm, kế thừa từ basic_tower, làm chậm tốc độ di chuyển của quái"""
     def __init__(self, x, y):
         super().__init__(x, y)
@@ -51,7 +51,7 @@ class Slow_tower(Basic_tower):
             BUG.slowed = True  # Đánh dấu bị làm chậm
             BUG.slow_timer = pygame.time.get_ticks() + 10000  # Thiết lập thời gian kết thúc làm chậm
 
-class Tower_game:
+class TowerGame:
     """Các chức năng liên quan đến game tháp"""
     def draw_gold():
         """Vẽ thông tin vàng"""
@@ -64,7 +64,7 @@ class Tower_game:
         pygame.draw.rect(screen, color_for_levels[level], (x, y, TOWER_SIZE, TOWER_SIZE))
     def upgrade_tower(index):
         """Nâng cấp tháp tại vị trí index"""
-        Basic_tower.upgrade(index)
+        BasicTower.upgrade(index)
     def draw_slow(x, y):
         """Vẽ vật làm chậm ở vị trí x, y"""
         pygame.draw.rect(screen, PURPLE, (x, y, TOWER_SIZE, TOWER_SIZE))

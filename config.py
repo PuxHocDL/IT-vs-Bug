@@ -1,7 +1,7 @@
 import os
 import pygame
-import Colors
-from Button import Button
+import colors
+from button import Button
 # Kích thước màn hình
 pygame.init()
 WIDTH, HEIGHT = 1300, 1000
@@ -42,8 +42,8 @@ shoot_counters = []
 # Phông chữ
 font = pygame.font.Font(os.path.join("assets", "vinque.otf"), 36)
 
-buy_tower_btn = Button((10, HEIGHT - 50), "Buy Tower - $50", font, Colors.black, Colors.lime, Colors.red)
-buy_slow_btn = Button((350, HEIGHT - 50), "Buy Slow - $100", font, Colors.black, Colors.dark_yellow, Colors.red)
+buy_tower_btn = Button((10, HEIGHT - 50), "Buy Tower - $50", font, colors.black, colors.lime, colors.red)
+buy_slow_btn = Button((350, HEIGHT - 50), "Buy Slow - $100", font, colors.black, colors.dark_yellow, colors.red)
 
 # Chế độ đặt tháp hoặc vật làm chậm
 placing_tower = False
