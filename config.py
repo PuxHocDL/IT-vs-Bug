@@ -51,5 +51,4 @@ placing_slow = False
 # Tạo danh sách chứa các quái vật, đạn, tháp, và vật làm chậm
 BUGs = []
 bullets = []
-towers = []
 
