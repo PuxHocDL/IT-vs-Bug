@@ -13,18 +13,18 @@ class BasicTower:
         self.tower_type = "Tower"
         self.health=100
         self.image=None
-    def create_basic_tower(x, y): 
-        towers.append(BasicTower(x, y))
-    def upgrade(index):
+
+    def upgrade(self):
         global gold
         """Nâng cấp tháp"""
-        if gold.gold >= upgrade_cost and towers[index].level < 3:
-            towers[index].level += 1
+        if gold.gold >= upgrade_cost and self.level < 3:
+            self.level += 1
             gold.gold -= upgrade_cost
+
     def shoot(self):
         """Tháp bắn đạn"""
-        bullet_x = self.x + TOWER_SIZE // 2 - BULLET_SIZE // 2
-        bullet_y = self.y + TOWER_SIZE // 2 - BULLET_SIZE // 2
+        bullet_x = self.x - BULLET_SIZE // 2
+        bullet_y = self.y - BULLET_SIZE // 2
         if self.level == 1:
             bullets.append([bullet_x, bullet_y, 0, self.level])  # Đạn bình thường
         elif self.level == 2:
