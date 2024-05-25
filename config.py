@@ -1,154 +1,65 @@
+import os
 import pygame
 import colors
+from button import Button
+import colors
+from button import Button
+# Kích thước màn hình
+pygame.init()
+WIDTH, HEIGHT = 1300, 750
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Tower Defense Game")
 
-class Cell:
-    """
-    Class for Cell object.
-    """
-    def __init__(self, x, y, object, image=None):
-        """
-        Initializes the Cell object.
+# Màu sắc
+LIGHT_BLUE = (173, 216, 230)
+ICE_BLUE = (135, 206, 235)
+DARK_BLUE = (0, 0, 139)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+PURPLE = (128, 0, 128)  # Màu của vật làm chậm
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+GREEN = (0, 128, 0)
+mediumaquamarine = (102, 205, 170)
+# Tốc độ khung hình
+FPS = 60
 
-        Parameters:
-            image (pygame.Image): Image to be displayed.
-        """
-        self.__x = x
-        self.__y = y
-        self.__image = image
-        self.__object = object
+# Kích thước quái vật và đạn
+BULLET_SIZE = 10
+TOWER_SIZE = 50
+SLOW_SIZE = 50
+# Tốc độ đạn
+bullet_speed = 5
+# Giá tiền mua tháp và vật làm chậm
+tower_cost = 50
+slow_cost = 100
+slow_placed = False
+ice_cost = 300
+count = 0
+# Giá nâng cấp tháp
+upgrade_cost = 200
+class gold:
+    gold = 3000
 
-    def get_image(self):
-        """
-        Returns Image to be drawn.
-        """
-        return self.__image
+# Tần suất bắn đạn (tính bằng khung hình)
+shoot_delay = 60
+shoot_counters = []
 
-    def get_pos(self):
-        """
-        Returns Cell's position on the Grid.
-        """
-        return self.__x, self.__y
+# Phông chữ
+font = pygame.font.Font(os.path.join("assets", "vinque.otf"), 36)
 
-    def get_object(self):
-        return self.__object
+buy_tower_btn = Button((10, HEIGHT - 50), "Buy Tower - $50", font, colors.black, colors.lime, colors.red)
 
+buy_slow_btn = Button((350, HEIGHT - 50), "Buy Slow - $100", font, colors.black, colors.dark_yellow, colors.red)
 
-class Grid:
-    """
-    Class for Grid object.
-    """
-    def __init__(self, width, height, imgs, bg_img=None):
-        """
-        Initializes the Grid object.
+buy_ice_btn = Button((700, HEIGHT - 50), "Buy Ice - $300", font, colors.black, colors.dark_yellow, colors.red)
+# Chế độ đặt tháp hoặc vật làm chậm
+placing_tower = False
+placing_slow = False
+placing_ice = False
+# Tạo danh sách chứa các quái vật, đạn, tháp, và vật làm chậm
+bugs = []
+bullets = []
+towers = []
 
-        Parameters:
-            width (int): the width of the screen.
-            height (int): the height of the screen.
-            imgs (list): a list of tile images.
-            bg_img (python.Image): Image object for the background.
-        """
-        self.__screen_width = width
-        self.__screen_height = height
-        self.__size = (width - 150)//10
-        self.__rows = 7
-        self.__cols = 9
-        self.__imgs = imgs
-        self.__bg_img = bg_img
-        self.__objects = []
-
-    def reset(self):
-        """
-        Resets all the objects.
-        """
-        self.__objects = []
-
-    def add_object(self, x, y, object, image=None):
-        """
-        Add an object to a Cell on the Grid.
-
-        Parameters:
-            x (int): the x position on the Grid.
-            y (int): the y position on the Grid.
-            image (pygame.Image): the image to be drawn.
-        """
-        self.__objects.append(Cell(x, y, object, image))
-
-    def convert_to_grid_pos(self, x, y):
-        """
-        Converts xy screen position to xy Grid position if possible.
-
-        Parameters:
-            x (int): the x position on the screen.
-            y (int): the y position on the screen.
-
-        Returns:
-            (x, y): the xy position of the Grid. (-1, -1) if the passed position is beyond Grid's position or the Cell already has an object.
-        """
-        x, y = (y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, (x-50)//self.__size
-        if y in range(self.__cols) and x in range(self.__rows) and not (x, y) in self.get_objects_pos():
-            return x, y
-        return -1, -1
-    
-    def convert_to_screen_pos(self, i, j):
-        """
-        Converts xy Grid position to xy screen position.
-
-        Parameters:
-            i (int): the row number in Grid.
-            j (int): the column number in Grid.
-        """
-        x_offset = 50
-        y_offset = self.__screen_height - 50 - self.__size*self.__rows
-        x = x_offset + j*self.__size
-        y = y_offset + i*self.__size
-        return x, y
-
-
-    def draw(self, screen):
-        """
-        Draws the Grid to the screen.
-
-        Parameters:
-            screen (pygame.Surface): the surface to be drawn on.
-        """
-        x_offset = 50
-        y_offset = self.__screen_height - 50 - self.__size*self.__rows
-        img_counter = 0
-        for i in range(self.__rows):
-            for j in range(self.__cols):
-                x = x_offset + j*self.__size
-                y = y_offset + i*self.__size
-                screen.blit(pygame.transform.scale(self.__imgs[img_counter%len(self.__imgs)], (self.__size, self.__size)), (x, y))
-                pygame.draw.rect(screen, colors.gray, [x, y, self.__size, self.__size], 1)
-                img_counter += 1
-
-        for cell in self.__objects:
-            pos = cell.get_pos()
-            screen_pos = self.convert_to_screen_pos(pos[0], pos[1])
-            cell_img = cell.get_image()
-            if cell_img:
-                screen.blit(cell_img, screen_pos)
-            else:
-                pygame.draw.rect(screen, colors.red, [screen_pos[0], screen_pos[1], self.__size, self.__size])
-
-    def draw_on_mouse_pos(self, screen, pos, img=None):
-        """
-        Draws the image on the mouse position.
-
-        Parameters:
-            screen (pygame.Surface): the surface to be drawn on.
-            pos (tuple): xy mouse position.
-        """
-        if img:
-            screen.blit(img, (pos[0], pos[1]))
-        else:
-            pygame.draw.rect(screen, colors.red, [pos[0]-self.__size//2, pos[1]-self.__size//2, self.__size, self.__size])
-
-    def get_cell_size(self):
-        return self.__size
-
-    def get_objects(self):
-        return [object.get_object() for object in self.__objects]
-
-    def get_objects_pos(self):
-        return [object.get_pos() for object in self.__objects]
