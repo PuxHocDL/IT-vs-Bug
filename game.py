@@ -52,8 +52,9 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             rect_size = grid.get_cell_size()
             grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
-            if (grid_x, grid_y) != (-1, -1):
+            if (grid_x, grid_y) not in [(-1, -1), (-2, -2)]:
                 screen_pos = grid.convert_to_screen_pos(grid_x, grid_y)
+                upgrade_tower = False
                 if placing_tower:
                     if gold.gold >= tower_cost:
                             grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
@@ -76,12 +77,13 @@ while running:
                             shoot_counters.append(0)
                             gold.gold -= ice_cost
                             placing_ice = False
-                else:
-                    for i, tower in enumerate(grid.get_objects()):
-                        tower_rect = pygame.Rect(tower.x - rect_size//2, tower.y - rect_size//2, rect_size, rect_size)
-                        if tower_rect.collidepoint(mouse_x, mouse_y):
-                            tower.upgrade()
-                            break
+
+            if (grid_x, grid_y) == (-2, -2) and not (placing_slow or placing_ice or placing_tower):
+                for i, tower in enumerate(grid.get_objects()):
+                    tower_rect = pygame.Rect(tower.x - rect_size//2, tower.y - rect_size//2, rect_size, rect_size)
+                    if tower_rect.collidepoint(mouse_x, mouse_y):
+                        tower.upgrade()
+                        break
 
             if buy_tower_btn.check_for_input((mouse_x, mouse_y)) and not placing_tower:
                 buy_tower_btn.click_color()

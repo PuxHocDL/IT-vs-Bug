@@ -85,7 +85,9 @@ class Grid:
             (x, y): the xy position of the Grid. (-1, -1) if the passed position is beyond Grid's position or the Cell already has an object.
         """
         x, y = (y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, (x-50)//self.__size
-        if y in range(self.__cols) and x in range(self.__rows) and not (x, y) in self.get_objects_pos():
+        if (x, y) in self.get_objects_pos():
+            return -2, -2
+        elif y in range(self.__cols) and x in range(self.__rows):
             return x, y
         return -1, -1
     

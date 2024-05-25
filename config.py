@@ -58,6 +58,7 @@ buy_ice_btn = Button((700, HEIGHT - 50), "Buy Ice - $300", font, colors.black, c
 placing_tower = False
 placing_slow = False
 placing_ice = False
+upgrade_tower = True
 # Tạo danh sách chứa các quái vật, đạn, tháp, và vật làm chậm
 bugs = []
 bullets = []
