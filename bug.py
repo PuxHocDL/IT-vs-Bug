@@ -154,7 +154,7 @@ class NormalBug(Bug):
             grid (Grid): The grid object to determine the bug's starting position.
         """
         bug_x = WIDTH
-        bug_y = random.choice(range(grid.screen_height - 50 - grid.size * grid.rows, grid.screen_height - 50 - grid.size, grid.size)) + (grid.size-50)//2 + 50
+        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-50)//2 + 50
         bugs.append(NormalBug(bug_x, bug_y, 0.5, 1900, 1900, 50, 150, 150, name="NormalBug"))
 
     def draw_health_bar(self, screen):
@@ -240,7 +240,7 @@ class BigBug(Bug):
             grid (Grid): The grid object to determine the bug's starting position.
         """
         bug_x = WIDTH
-        bug_y = random.choice(range(grid.screen_height - 50 - grid.size * grid.rows, grid.screen_height - 50 - grid.size, grid.size)) + (grid.size-80)//2 + 70
+        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-80)//2 + 70
         bugs.append(BigBug(bug_x, bug_y, 0.5, 1000, 1000, 80, 150, 150, name="BigBug"))
 
     def draw_health_bar(self, screen):
@@ -305,7 +305,7 @@ class TriangleBug(Bug):
             grid (Grid): The grid object to determine the bug's starting position.
         """
         bug_x = WIDTH
-        bug_y = random.choice(range(grid.screen_height - 50 - grid.size * grid.rows, grid.screen_height - 50 - grid.size, grid.size)) + (grid.size+20)//2
+        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()+20)//2
         bugs.append(TriangleBug(bug_x, bug_y, 2, 70, 70, 50, 70, 70, name="TriangleBug"))
 
 class HexagonBug(Bug):
@@ -397,7 +397,7 @@ class HexagonBug(Bug):
             grid (Grid): The grid object to determine the bug's starting position.
         """
         bug_x = WIDTH
-        bug_y = random.choice(range(grid.screen_height - 50 - grid.size * grid.rows, grid.screen_height - 50 - grid.size, grid.size)) + (grid.size-50)//2 - 30
+        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-50)//2 - 30
         bugs.append(HexagonBug(bug_x, bug_y, 0.5, 1000, 1000, 100, 150, 150, name="HexagonBug"))
 
     def draw_death(self, screen):

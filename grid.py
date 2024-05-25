@@ -152,3 +152,6 @@ class Grid:
 
     def get_objects_pos(self):
         return [object.get_pos() for object in self.__objects]
+
+    def get_rows(self):
+        return self.__rows
