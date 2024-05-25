@@ -75,7 +75,7 @@ class TowerGame:
         """Vẽ vật làm chậm ở vị trí x, y"""
         pygame.draw.rect(screen, PURPLE, (x, y, TOWER_SIZE, TOWER_SIZE))
         
-class tower_ice(BasicTower):
+class IceTower(BasicTower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
     def __init__(self, x, y):
         super().__init__(x, y)

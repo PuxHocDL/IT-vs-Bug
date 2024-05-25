@@ -41,63 +41,63 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == Bug.spawn_bug_event:
+        elif event.type == spawn_bug_event:
             NormalBug.create_bug(bugs, grid)
-        elif event.type == Bug.spawn_big_bug_event: 
+        elif event.type == spawn_big_bug_event: 
             BigBug.create_big_bug(bugs, grid)
-        elif event.type == Bug.spawn_triangle_bug_event: 
+        elif event.type == spawn_triangle_bug_event: 
             TriangleBug.create_triangle_bug(bugs, grid)
-        elif event.type == Bug.spawn_hexagon_bug_event:
+        elif event.type == spawn_hexagon_bug_event:
             HexagonBug.create_hexagon_bug(bugs, grid)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             rect_size = grid.get_cell_size()
-            if placing_tower:
-                if gold.gold >= tower_cost:
-                    grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
-                    if (grid_x, grid_y) != (-1, -1):
-                        screen_pos = grid.convert_to_screen_pos(grid_x, grid_y)
-                        grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
-                        shoot_counters.append(0)
-                        gold.gold -= tower_cost
-                        placing_tower = False
-            elif placing_slow:
-                if gold.gold >= slow_cost:
-                    Bug.apply_slow_effect(bugs)  # Apply slow effect to all bugs
-                    slow_placed_time = pygame.time.get_ticks()
-                    slow_placed = True
-                    slow_position = (mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
-                    gold.gold -= slow_cost
-                    placing_slow = False
-            elif placing_ice:
-                if gold.gold >= ice_cost:
-                    grid_x, grid_y = grid.convert(mouse_x, mouse_y)
-                    if (grid_x, grid_y) != (-1, -1):
-                        tower_ice.create_ice_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2)
-                        grid.add_object(grid_x, grid_y)
-                        shoot_counters.append(0)
-                        gold.gold -= ice_cost
-                        placing_ice = False
-            elif buy_tower_btn.check_for_input((mouse_x, mouse_y)):
+            grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
+            if (grid_x, grid_y) != (-1, -1):
+                screen_pos = grid.convert_to_screen_pos(grid_x, grid_y)
+                if placing_tower:
+                    if gold.gold >= tower_cost:
+                            grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
+                            shoot_counters.append(0)
+                            gold.gold -= tower_cost
+                            placing_tower = False
+                elif placing_slow:
+                    if gold.gold >= slow_cost:
+                        Bug.apply_slow_effect(bugs)  # Apply slow effect to all bugs
+                        slow_placed_time = pygame.time.get_ticks()
+                        slow_placed = True
+                        slow_position = (mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
+                        gold.gold -= slow_cost
+                        placing_slow = False
+                elif placing_ice:
+                    if gold.gold >= ice_cost:
+                        grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
+                        if (grid_x, grid_y) != (-1, -1):
+                            grid.add_object(grid_x, grid_y, IceTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
+                            shoot_counters.append(0)
+                            gold.gold -= ice_cost
+                            placing_ice = False
+                else:
+                    for i, tower in enumerate(grid.get_objects()):
+                        tower_rect = pygame.Rect(tower.x - rect_size//2, tower.y - rect_size//2, rect_size, rect_size)
+                        if tower_rect.collidepoint(mouse_x, mouse_y):
+                            tower.upgrade()
+                            break
+
+            if buy_tower_btn.check_for_input((mouse_x, mouse_y)) and not placing_tower:
                 buy_tower_btn.click_color()
                 placing_tower = True
                 placing_slow = False
                 placing_ice = False
-            elif buy_slow_btn.check_for_input((mouse_x, mouse_y)):
+            elif buy_slow_btn.check_for_input((mouse_x, mouse_y)) and not placing_slow:
                 buy_slow_btn.click_color()
                 placing_slow = True
                 placing_tower = False
                 placing_ice = False
-            elif buy_ice_btn.check_for_input((mouse_x, mouse_y)):
+            elif buy_ice_btn.check_for_input((mouse_x, mouse_y)) and not placing_ice:
                 buy_ice_btn.click_color()
                 placing_ice = True
                 placing_tower = False
                 placing_slow = False
-            else:
-                for i, tower in enumerate(grid.get_objects()):
-                    tower_rect = pygame.Rect(tower.x - rect_size//2, tower.y - rect_size//2, rect_size, rect_size)
-                    if tower_rect.collidepoint(mouse_x, mouse_y):
-                        tower.upgrade()
-                        break
 
     grid.draw(screen)
     

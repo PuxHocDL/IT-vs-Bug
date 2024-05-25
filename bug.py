@@ -419,14 +419,14 @@ class HexagonBug(Bug):
         return False
 
 # Timers to spawn bugs
-Bug.spawn_bug_event = pygame.USEREVENT + 1
-pygame.time.set_timer(Bug.spawn_bug_event, 10000)
+spawn_bug_event = pygame.USEREVENT + 1
+pygame.time.set_timer(spawn_bug_event, 10000)
 
-Bug.spawn_big_bug_event = pygame.USEREVENT + 2
-pygame.time.set_timer(Bug.spawn_big_bug_event, 13000)
+spawn_big_bug_event = pygame.USEREVENT + 2
+pygame.time.set_timer(spawn_big_bug_event, 13000)
 
-Bug.spawn_triangle_bug_event = pygame.USEREVENT + 3
-pygame.time.set_timer(Bug.spawn_triangle_bug_event, 18000)
+spawn_triangle_bug_event = pygame.USEREVENT + 3
+pygame.time.set_timer(spawn_triangle_bug_event, 18000)
 
-Bug.spawn_hexagon_bug_event = pygame.USEREVENT + 4
-pygame.time.set_timer(Bug.spawn_hexagon_bug_event, 5000)
+spawn_hexagon_bug_event = pygame.USEREVENT + 4
+pygame.time.set_timer(spawn_hexagon_bug_event, 5000)
