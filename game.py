@@ -131,7 +131,7 @@ while running:
         for bug in bugs:
             bug_rect = pygame.Rect(bug.x, bug.y, bug.bug_size, bug.bug_size)
             collision_coordinates = Interact.check_collision(bullet_rect, bug.get_rect())
-            if collision_coordinates:
+            if collision_coordinates and not bug.death:
                 explosions.append((collision_coordinates[0], collision_coordinates[1], pygame.time.get_ticks()))
                 bullets_to_remove.append(bullet)
                 bug.health -= 50
@@ -151,7 +151,8 @@ while running:
 
     for bug in bugs:
         if bug.health < 0:
-            if bug.name == "NormalBug" or bug.name == "BigBug":
+            bug.death = True
+            if bug.name == "NormalBug" or bug.name == "BigBug" or bug.name == "HexagonBug":
                 if bug.draw_death(screen):
                     gold.gold +=30
                     bugs.remove(bug)  # Remove bug from list if death animation is complete
@@ -213,5 +214,5 @@ while running:
             explosions.remove(explosion)
 
     pygame.display.flip()
-    
+
 pygame.quit()
