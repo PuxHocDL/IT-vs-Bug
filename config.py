@@ -2,13 +2,18 @@ import os
 import pygame
 import colors
 from button import Button
+import colors
+from button import Button
 # Kích thước màn hình
 pygame.init()
-WIDTH, HEIGHT = 1300, 1000
+WIDTH, HEIGHT = 1300, 750
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tower Defense Game")
 
 # Màu sắc
+LIGHT_BLUE = (173, 216, 230)
+ICE_BLUE = (135, 206, 235)
+DARK_BLUE = (0, 0, 139)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 PURPLE = (128, 0, 128)  # Màu của vật làm chậm
@@ -30,6 +35,8 @@ bullet_speed = 5
 tower_cost = 50
 slow_cost = 100
 slow_placed = False
+ice_cost = 300
+count = 0
 # Giá nâng cấp tháp
 upgrade_cost = 200
 class gold:
@@ -43,12 +50,16 @@ shoot_counters = []
 font = pygame.font.Font(os.path.join("assets", "vinque.otf"), 36)
 
 buy_tower_btn = Button((10, HEIGHT - 50), "Buy Tower - $50", font, colors.black, colors.lime, colors.red)
+
 buy_slow_btn = Button((350, HEIGHT - 50), "Buy Slow - $100", font, colors.black, colors.dark_yellow, colors.red)
 
+buy_ice_btn = Button((700, HEIGHT - 50), "Buy Ice - $300", font, colors.black, colors.dark_yellow, colors.red)
 # Chế độ đặt tháp hoặc vật làm chậm
 placing_tower = False
 placing_slow = False
+placing_ice = False
 # Tạo danh sách chứa các quái vật, đạn, tháp, và vật làm chậm
-BUGs = []
+bugs = []
 bullets = []
+towers = []
 
