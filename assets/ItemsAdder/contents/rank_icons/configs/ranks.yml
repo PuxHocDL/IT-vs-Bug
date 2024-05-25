@@ -1,0 +1,69 @@
+info:
+  namespace: "rank_icons"
+font_images:
+
+    
+########################ranks
+  bronze:
+    permission: rankbronze.pack
+    suggest_in_command: false
+    show_in_gui: false    
+    path: "ranks/bronze.png"
+    scale_ratio: 18
+    y_position: 12
+
+  silver:
+    permission: ranksilver.pack
+    suggest_in_command: false
+    show_in_gui: false    
+    path: "ranks/silver.png"
+    scale_ratio: 18
+    y_position: 12
+
+  gold:
+    permission: rankgold.pack
+    suggest_in_command: false
+    show_in_gui: false    
+    path: "ranks/gold.png"
+    scale_ratio: 18
+    y_position: 12
+
+  platinum:
+    permission: rankplatinum.pack
+    suggest_in_command: false
+    show_in_gui: false    
+    path: "ranks/platinum.png"
+    scale_ratio: 18
+    y_position: 12
+
+  amethyst:
+    permission: rankamethyst.pack
+    suggest_in_command: false
+    show_in_gui: false    
+    path: "ranks/amethyst.png"
+    scale_ratio: 18
+    y_position: 12
+
+  diamond:
+    permission: rankdiamond.pack
+    suggest_in_command: false
+    show_in_gui: false    
+    path: "ranks/diamond.png"
+    scale_ratio: 18
+    y_position: 12
+
+  emerald:
+    permission: rankemerald.pack
+    suggest_in_command: false
+    show_in_gui: false    
+    path: "ranks/emerald.png"
+    scale_ratio: 18
+    y_position: 12
+
+  ruby:
+    permission: rankruby.pack
+    suggest_in_command: false
+    show_in_gui: false    
+    path: "ranks/ruby.png"
+    scale_ratio: 18
+    y_position: 12
