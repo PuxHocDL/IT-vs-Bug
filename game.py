@@ -50,6 +50,7 @@ while running:
         elif event.type == Bug.spawn_hexagon_bug_event:
             HexagonBug.create_hexagon_bug(bugs, grid)
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            rect_size = grid.get_cell_size()
             if placing_tower:
                 if gold.gold >= tower_cost:
                     grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
