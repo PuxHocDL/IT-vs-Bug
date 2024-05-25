@@ -89,7 +89,7 @@ class tower_ice(BasicTower):
         self.cost = 150
         self.color_for_levels = {1: LIGHT_BLUE, 2: ICE_BLUE, 3: DARK_BLUE}
         self.tower_type = "Ice"
-        gold.gold -= self.cost - 50  
+        
     def create_ice_tower(x, y): 
         towers.append(tower_ice(x, y))
     def shoot(self):
@@ -109,13 +109,7 @@ class tower_ice(BasicTower):
             bullets.append([bullet_x, bullet_y, angle, self.level, "ice"])
             bullets.append([bullet_x, bullet_y, angle, self.level, "ice"])
             bullets.append([bullet_x, bullet_y, angle, self.level, "ice"])  # Đạn băng đuổi
-
-    def draw_buy_ice_button():
-        """Vẽ nút mua tháp băng"""
-        pygame.draw.rect(screen, LIGHT_BLUE, (490, HEIGHT - 60, 230, 50))
-        buy_text = font.render("Buy Ice Tower - $150", True, WHITE)
-        screen.blit(buy_text, (500, HEIGHT - 50))
-
+            
     def upgrade(index):
         """Nâng cấp tháp"""
         if gold.gold >= upgrade_cost and towers[index].level < 3:
