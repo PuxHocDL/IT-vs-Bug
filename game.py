@@ -52,10 +52,10 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if placing_tower:
                 if gold.gold >= tower_cost:
-                    grid_x, grid_y = grid.convert(mouse_x, mouse_y)
+                    grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
                     if (grid_x, grid_y) != (-1, -1):
-                        BasicTower.create_basic_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2)
-                        grid.add_object(grid_x, grid_y)
+                        screen_pos = grid.convert_to_screen_pos(grid_x, grid_y)
+                        grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
                         shoot_counters.append(0)
                         gold.gold -= tower_cost
                         placing_tower = False
@@ -92,15 +92,15 @@ while running:
                 placing_tower = False
                 placing_slow = False
             else:
-                for i, tower in enumerate(towers):
-                    tower_rect = pygame.Rect(tower.x, tower.y, TOWER_SIZE, TOWER_SIZE)
+                for i, tower in enumerate(grid.get_objects()):
+                    tower_rect = pygame.Rect(tower.x - rect_size//2, tower.y - rect_size//2, rect_size, rect_size)
                     if tower_rect.collidepoint(mouse_x, mouse_y):
-                        TowerGame.upgrade_tower(i)
+                        tower.upgrade()
                         break
 
     grid.draw(screen)
     
-    for i, tower in enumerate(towers):
+    for i, tower in enumerate(grid.get_objects()):
         shoot_counters[i] += 1
         if shoot_counters[i] >= shoot_delay:
             tower.shoot()
@@ -177,14 +177,11 @@ while running:
                 bug.speed /= 0.7  # Khôi phục tốc độ ban đầu
                 bug.slowed_bullet = False
     if placing_tower:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        TowerGame.draw_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2, 1)
+        grid.draw_on_mouse_pos(screen, (mouse_x, mouse_y))
     elif placing_slow:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        TowerGame.draw_slow(mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
+        grid.draw_on_mouse_pos(screen, (mouse_x, mouse_y))
     elif placing_ice:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        TowerGame.draw_tower(mouse_x - TOWER_SIZE // 2, mouse_y - TOWER_SIZE // 2, 1)
+        grid.draw_on_mouse_pos(screen, (mouse_x, mouse_y))
     
     if slow_placed:
         if pygame.time.get_ticks() - slow_placed_time <= 1000:
