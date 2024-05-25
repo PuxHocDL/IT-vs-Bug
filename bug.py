@@ -53,6 +53,7 @@ class Bug:
         self.current_image_index_dead = 0
         self.slowed_bullet = False
         self.name = name
+        self.death = False
 
     def get_rect(self):
         """
@@ -97,6 +98,9 @@ class Bug:
             screen (pygame.Surface): The surface on which to draw the bug's death animation.
         """
         pass
+    def apply_slow_effect(bugs):
+        for bug in bugs:
+            bug.apply_slow()
 
 class NormalBug(Bug):
     """
@@ -319,11 +323,15 @@ class HexagonBug(Bug):
         draw_health_bar(self, screen): Draws the health bar of the hexagon bug.
         create_hexagon_bug(bugs, grid): Static method to create and add a hexagon bug to the game.
     """
-    fly_bug_image = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","alive", f"{i}.png")), (100, 100)) for i in range(0, 4)]
+    fly_bug_image = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","alive", f"{i}.png")), (200, 200)) for i in range(0, 6)]
     expanded_fly_bug_image = []
     for image in fly_bug_image:
-        expanded_fly_bug_image.extend([image] * 15)
-
+        expanded_fly_bug_image.extend([image] * 12)
+    fly_bug_image_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","dead", f"{i}.png")), (250, 250)) for i in range(0, 3)]
+    expanded_fly_bug_image_dead = []
+    for image in fly_bug_image_dead:
+        expanded_fly_bug_image_dead.extend([image] * 20)
+    expanded_fly_bug_image_dead.extend([fly_bug_image_dead[2]] * 20)
     def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
         """
         Initializes a HexagonBug instance with the given parameters.
@@ -349,7 +357,7 @@ class HexagonBug(Bug):
         """
         super().update()
         self.angle += 2
-        self.dy = 1 * math.sin(pygame.time.get_ticks() / 400)
+        self.dy = 0.5 * math.sin(pygame.time.get_ticks() / 400)
         self.y += self.dy
 
     def draw(self, screen):
@@ -374,8 +382,8 @@ class HexagonBug(Bug):
         health_bar_length = self.bug_size
         health_bar_height = 5
         fill = (self.health / self.max_health) * health_bar_length
-        outline_rect = pygame.Rect(self.x - self.bug_size // 2, self.y + self.bug_size, health_bar_length, health_bar_height)
-        fill_rect = pygame.Rect(self.x - self.bug_size // 2, self.y + self.bug_size, fill, health_bar_height)
+        outline_rect = pygame.Rect(self.x + self.bug_size//3, self.y + self.bug_size//2-20, health_bar_length, health_bar_height)
+        fill_rect = pygame.Rect(self.x + self.bug_size//3, self.y + self.bug_size//2-20, fill, health_bar_height)
         pygame.draw.rect(screen, (152, 251, 152), fill_rect)
         pygame.draw.rect(screen, (0, 0, 0), outline_rect, 1)
 
@@ -389,8 +397,26 @@ class HexagonBug(Bug):
             grid (Grid): The grid object to determine the bug's starting position.
         """
         bug_x = WIDTH
-        bug_y = random.choice(range(grid.screen_height - 50 - grid.size * grid.rows, grid.screen_height - 50 - grid.size, grid.size)) + (grid.size-50)//2 + 30
-        bugs.append(HexagonBug(bug_x, bug_y, 0.5, 1000, 1000, 50, 100, 100, name="HexagonBug"))
+        bug_y = random.choice(range(grid.screen_height - 50 - grid.size * grid.rows, grid.screen_height - 50 - grid.size, grid.size)) + (grid.size-50)//2 - 30
+        bugs.append(HexagonBug(bug_x, bug_y, 0.5, 1000, 1000, 100, 150, 150, name="HexagonBug"))
+
+    def draw_death(self, screen):
+        """
+        Draws the Haxegon 's death animation on the screen.
+
+        Parameters:
+            screen (pygame.Surface): The surface on which to draw the bug's death animation.
+
+        Returns:
+            bool: True if the death animation is complete, False otherwise.
+        """
+        if self.current_image_index_dead < len(HexagonBug.expanded_fly_bug_image_dead):
+            current_image = HexagonBug.expanded_fly_bug_image_dead[self.current_image_index_dead]
+            screen.blit(current_image, (self.x, self.y))
+            self.current_image_index_dead += 1
+        else:
+            return True
+        return False
 
 # Timers to spawn bugs
 Bug.spawn_bug_event = pygame.USEREVENT + 1
