@@ -20,7 +20,6 @@ class Bug:
         draw(self, screen): Abstract method to draw the bug on the screen.
         draw_death(self, screen): Abstract method to draw the bug's death animation on the screen.
     """
-    image_index = 0
     normal_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","alive", f"pic_{i}.png")), (150, 150)) for i in range(0, 60)]
     normal_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","dead", f"{i}.png")), (150, 150)) for i in range(0, 60)]
 
@@ -54,6 +53,10 @@ class Bug:
         self.slowed_bullet = False
         self.name = name
         self.death = False
+        self.image_index = 0
+        self.attacking = True
+        self.image_attack = 0
+        self.collision_with_tower = False
 
     def get_rect(self):
         """
@@ -323,15 +326,21 @@ class HexagonBug(Bug):
         draw_health_bar(self, screen): Draws the health bar of the hexagon bug.
         create_hexagon_bug(bugs, grid): Static method to create and add a hexagon bug to the game.
     """
-    fly_bug_image = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","alive", f"{i}.png")), (200, 200)) for i in range(0, 6)]
+    fly_bug_image = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","alive", f"{i}.png")), (400, 400)) for i in range(0, 6)]
     expanded_fly_bug_image = []
     for image in fly_bug_image:
-        expanded_fly_bug_image.extend([image] * 12)
-    fly_bug_image_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","dead", f"{i}.png")), (250, 250)) for i in range(0, 3)]
+        expanded_fly_bug_image.extend([image] * 10)
+
+    fly_bug_image_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","attack", f"{i}.png")), (400, 400)) for i in range(0, 18)]
+    expanded_fly_bug_image_attack = []
+    for image in fly_bug_image_attack:
+        expanded_fly_bug_image_attack.extend([image] * 4)
+
+    fly_bug_image_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","dead", f"{i}.png")), (400, 400)) for i in range(0, 3)]
     expanded_fly_bug_image_dead = []
     for image in fly_bug_image_dead:
-        expanded_fly_bug_image_dead.extend([image] * 20)
-    expanded_fly_bug_image_dead.extend([fly_bug_image_dead[2]] * 20)
+        expanded_fly_bug_image_dead.extend([image] * 15)
+    expanded_fly_bug_image_dead.extend([fly_bug_image_dead[2]] * 15)
     def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
         """
         Initializes a HexagonBug instance with the given parameters.
@@ -356,8 +365,7 @@ class HexagonBug(Bug):
         Updates the bug's position and speed, including a flying effect.
         """
         super().update()
-        self.angle += 2
-        self.dy = 0.5 * math.sin(pygame.time.get_ticks() / 400)
+        self.dy = 0.0 * math.sin(pygame.time.get_ticks() / 400)
         self.y += self.dy
 
     def draw(self, screen):
@@ -396,9 +404,9 @@ class HexagonBug(Bug):
             bugs (list): The list to which the new bug will be added.
             grid (Grid): The grid object to determine the bug's starting position.
         """
-        bug_x = WIDTH
-        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-50)//2 - 30
-        bugs.append(HexagonBug(bug_x, bug_y, 0.5, 1000, 1000, 100, 150, 150, name="HexagonBug"))
+        bug_x = WIDTH - 300
+        bug_y = random.choice(range(HEIGHT  - grid.get_cell_size() * grid.get_rows(), HEIGHT  , grid.get_cell_size())) + (grid.get_cell_size()-50)//2 - 350
+        bugs.append(HexagonBug(bug_x, bug_y, 0.5, 1000, 1000, 100, 120, 100, name="HexagonBug"))
 
     def draw_death(self, screen):
         """
@@ -417,7 +425,15 @@ class HexagonBug(Bug):
         else:
             return True
         return False
+    
+    def draw_attack(self,screen): 
+        current_image_index = self.image_attack % len(HexagonBug.expanded_fly_bug_image_attack)
+        current_image = HexagonBug.expanded_fly_bug_image_attack[current_image_index]
+        screen.blit(current_image, (self.x, self.y))
+        self.image_attack += 1
 
+    def get_rect(self): 
+        return pygame.Rect(self.x + 150, self.y+250, self.rect_x, self.rect_y)
 # Timers to spawn bugs
 spawn_bug_event = pygame.USEREVENT + 1
 pygame.time.set_timer(spawn_bug_event, 10000)
@@ -429,4 +445,4 @@ spawn_triangle_bug_event = pygame.USEREVENT + 3
 pygame.time.set_timer(spawn_triangle_bug_event, 18000)
 
 spawn_hexagon_bug_event = pygame.USEREVENT + 4
-pygame.time.set_timer(spawn_hexagon_bug_event, 5000)
+pygame.time.set_timer(spawn_hexagon_bug_event, 4000)
