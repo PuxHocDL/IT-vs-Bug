@@ -6,7 +6,6 @@ from bug import *
 from interact import Interact
 from bullet import Bullet
 from tower import *
-from grid import Grid
 
 # Initialize pygame
 pygame.init()
@@ -16,12 +15,7 @@ slow_placed_time = 0
 slow_placed = False
 running = True
 clock = pygame.time.Clock()
-tile_imgs = [
-    pygame.image.load(os.path.join("assets", "grass1.jpg")), 
-    pygame.image.load(os.path.join("assets", "grass2.jpg"))
-]
 
-grid = Grid(WIDTH, HEIGHT, tile_imgs)
 
 # A list to keep track of explosions
 explosions = []
@@ -64,7 +58,7 @@ while running:
                 upgrade_tower = False
                 if placing_tower:
                     if gold.gold >= tower_cost:
-                            grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
+                            grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2), basic_tower_img)
                             shoot_counters.append(0)
                             gold.gold -= tower_cost
                             placing_tower = False
