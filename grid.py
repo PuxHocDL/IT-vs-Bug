@@ -51,7 +51,7 @@ class Grid:
         self.__screen_height = height
         self.__size = (width - 150)//11
         self.__rows = 6
-        self.__cols = 10
+        self.__cols = 11
         self.__imgs = imgs
         self.__bg_img = bg_img
         self.__objects = []
