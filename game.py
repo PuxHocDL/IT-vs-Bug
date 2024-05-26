@@ -28,6 +28,13 @@ explosions = []
 
 # Thêm nút mua tháp băng
 
+def collision_all(bug): 
+                for i, tower in enumerate(grid.get_objects()):
+                    tower_rect = pygame.Rect(tower.x - rect_size // 2, tower.y - rect_size // 2, rect_size, rect_size)
+                    bug.collision_with_tower = Interact.check_collision_2(bug.get_rect(), tower_rect)
+                    if bug.collision_with_tower: 
+                                return True
+                return False
 
 while running:
     clock.tick(FPS)
@@ -80,11 +87,12 @@ while running:
 
             if (grid_x, grid_y) == (-2, -2) and not (placing_slow or placing_ice or placing_tower):
                 for i, tower in enumerate(grid.get_objects()):
-                    tower_rect = pygame.Rect(tower.x - rect_size//2, tower.y - rect_size//2, rect_size, rect_size)
+                    shoot_counters[i] += 1
+                    tower_rect = pygame.Rect(tower.x - rect_size // 2, tower.y - rect_size // 2, rect_size, rect_size)
                     if tower_rect.collidepoint(mouse_x, mouse_y):
                         tower.upgrade()
                         break
-
+            
             if buy_tower_btn.check_for_input((mouse_x, mouse_y)) and not placing_tower:
                 buy_tower_btn.click_color()
                 placing_tower = True
@@ -105,10 +113,11 @@ while running:
     
     for i, tower in enumerate(grid.get_objects()):
         shoot_counters[i] += 1
+        tower_rect = pygame.Rect(tower.x - rect_size//2, tower.y - rect_size//2, rect_size, rect_size)
         if shoot_counters[i] >= shoot_delay:
             tower.shoot()
             shoot_counters[i] = 0
-
+    
     bullets_to_remove = []
     bugs_to_remove = []
 
@@ -151,6 +160,10 @@ while running:
     for bullet in bullets_to_remove:
         if bullet in bullets:
             bullets.remove(bullet)
+    for bug in bugs:
+        bug_rect = bug.get_rect()
+        pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
+    
 
     for bug in bugs:
         if bug.health < 0:
@@ -165,16 +178,20 @@ while running:
 
         else:
             bug_speed = bug.speed
-            bug.update()
             bug.draw_health_bar(screen)
 
             if bug.slowed and pygame.time.get_ticks() > bug.slow_timer:
                 bug.speed = 2
                 bug.slowed = False
-            if bug.x < 0:
+            if bug.x <= 0:
                 bugs.remove(bug)
-            else:
-                bug.draw(screen)
+            else: 
+                if not collision_all(bug) or bug.name!="HexagonBug" : 
+                    bug.update()
+                    bug.draw(screen)
+                elif collision_all(bug) and bug.name=="HexagonBug": 
+                    bug.draw_attack(screen)
+                
             
             if bug.slowed_bullet and pygame.time.get_ticks() > bug.slow_timer_bullet:
                 bug.speed /= 0.7  # Khôi phục tốc độ ban đầu
