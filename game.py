@@ -6,16 +6,19 @@ from bug import *
 from interact import Interact
 from bullet import Bullet
 from tower import *
+from bug_manager import BugManager
 
 # Initialize pygame
 pygame.init()
+
+bug_manager = BugManager()
 
 # Main game loop variables
 slow_placed_time = 0
 slow_placed = False
 running = True
 clock = pygame.time.Clock()
-
+rect_size = grid.get_cell_size()
 
 # A list to keep track of explosions
 explosions = []
@@ -43,28 +46,27 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == spawn_bug_event:
-            NormalBug.create_bug(bugs, grid)
+            bug_manager.add_bug(grid, "NormalBug")
         elif event.type == spawn_big_bug_event: 
-            BigBug.create_big_bug(bugs, grid)
+            bug_manager.add_bug(grid, "BigBug")
         elif event.type == spawn_triangle_bug_event: 
-            TriangleBug.create_triangle_bug(bugs, grid)
+            bug_manager.add_bug(grid, "TriangleBug")
         elif event.type == spawn_hexagon_bug_event:
-            HexagonBug.create_hexagon_bug(bugs, grid)
+            bug_manager.add_bug(grid, "HexagonBug")
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            rect_size = grid.get_cell_size()
             grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
             if (grid_x, grid_y) not in [(-1, -1), (-2, -2)]:
                 screen_pos = grid.convert_to_screen_pos(grid_x, grid_y)
                 upgrade_tower = False
                 if placing_tower:
                     if gold.gold >= tower_cost:
-                            grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2), basic_tower_img)
-                            shoot_counters.append(0)
-                            gold.gold -= tower_cost
-                            placing_tower = False
+                        grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2), basic_tower_img)
+                        shoot_counters.append(0)
+                        gold.gold -= tower_cost
+                        placing_tower = False
                 elif placing_slow:
                     if gold.gold >= slow_cost:
-                        Bug.apply_slow_effect(bugs)  # Apply slow effect to all bugs
+                        bug_manager.apply_slow_effect()  # Apply slow effect to all bugs
                         slow_placed_time = pygame.time.get_ticks()
                         slow_placed = True
                         slow_position = (mouse_x - SLOW_SIZE // 2, mouse_y - SLOW_SIZE // 2)
@@ -77,7 +79,6 @@ while running:
                             grid.add_object(grid_x, grid_y, IceTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
                             shoot_counters.append(0)
                             gold.gold -= ice_cost
-                            placing_ice = False
 
             if (grid_x, grid_y) == (-2, -2) and not (placing_slow or placing_ice or placing_tower):
                 for i, tower in enumerate(grid.get_objects()):
@@ -113,9 +114,9 @@ while running:
             shoot_counters[i] = 0
     
     bullets_to_remove = []
-    bugs_to_remove = []
 
     for bullet in bullets:
+        bugs = bug_manager.get_bugs()
         level = bullet[3]
         if level == 1:
             bullet[0] += bullet_speed
@@ -124,8 +125,8 @@ while running:
             bullet[1] += bullet_speed * math.sin(bullet[2])
         elif level == 3:
             if bugs:
-                nearest_bug = min(bugs, key=lambda m: math.hypot(m.x - bullet[0], m.y - bullet[1]))
-                bullet[2] = math.atan2(nearest_bug.y - bullet[1], nearest_bug.x - bullet[0])
+                nearest_bug = min(bugs, key=lambda m: math.hypot(m.get_x() - bullet[0], m.get_y() - bullet[1]))
+                bullet[2] = math.atan2(nearest_bug.get_y() - bullet[1], nearest_bug.get_x() - bullet[0])
             bullet[0] += bullet_speed * math.cos(bullet[2])
             bullet[1] += bullet_speed * math.sin(bullet[2])
 
@@ -135,16 +136,17 @@ while running:
         elif bullet[4] == "ice":
             Bullet.draw_ice_bullet(bullet[0], bullet[1])
         for bug in bugs:
-            bug_rect = pygame.Rect(bug.x, bug.y, bug.bug_size, bug.bug_size)
-            collision_coordinates = Interact.check_collision(bullet_rect, bug.get_rect())
-            if collision_coordinates and not bug.death:
+            #bug_rect = pygame.Rect(bug.x, bug.y, bug.bug_size, bug.bug_size)
+            bug_rect = bug.get_rect()
+            collision_coordinates = Interact.check_collision(bullet_rect, bug_rect)
+            if collision_coordinates and not bug.is_dead():
                 explosions.append((collision_coordinates[0], collision_coordinates[1], pygame.time.get_ticks()))
                 bullets_to_remove.append(bullet)
-                bug.health -= 50
-                if bullet[4] == "ice" and not bug.slowed_bullet:  # Xử lý đạn băng làm chậm quái vật
-                    bug.speed *= 0.7  # Giảm tốc độ 50%
-                    bug.slowed_bullet = True
-                    bug.slow_timer_bullet = pygame.time.get_ticks() + 5000  # Thời gian làm chậm là 5 giây
+                bug.damage(50)
+                if bullet[4] == "ice" and not bug._slowed_bullet:  # Xử lý đạn băng làm chậm quái vật
+                    bug._speed *= 0.7  # Giảm tốc độ 50%
+                    bug._slowed_bullet = True
+                    bug._slow_timer_bullet = pygame.time.get_ticks() + 5000  # Thời gian làm chậm là 5 giây
                 
                 break
 
@@ -154,42 +156,41 @@ while running:
     for bullet in bullets_to_remove:
         if bullet in bullets:
             bullets.remove(bullet)
-    for bug in bugs:
+    for bug in bug_manager.get_bugs():
         bug_rect = bug.get_rect()
         pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
     
 
-    for bug in bugs:
-        if bug.health < 0:
-            bug.death = True
-            if bug.name == "NormalBug" or bug.name == "BigBug" or bug.name == "HexagonBug":
+    for bug in bug_manager.get_bugs():
+        if bug.is_dead():
+            if bug.get_name() in ["NormalBug", "BigBug", "HexagonBug"]:
                 if bug.draw_death(screen):
                     gold.gold +=30
-                    bugs.remove(bug)  # Remove bug from list if death animation is complete
+                    bug_manager.remove_bug(bug)  # Remove bug from list if death animation is complete
             else:
                 gold.gold +=30 
-                bugs.remove(bug)
+                bug_manager.remove_bug(bug)
 
         else:
-            bug_speed = bug.speed
+            bug_speed = bug.get_current_speed()
             bug.draw_health_bar(screen)
 
-            if bug.slowed and pygame.time.get_ticks() > bug.slow_timer:
-                bug.speed = 2
-                bug.slowed = False
-            if bug.x <= 0:
-                bugs.remove(bug)
+            #if bug.slowed and pygame.time.get_ticks() > bug.slow_timer:
+            #    bug.speed = 2
+            #    bug.slowed = False
+            if bug.get_x() <= 0:
+                bug_manager.remove_bug(bug)
             else: 
-                if not collision_all(bug) or bug.name!="HexagonBug" : 
+                if not collision_all(bug) or bug.get_name()!="HexagonBug" : 
                     bug.update()
                     bug.draw(screen)
-                elif collision_all(bug) and bug.name=="HexagonBug": 
+                elif collision_all(bug) and bug.get_name()=="HexagonBug": 
                     bug.draw_attack(screen)
                 
             
-            if bug.slowed_bullet and pygame.time.get_ticks() > bug.slow_timer_bullet:
-                bug.speed /= 0.7  # Khôi phục tốc độ ban đầu
-                bug.slowed_bullet = False
+            if bug._slowed_bullet and pygame.time.get_ticks() > bug._slow_timer_bullet:
+                bug._speed /= 0.7  # Khôi phục tốc độ ban đầu
+                bug._slowed_bullet = False
     if placing_tower:
         grid.draw_on_mouse_pos(screen, (mouse_x, mouse_y))
     elif placing_slow:

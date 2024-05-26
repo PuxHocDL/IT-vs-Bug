@@ -61,9 +61,7 @@ placing_slow = False
 placing_ice = False
 upgrade_tower = True
 # Tạo danh sách chứa các quái vật, đạn, tháp, và vật làm chậm
-bugs = []
 bullets = []
-towers = []
 
 
 tile_imgs = [
@@ -72,3 +70,4 @@ tile_imgs = [
 ]
 grid = Grid(WIDTH, HEIGHT, tile_imgs)
 basic_tower_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "canon.png")).convert_alpha(), (grid.get_cell_size(), grid.get_cell_size()))
+

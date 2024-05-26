@@ -34,8 +34,8 @@ class BasicTower:
             
         else:
             if bugs:
-                nearest_bug = min(bugs, key=lambda m: math.hypot(m.x - bullet_x, m.y - bullet_y))
-                angle = math.atan2(nearest_bug.y - bullet_y, nearest_bug.x - bullet_x)
+                nearest_bug = min(bugs, key=lambda m: math.hypot(m.get_x() - bullet_x, m.get_y() - bullet_y))
+                angle = math.atan2(nearest_bug.get_y() - bullet_y, nearest_bug.get_x() - bullet_x)
             else:
                 angle = 0
             bullets.append([bullet_x, bullet_y, angle, self.level, "normal"])  # Đạn đuổi
