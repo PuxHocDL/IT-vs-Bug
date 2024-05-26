@@ -4,6 +4,7 @@ import colors
 from button import Button
 import colors
 from button import Button
+from grid import Grid
 # Kích thước màn hình
 pygame.init()
 WIDTH, HEIGHT = 1300, 750
@@ -64,3 +65,10 @@ bugs = []
 bullets = []
 towers = []
 
+
+tile_imgs = [
+    pygame.image.load(os.path.join("assets", "grass1.jpg")), 
+    pygame.image.load(os.path.join("assets", "grass2.jpg"))
+]
+grid = Grid(WIDTH, HEIGHT, tile_imgs)
+basic_tower_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "canon.png")).convert_alpha(), (grid.get_cell_size(), grid.get_cell_size()))
