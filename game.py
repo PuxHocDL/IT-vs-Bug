@@ -157,15 +157,13 @@ while running:
     for bullet in bullets_to_remove:
         if bullet in bullets:
             bullets.remove(bullet)
-    for bug in bug_manager.get_bugs():
-        bug_rect = bug.get_rect()
-        pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
+        
     
 
     for bug in bug_manager.get_bugs():
         if bug.is_dead():
             if bug.get_name() in ["NormalBug", "BigBug", "HexagonBug"]:
-                if bug.draw_death(screen):
+                if bug.draw_dead(dt,screen):
                     gold.gold +=30
                     bug_manager.remove_bug(bug)  # Remove bug from list if death animation is complete
             else:
@@ -173,6 +171,8 @@ while running:
                 bug_manager.remove_bug(bug)
 
         else:
+            bug_rect = bug.get_rect()
+            pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
             bug_speed = bug.get_current_speed()
             bug.draw_health_bar(screen)
 
@@ -184,9 +184,9 @@ while running:
             else: 
                 if not collision_all(bug) or bug.get_name()!="HexagonBug" : 
                     bug.update()
-                    bug.draw(screen, dt)
+                    bug.draw(dt,screen)
                 elif collision_all(bug) and bug.get_name()=="HexagonBug": 
-                    bug.draw_attack(screen)
+                    bug.draw_attack(dt,screen)
                 
             
             if bug._slowed_bullet and pygame.time.get_ticks() > bug._slow_timer_bullet:
