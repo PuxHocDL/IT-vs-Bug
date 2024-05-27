@@ -27,7 +27,7 @@ mediumaquamarine = (102, 205, 170)
 FPS = 60
 
 # Kích thước quái vật và đạn
-BULLET_SIZE = 10
+BULLET_SIZE = 16
 TOWER_SIZE = 50
 SLOW_SIZE = 50
 # Tốc độ đạn

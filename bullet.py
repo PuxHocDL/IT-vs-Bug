@@ -3,7 +3,7 @@ from config import *
 
 class Bullet:
     
-    normal_bullet_image = pygame.image.load(os.path.join("assets", "PeaNormal_0.png"))
+    normal_bullet_image = pygame.transform.scale(pygame.image.load(os.path.join("assets", "PeaNormal_0.png")), (BULLET_SIZE, BULLET_SIZE))
     break_bullet_image = pygame.image.load(os.path.join("assets", "PeaNormalExplode_0.png"))
     ice_bullet_image = pygame.image.load(os.path.join("assets", "PeaIce_0.png"))
 
