@@ -174,7 +174,6 @@ class NormalBug(Bug):
             self._current_time = 0
         current_image = NormalBug.__normal_bug_images[self._image_index]
         screen.blit(current_image, (self._x, self._y))
-        print(self._image_index)
 
     def draw_death(self, screen):
         """

@@ -5,32 +5,39 @@ from collections import defaultdict
 class BasicTower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.level = 1
-        self.cost = 50  # Giá mua tháp
-        self.color_for_levels = {1: BLUE, 2: YELLOW, 3: RED}
-        self.tower_type = "Tower"
-        self.health=100
-        self.image=None
+        self._x = x
+        self._y = y
+        self._level = 1
+        self._cost = 50  # Giá mua tháp
+        self._color_for_levels = {1: BLUE, 2: YELLOW, 3: RED}
+        self._tower_type = "Tower"
+        self._health=100
+        self._image=None
+        self._idle_imgs = []
+        self._atk_imgs = []
+        self._destroy_imgs = []
+        self._img_mode = {0: self._idle_imgs, 1: self._atk_imgs, 2: self._destroy_imgs}
+        self._animate_time = {0: 200, 1: 500, 2: 500}
+        self._mode = 0
+        self._img_index = 0
+        self._current_time = 0
         
     def upgrade(self):
         global gold
-        """Nâng cấp tháp"""
-        if gold.gold >= upgrade_cost and self.level < 3:
-            self.level += 1
+        if gold.gold >= upgrade_cost and self._level < 3:
+            self._level += 1
             gold.gold -= upgrade_cost
             
     def shoot(self):
         """Tháp bắn đạn"""
-        bullet_x = self.x - BULLET_SIZE // 2
-        bullet_y = self.y - BULLET_SIZE // 2
+        bullet_x = self._x - BULLET_SIZE // 2
+        bullet_y = self._y - BULLET_SIZE // 2
         
-        if self.level == 1:
-             bullets.append([bullet_x, bullet_y, 0, self.level, "normal"])  # Đạn bình thường
+        if self._level == 1:
+             bullets.append([bullet_x, bullet_y, 0, self._level, "normal"])  # Đạn bình thường
 
-        elif self.level == 2:
-             bullets.extend([[bullet_x, bullet_y, angle, self.level, "normal"] for angle in [-0.2, 0, 0.2]])  # Đạn cuồng cung
+        elif self._level == 2:
+             bullets.extend([[bullet_x, bullet_y, angle, self._level, "normal"] for angle in [-0.2, 0, 0.2]])  # Đạn cuồng cung
             
         else:
             if bugs:
@@ -38,17 +45,29 @@ class BasicTower:
                 angle = math.atan2(nearest_bug.get_y() - bullet_y, nearest_bug.get_x() - bullet_x)
             else:
                 angle = 0
-            bullets.append([bullet_x, bullet_y, angle, self.level, "normal"])  # Đạn đuổi
-            bullets.append([bullet_x, bullet_y, angle, self.level, "normal"])  # Đạn đuổi
-            bullets.append([bullet_x, bullet_y, angle, self.level, "normal"])  # Đạn đuổi
+            bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
+            bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
+            bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
+
+    def draw(self, dt):
+        current_imgs = self._img_mode[self._mode]
+        if self._current_time > self._animate_time[self._mode]:
+            self._img_index = (self._img_index + 1) % len(current_imgs)
+        screen.blit(current_imgs[self._img_index], (self._x, self._y))
+        self._current_time += dt
+
+    def set_mode(self, mode):
+        self._mode = mode
+        self._img_index = 0
+
 
 class SlowTower(BasicTower):
     """Tháp làm chậm, kế thừa từ basic_tower, làm chậm tốc độ di chuyển của quái"""
-    def __init__(self, x, y):
+    def __init__(self x, y):
         super().__init__(x, y)
-        self.cost = 100
-        self.color_for_levels = defaultdict(lambda: PURPLE)  # Màu là PURPLE cho mọi cấp
-        self.tower_type = "Slow"
+        self._cost = 100
+        self._color_for_levels = defaultdict(lambda: PURPLE)  # Màu là PURPLE cho mọi cấp
+        self._tower_type = "Slow"
     def shoot(self):
         """Làm chậm tốc độ quái trên sân"""
         for bug in bugs:
@@ -79,30 +98,30 @@ class IceTower(BasicTower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.cost = 150
-        self.color_for_levels = {1: LIGHT_BLUE, 2: ICE_BLUE, 3: DARK_BLUE}
-        self.tower_type = "Ice"
+        self._cost = 150
+        self._color_for_levels = {1: LIGHT_BLUE, 2: ICE_BLUE, 3: DARK_BLUE}
+        self._tower_type = "Ice"
 
     def shoot(self):
         """Tháp băng bắn đạn làm chậm kẻ địch"""
-        bullet_x = self.x - BULLET_SIZE // 2
-        bullet_y = self.y - BULLET_SIZE // 2
-        if self.level == 1:
-            bullets.append([bullet_x, bullet_y, 0, self.level, "ice"])  # Đạn băng bình thường
-        elif self.level == 2:
-            bullets.extend([[bullet_x, bullet_y, angle, self.level, "ice"] for angle in [-0.2, 0, 0.2]])  # Đạn băng cuồng cung
+        bullet_x = self._x - BULLET_SIZE // 2
+        bullet_y = self._y - BULLET_SIZE // 2
+        if self._level == 1:
+            bullets.append([bullet_x, bullet_y, 0, self._level, "ice"])  # Đạn băng bình thường
+        elif self._level == 2:
+            bullets.extend([[bullet_x, bullet_y, angle, self._level, "ice"] for angle in [-0.2, 0, 0.2]])  # Đạn băng cuồng cung
         else:
             if bugs:
                 nearest_bug = min(bugs, key=lambda m: math.hypot(m.x - bullet_x, m.y - bullet_y))
                 angle = math.atan2(nearest_bug.y - bullet_y, nearest_bug.x - bullet_x)
             else:
                 angle = 0
-            bullets.append([bullet_x, bullet_y, angle, self.level, "ice"])
-            bullets.append([bullet_x, bullet_y, angle, self.level, "ice"])
-            bullets.append([bullet_x, bullet_y, angle, self.level, "ice"])  # Đạn băng đuổi
+            bullets.append([bullet_x, bullet_y, angle, self._level, "ice"])
+            bullets.append([bullet_x, bullet_y, angle, self._level, "ice"])
+            bullets.append([bullet_x, bullet_y, angle, self._level, "ice"])  # Đạn băng đuổi
             
     def upgrade(self):
         """Nâng cấp tháp"""
-        if gold.gold >= upgrade_cost and self.level < 3:
-            self.level += 1
+        if gold.gold >= upgrade_cost and self._level < 3:
+            self._level += 1
             gold.gold -= upgrade_cost
