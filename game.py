@@ -111,9 +111,9 @@ while running:
         shoot_counters[i] += 1
         tower_rect = pygame.Rect(tower.get_x() - rect_size//2, tower.get_y() - rect_size//2, rect_size, rect_size)
         if shoot_counters[i] >= shoot_delay:
-            tower.shoot()
+            tower.set_mode(1)
             shoot_counters[i] = 0
-    
+
     bullets_to_remove = []
 
     for bullet in bullets:

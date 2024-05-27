@@ -14,10 +14,10 @@ class BasicTower:
         self._health=100
         self._size = size
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(6)]
-        self._atk_imgs = []
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(6)]
         self._destroy_imgs = []
         self._img_mode = {0: self._idle_imgs, 1: self._atk_imgs, 2: self._destroy_imgs}
-        self._animate_time = {0: 200, 1: 500, 2: 500}
+        self._animate_time = {0: 200, 1: 1000, 2: 500}
         self._mode = 0
         self._img_index = 0
         self._current_time = 0
@@ -51,14 +51,19 @@ class BasicTower:
 
     def draw(self, screen, dt):
         current_imgs = self._img_mode[self._mode]
-        if self._current_time > self._animate_time[self._mode]:
+        if self._current_time > self._animate_time[self._mode]/len(current_imgs):
             self._img_index = (self._img_index + 1) % len(current_imgs)
+            self._current_time = 0
         screen.blit(current_imgs[self._img_index], (self._x - self._size // 2, self._y - self._size // 2))
         self._current_time += dt
+        if self._mode == 1 and self._img_index == len(current_imgs)-1:
+            self.shoot()
+            self.set_mode(0)
 
     def set_mode(self, mode):
-        self._mode = mode
-        self._img_index = 0
+        if mode != self._mode:
+            self._mode = mode
+            self._img_index = 0
 
     def get_pos(self):
         return self._x, self._y
