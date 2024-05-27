@@ -5,6 +5,7 @@ from button import Button
 import colors
 from button import Button
 from grid import Grid
+from projectile_manager import ProjectileManager
 # Kích thước màn hình
 pygame.init()
 WIDTH, HEIGHT = 1300, 750
@@ -70,3 +71,4 @@ tile_imgs = [
 ]
 grid = Grid(WIDTH, HEIGHT, tile_imgs)
 
+projectiles = ProjectileManager()

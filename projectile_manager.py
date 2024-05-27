@@ -3,17 +3,22 @@ from projectile import *
 class ProjectileManager:
     def __init__(self):
         self.__projectiles = []
-        self.__bullet_name = {"Bullet": Bullet, "IceBullet": IceBullet, "FireBullet": FireBullet, "IceFireBullet": IceFireBullet}
+        self.__remove_projectiles = []
 
-    def add_projectile(self, x, y, angle, name):
-        self.__projectiles.append(self.__bullet_name[name](x, y, angle))
+    def add_projectiles(self, projectiles):
+        self.__projectiles.extend(projectiles)
+
+    def add_remove_projectile(self, proj):
+        self.__remove_projectiles.append(proj)
 
     def get_projectiles(self):
         return self.__projectiles
 
-    def remove_projectile(self, screen, proj):
-        proj.draw_destroy(screen)
-        self.__projectiles.remove(proj)
+    def remove_projectiles(self, screen):
+        for p in self.__remove_projectiles:
+            p.draw_destroy(screen)
+            self.__projectiles.remove(p)
+        self.__remove_projectiles = []
 
     def draw(self, screen):
         for projectile in self.__projectiles:

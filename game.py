@@ -1,10 +1,7 @@
-import os
 import pygame
-import math
 from config import *
 from bug import *
 from interact import Interact
-from bullet import Bullet
 from tower import *
 from bug_manager import BugManager
 
@@ -27,11 +24,11 @@ explosions = []
 # Thêm nút mua tháp băng
 
 def collision_all(bug): 
-    for i, tower in enumerate(grid.get_objects()):
+    for tower in grid.get_objects():
         tower_rect = pygame.Rect(tower.get_x() - rect_size // 2, tower.get_y() - rect_size // 2, rect_size, rect_size)
         bug.collision_with_tower = Interact.check_collision_2(bug.get_rect(), tower_rect)
         if bug.collision_with_tower: 
-                    return True
+            return True
     return False
 
 while running:
@@ -62,7 +59,6 @@ while running:
                 if placing_tower:
                     if gold.gold >= tower_cost:
                         grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2, grid.get_cell_size()))
-                        shoot_counters.append(0)
                         gold.gold -= tower_cost
                         placing_tower = False
                 elif placing_slow:
@@ -75,15 +71,12 @@ while running:
                         placing_slow = False
                 elif placing_ice:
                     if gold.gold >= ice_cost:
-                        grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
-                        if (grid_x, grid_y) != (-1, -1):
-                            grid.add_object(grid_x, grid_y, IceTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2, grid.get_cell_size()))
-                            shoot_counters.append(0)
-                            gold.gold -= ice_cost
+                        grid.add_object(grid_x, grid_y, IceTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2, grid.get_cell_size()))
+                        gold.gold -= ice_cost
+                        placing_ice = False
 
             if (grid_x, grid_y) == (-2, -2) and not (placing_slow or placing_ice or placing_tower):
-                for i, tower in enumerate(grid.get_objects()):
-                    shoot_counters[i] += 1
+                for tower in grid.get_objects():
                     tower_rect = pygame.Rect(tower.get_x() - rect_size // 2, tower.get_y() - rect_size // 2, rect_size, rect_size)
                     if tower_rect.collidepoint(mouse_x, mouse_y):
                         tower.upgrade()
@@ -105,60 +98,32 @@ while running:
                 placing_tower = False
                 placing_slow = False
 
-    grid.draw(screen, dt)
+    projectiles.add_projectiles(grid.draw(screen, dt))
     
-    for i, tower in enumerate(grid.get_objects()):
-        shoot_counters[i] += 1
-        tower_rect = pygame.Rect(tower.get_x() - rect_size//2, tower.get_y() - rect_size//2, rect_size, rect_size)
-        if shoot_counters[i] >= shoot_delay:
-            tower.set_mode(1)
-            shoot_counters[i] = 0
+    # Towers shoot
+    for tower in grid.get_objects():
+        tower.set_mode(1)
 
-    bullets_to_remove = []
-
-    for bullet in bullets:
+    for projectile in projectiles.get_projectiles():
         bugs = bug_manager.get_bugs()
-        level = bullet[3]
-        if level == 1:
-            bullet[0] += bullet_speed
-        elif level == 2:
-            bullet[0] += bullet_speed * math.cos(bullet[2])
-            bullet[1] += bullet_speed * math.sin(bullet[2])
-        elif level == 3:
-            if bugs:
-                nearest_bug = min(bugs, key=lambda m: math.hypot(m.get_x() - bullet[0], m.get_y() - bullet[1]))
-                bullet[2] = math.atan2(nearest_bug.get_y() - bullet[1], nearest_bug.get_x() - bullet[0])
-            bullet[0] += bullet_speed * math.cos(bullet[2])
-            bullet[1] += bullet_speed * math.sin(bullet[2])
-
-        bullet_rect = pygame.Rect(bullet[0], bullet[1], BULLET_SIZE, BULLET_SIZE)
-        if bullet[4] == "normal":
-            Bullet.draw_normal_bullet(bullet[0], bullet[1])
-        elif bullet[4] == "ice":
-            Bullet.draw_ice_bullet(bullet[0], bullet[1])
-        for bug in bugs:
-            #bug_rect = pygame.Rect(bug.x, bug.y, bug.bug_size, bug.bug_size)
+        bullet_rect = projectile.get_rect()
+        removed = False
+        for bug in bug_manager.get_bugs():
             bug_rect = bug.get_rect()
             collision_coordinates = Interact.check_collision(bullet_rect, bug_rect)
             if collision_coordinates and not bug.is_dead():
                 explosions.append((collision_coordinates[0], collision_coordinates[1], pygame.time.get_ticks()))
-                bullets_to_remove.append(bullet)
-                bug.damage(50)
-                if bullet[4] == "ice" and not bug._slowed_bullet:  # Xử lý đạn băng làm chậm quái vật
-                    bug._speed *= 0.7  # Giảm tốc độ 50%
-                    bug._slowed_bullet = True
-                    bug._slow_timer_bullet = pygame.time.get_ticks() + 5000  # Thời gian làm chậm là 5 giây
-                
+                projectiles.add_remove_projectile(projectile)
+                bug.damage(projectile.get_damage())
+                bug.apply_slow(projectile.get_slow(), pygame.time.get_ticks() + projectile.get_slow_time())
+                removed = True
                 break
 
-        if bullet[0] < 10 or bullet[0] > WIDTH or bullet[1] < 0 or bullet[1] > HEIGHT:
-            bullets_to_remove.append(bullet)
+        if projectile.check_border(WIDTH, HEIGHT) and not removed:
+            projectiles.add_remove_projectile(projectile)
 
-    for bullet in bullets_to_remove:
-        if bullet in bullets:
-            bullets.remove(bullet)
-        
-    
+    projectiles.remove_projectiles(screen)
+    projectiles.draw(screen)
 
     for bug in bug_manager.get_bugs():
         if bug.is_dead():
@@ -209,22 +174,6 @@ while running:
     buy_tower_btn.draw(screen)
     buy_slow_btn.draw(screen)
     buy_ice_btn.draw(screen)
-
-    # Draw explosions and remove them after a short duration
-    current_time = pygame.time.get_ticks()
-
-    explosions_to_remove = []
-
-    for explosion in explosions:
-        x, y, start_time = explosion
-        if current_time - start_time <= 100:  # Explosion lasts for 500ms
-            Bullet.draw_bullet_with_collision(x, y)
-        else:
-            explosions_to_remove.append(explosion)
-
-    for explosion in explosions_to_remove:
-        if explosion in explosions:
-            explosions.remove(explosion)
 
     pygame.display.flip()
 

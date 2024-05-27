@@ -113,15 +113,16 @@ class Bug:
         if self._slowed and pygame.time.get_ticks() > self._slow_timer:
             self._speed = self._original_speed
             self._slowed = False
+
         self._x -= self._speed
 
-    def apply_slow(self):
+    def apply_slow(self, slow, slow_time):
         """
         Applies a slowing effect to the bug.
         """
-        self._speed = self._original_speed * 0.5
+        self._speed = self._original_speed * slow
         self._slowed = True
-        self._slow_timer = pygame.time.get_ticks() + 10000
+        self._slow_timer = slow_time
 
     def draw(self, screen):
         """
@@ -140,11 +141,6 @@ class Bug:
             screen (pygame.Surface): The surface on which to draw the bug's death animation.
         """
         pass
-
-    @staticmethod
-    def apply_slow_effect(bugs):
-        for bug in bugs:
-            bug.apply_slow()
 
     def damage(self, dmg):
         self._health -= dmg

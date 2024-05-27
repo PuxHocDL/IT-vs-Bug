@@ -117,7 +117,11 @@ class Grid:
 
         Parameters:
             screen (pygame.Surface): the surface to be drawn on.
+
+        Returns:
+            projectiles: a List of Projectiles shot from towers.
         """
+        projectiles = []
         x_offset = 50
         y_offset = self.__screen_height - 50 - self.__size*self.__rows
         img_counter = 0
@@ -130,7 +134,8 @@ class Grid:
                 img_counter += 1
 
                 if self.__objects[i][j]:
-                    self.__objects[i][j].draw(screen, dt)
+                    projectiles.extend(self.__objects[i][j].draw(screen, dt))
+        return projectiles
 
     def draw_on_mouse_pos(self, screen, pos, img=None):
         """
