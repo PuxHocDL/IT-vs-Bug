@@ -13,7 +13,7 @@ class BasicTower:
         self._tower_type = "Tower"
         self._health=100
         self._image=None
-        self._idle_imgs = []
+        self._idle_imgs = [pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")) for i in range(6)]
         self._atk_imgs = []
         self._destroy_imgs = []
         self._img_mode = {0: self._idle_imgs, 1: self._atk_imgs, 2: self._destroy_imgs}
@@ -49,7 +49,7 @@ class BasicTower:
             bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
             bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
 
-    def draw(self, dt):
+    def draw(self, screen, dt):
         current_imgs = self._img_mode[self._mode]
         if self._current_time > self._animate_time[self._mode]:
             self._img_index = (self._img_index + 1) % len(current_imgs)
@@ -60,10 +60,19 @@ class BasicTower:
         self._mode = mode
         self._img_index = 0
 
+    def get_pos(self):
+        return self._x, self._y
+
+    def get_x(self):
+        return self._x
+
+    def get_y(self):
+        return self._y
+
 
 class SlowTower(BasicTower):
     """Tháp làm chậm, kế thừa từ basic_tower, làm chậm tốc độ di chuyển của quái"""
-    def __init__(self x, y):
+    def __init__(self, x, y):
         super().__init__(x, y)
         self._cost = 100
         self._color_for_levels = defaultdict(lambda: PURPLE)  # Màu là PURPLE cho mọi cấp

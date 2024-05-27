@@ -55,6 +55,11 @@ class Grid:
         self.__imgs = imgs
         self.__bg_img = bg_img
         self.__objects = []
+        for _ in range(self.__rows):
+            temp = []
+            for _ in range(self.__cols):
+                temp.append(None)
+            self.__objects.append(temp)
 
     def reset(self):
         """
@@ -62,7 +67,7 @@ class Grid:
         """
         self.__objects = []
 
-    def add_object(self, x, y, object, image=None):
+    def add_object(self, x, y, object):
         """
         Add an object to a Cell on the Grid.
 
@@ -71,7 +76,7 @@ class Grid:
             y (int): the y position on the Grid.
             image (pygame.Image): the image to be drawn.
         """
-        self.__objects.append(Cell(x, y, object, image))
+        self.__objects[x][y] = object
 
     def convert_to_grid_pos(self, x, y):
         """
@@ -84,11 +89,11 @@ class Grid:
         Returns:
             (x, y): the xy position of the Grid. (-1, -1) if the passed position is beyond Grid's position or the Cell already has an object.
         """
-        x, y = (y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, (x-50)//self.__size
-        if (x, y) in self.get_objects_pos():
-            return -2, -2
-        elif y in range(self.__cols) and x in range(self.__rows):
-            return x, y
+        i, j = (y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, (x-50)//self.__size
+        if j in range(self.__cols) and i in range(self.__rows):
+            if self.__objects[i][j]:
+                return -2, -2
+            return i, j
         return -1, -1
     
     def convert_to_screen_pos(self, i, j):
@@ -106,7 +111,7 @@ class Grid:
         return x, y
 
 
-    def draw(self, screen):
+    def draw(self, screen, dt):
         """
         Draws the Grid to the screen.
 
@@ -124,14 +129,8 @@ class Grid:
                 pygame.draw.rect(screen, colors.gray, [x, y, self.__size, self.__size], 1)
                 img_counter += 1
 
-        for cell in self.__objects:
-            pos = cell.get_pos()
-            screen_pos = self.convert_to_screen_pos(pos[0], pos[1])
-            cell_img = cell.get_image()
-            if cell_img:
-                screen.blit(cell_img, screen_pos)
-            else:
-                pygame.draw.rect(screen, colors.red, [screen_pos[0], screen_pos[1], self.__size, self.__size])
+                if self.__objects[i][j]:
+                    self.__objects[i][j].draw(screen, dt)
 
     def draw_on_mouse_pos(self, screen, pos, img=None):
         """
@@ -150,10 +149,19 @@ class Grid:
         return self.__size
 
     def get_objects(self):
-        return [object.get_object() for object in self.__objects]
+        temp = []
+        for i in range(self.__rows):
+            for j in range(self.__cols):
+                if self.__objects[i][j]:
+                    temp.append(self.__objects[i][j])
+        return temp
 
     def get_objects_pos(self):
-        return [object.get_pos() for object in self.__objects]
+        poses = []
+        for i in range(self.__rows):
+            for j in range(self.__cols):
+                poses.append((i, j))
+        return poses
 
     def get_rows(self):
         return self.__rows

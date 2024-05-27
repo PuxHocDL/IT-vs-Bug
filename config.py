@@ -69,5 +69,4 @@ tile_imgs = [
     pygame.image.load(os.path.join("assets", "grass2.jpg"))
 ]
 grid = Grid(WIDTH, HEIGHT, tile_imgs)
-basic_tower_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "canon.png")).convert_alpha(), (grid.get_cell_size(), grid.get_cell_size()))
 

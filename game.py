@@ -28,7 +28,7 @@ explosions = []
 
 def collision_all(bug): 
                 for i, tower in enumerate(grid.get_objects()):
-                    tower_rect = pygame.Rect(tower.x - rect_size // 2, tower.y - rect_size // 2, rect_size, rect_size)
+                    tower_rect = pygame.Rect(tower.get_x() - rect_size // 2, tower.get_y() - rect_size // 2, rect_size, rect_size)
                     bug.collision_with_tower = Interact.check_collision_2(bug.get_rect(), tower_rect)
                     if bug.collision_with_tower: 
                                 return True
@@ -61,7 +61,7 @@ while running:
                 upgrade_tower = False
                 if placing_tower:
                     if gold.gold >= tower_cost:
-                        grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2), basic_tower_img)
+                        grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
                         shoot_counters.append(0)
                         gold.gold -= tower_cost
                         placing_tower = False
@@ -84,7 +84,7 @@ while running:
             if (grid_x, grid_y) == (-2, -2) and not (placing_slow or placing_ice or placing_tower):
                 for i, tower in enumerate(grid.get_objects()):
                     shoot_counters[i] += 1
-                    tower_rect = pygame.Rect(tower.x - rect_size // 2, tower.y - rect_size // 2, rect_size, rect_size)
+                    tower_rect = pygame.Rect(tower.get_x() - rect_size // 2, tower.get_y() - rect_size // 2, rect_size, rect_size)
                     if tower_rect.collidepoint(mouse_x, mouse_y):
                         tower.upgrade()
                         break
@@ -105,11 +105,11 @@ while running:
                 placing_tower = False
                 placing_slow = False
 
-    grid.draw(screen)
+    grid.draw(screen, dt)
     
     for i, tower in enumerate(grid.get_objects()):
         shoot_counters[i] += 1
-        tower_rect = pygame.Rect(tower.x - rect_size//2, tower.y - rect_size//2, rect_size, rect_size)
+        tower_rect = pygame.Rect(tower.get_x() - rect_size//2, tower.get_y() - rect_size//2, rect_size, rect_size)
         if shoot_counters[i] >= shoot_delay:
             tower.shoot()
             shoot_counters[i] = 0
