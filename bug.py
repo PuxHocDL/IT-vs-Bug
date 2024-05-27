@@ -42,14 +42,60 @@ class Bug:
         self._bug_size = bug_size
         self._rect_x = rect_x
         self._rect_y = rect_y
-        self._current_image_index_dead = 0
         self._slowed_bullet = False
         self._name = name
         self._death = False
-        self._image_index = 0
+        self._image_index_alive = 0
         self._attacking = True
-        self._image_attack = 0
         self._collision_with_tower = False
+        self._current_time_dead = 0 
+        self._image_index_dead = 0
+        self._current_time_alive = 0
+        self._image_index_alive = 0
+        self._image_index_attack = 0
+        self._current_time_attack = 0
+    
+    def draw_alive(self, screen, dt, image):
+        """
+        Draws the normal bug on the screen.
+        
+        Parameters:
+            screen (pygame.Surface): The surface on which to draw the bug.
+        """
+        self._current_time_alive += dt
+        if self._current_time_alive >= 1/(len(image))*1000:
+            self._image_index_alive = (self._image_index_alive +1) % len(image)
+            self._current_time_alive = 0
+        current_image = image[self._image_index_alive]
+        screen.blit(current_image, (self._x, self._y))
+        
+
+    def draw_dead(self, screen, dt, image):
+        """
+        Draws the normal bug on the screen.
+        Parameters:
+            screen (pygame.Surface): The surface on which to draw the bug.
+        """
+        if self._image_index_dead < len(image):
+            self._current_time_dead += dt
+            current_image = image[self._image_index_dead]
+            screen.blit(current_image, (self._x, self._y))
+            if self._current_time_dead >= 1/(len(image))*1000:
+                self._current_time_dead = 0 
+                self._image_index_dead = (self._image_index_dead +1)
+        else: 
+            return True
+        return False
+            
+    def draw_attack(self,screen,dt,image): 
+        self._current_time_attack += dt
+        if self._current_time_attack >= 1/(len(image))*1000:
+            self._image_index_attack = (self._image_index_attack +1) % len(image)
+            self._current_time_attack = 0
+        current_image = image[self._image_index_attack]
+        screen.blit(current_image, (self._x, self._y))
+        
+        
 
     def get_rect(self):
         """
@@ -131,9 +177,6 @@ class NormalBug(Bug):
         create_bug(bugs, grid): Static method to create and add a normal bug to the game.
         draw_health_bar(self._ screen): Draws the health bar of the normal bug.
     """
-
-    __normal_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","alive", f"pic_{i}.png")), (150, 150)) for i in range(0, 9)]
-    __normal_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","dead", f"{i}.png")), (150, 150)) for i in range(0, 60)]
     def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
         """
         Initializes a HexagonBug instance with the given parameters.
@@ -153,47 +196,21 @@ class NormalBug(Bug):
         self._x = WIDTH
         self._y =  random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-50)//2 + 50
         self._speed = 0.5
-        self._health = 1900
-        self._max_health = 1900 
+        self._health = 900
+        self._max_health = 900 
         self._bug_size = 50
         self._rect_x = 150
         self._rect_y = 150
         self._name = "NormalBug"
-        self._current_time = 0
+        
+        self.__normal_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","alive", f"pic_{i}.png")), (150, 150)) for i in range(0, 9)]
+        self.__normal_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","dead", f"{i}.png")), (150, 150)) for i in range(0, 12)]
 
-    def draw(self, screen, dt):
-        """
-        Draws the normal bug on the screen.
-        
-        Parameters:
-            screen (pygame.Surface): The surface on which to draw the bug.
-        """
-        self._current_time += dt
-        if self._current_time > 1/9*1000:
-            self._image_index = (self._image_index+1) % len(NormalBug.__normal_bug_images)
-            self._current_time = 0
-        current_image = NormalBug.__normal_bug_images[self._image_index]
-        screen.blit(current_image, (self._x, self._y))
-        print(self._image_index)
+    def draw(self,dt,screen): 
+        super().draw_alive(screen,dt,self.__normal_bug_images)
 
-    def draw_death(self, screen):
-        """
-        Draws the normal bug's death animation on the screen.
-        
-        Parameters:
-            screen (pygame.Surface): The surface on which to draw the bug's death animation.
-        
-        Returns:
-            bool: True if the death animation is complete, False otherwise.
-        """
-        if self._current_image_index_dead < len(NormalBug.__normal_bug_images_dead):
-            self._x -= self._speed * 0.3
-            current_image = NormalBug.__normal_bug_images_dead[self._current_image_index_dead]
-            screen.blit(current_image, (self._x, self._y))
-            self._current_image_index_dead += 1
-        else:
-            return True
-        return False
+    def draw_dead(self,dt,screen):
+        super().draw_dead(screen,dt,self.__normal_bug_images_dead)
 
     def draw_health_bar(self, screen):
         """
@@ -228,14 +245,6 @@ class BigBug(Bug):
         create_big_bug(bugs, grid): Static method to create and add a big bug to the game.
         draw_health_bar(self._ screen): Draws the health bar of the big bug.
     """
-    __big_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","alive", f"{i}.png")), (150, 150)) for i in range(0, 8)]
-    __big_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","dead", f"{i}.png")), (150, 150)) for i in range(0, 6)]
-    expanded_big_bug_images = []
-    expanded_big_bug_images_dead = []
-    for image in __big_bug_images:
-        expanded_big_bug_images.extend([image] * 8)
-    for image in __big_bug_images_dead:
-        expanded_big_bug_images_dead.extend([image] * 10)
     def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
         """
         Initializes a HexagonBug instance with the given parameters.
@@ -262,20 +271,19 @@ class BigBug(Bug):
         self._rect_y = 150
         self._name = "BigBug"
 
+        self.__big_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","alive", f"{i}.png")), (150, 150)) for i in range(0, 8)]
+        self.__big_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","dead", f"{i}.png")), (150, 150)) for i in range(0, 6)]
 
-    def draw(self, screen):
+
+    def draw(self,dt,screen):
         """
         Draws the big bug on the screen.
 
         Parameters:
             screen (pygame.Surface): The surface on which to draw the bug.
         """
-        current_image_index = self._image_index % len(BigBug.expanded_big_bug_images)
-        current_image = BigBug.expanded_big_bug_images[current_image_index]
-        screen.blit(current_image, (self._x, self._y))
-        self._image_index += 1
-
-    def draw_death(self, screen):
+        super().draw_alive(screen,dt,self.__big_bug_images)
+    def draw_dead(self, dt,screen):
         """
         Draws the big bug's death animation on the screen.
 
@@ -285,14 +293,7 @@ class BigBug(Bug):
         Returns:
             bool: True if the death animation is complete, False otherwise.
         """
-        if self._current_image_index_dead < len(BigBug.expanded_big_bug_images_dead):
-            self._x -= self._speed * 0.3
-            current_image = BigBug.expanded_big_bug_images_dead[self._current_image_index_dead]
-            screen.blit(current_image, (self._x, self._y))
-            self._current_image_index_dead += 1
-        else:
-            return True
-        return False
+        super().draw_dead(screen,dt,self.__big_bug_images_dead)
 
     def draw_health_bar(self, screen):
         """
@@ -345,6 +346,7 @@ class TriangleBug(Bug):
         self._rect_x = 70
         self._rect_y = 70
         self._name = "TriangleBug"
+
     def draw(self, screen):
         """
         Draws the triangle bug on the screen.
@@ -385,21 +387,7 @@ class HexagonBug(Bug):
         draw_health_bar(self._ screen): Draws the health bar of the hexagon bug.
         create_hexagon_bug(bugs, grid): Static method to create and add a hexagon bug to the game.
     """
-    fly_bug_image = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","alive", f"{i}.png")), (400, 400)) for i in range(0, 6)]
-    expanded_fly_bug_image = []
-    for image in fly_bug_image:
-        expanded_fly_bug_image.extend([image] * 10)
 
-    fly_bug_image_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","attack", f"{i}.png")), (400, 400)) for i in range(0, 18)]
-    expanded_fly_bug_image_attack = []
-    for image in fly_bug_image_attack:
-        expanded_fly_bug_image_attack.extend([image] * 4)
-
-    fly_bug_image_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","dead", f"{i}.png")), (400, 400)) for i in range(0, 3)]
-    expanded_fly_bug_image_dead = []
-    for image in fly_bug_image_dead:
-        expanded_fly_bug_image_dead.extend([image] * 15)
-    expanded_fly_bug_image_dead.extend([fly_bug_image_dead[2]] * 15)
     def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
         """
         Initializes a HexagonBug instance with the given parameters.
@@ -426,22 +414,16 @@ class HexagonBug(Bug):
         self._rect_y = 100
         self._name = "HexagonBug"
 
+        self.__fly_bug_image = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","alive", f"{i}.png")), (400, 400)) for i in range(0, 6)]
+        self.__fly_bug_image_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","dead", f"{i}.png")), (400, 400)) for i in range(0, 3)]
+        self.__fly_bug_image_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","attack", f"{i}.png")), (400, 400)) for i in range(0, 18)]
     def update(self):
         """
         Updates the bug's position and speed, including a flying effect.
         """
         super().update()
-    def draw(self, screen):
-        """
-        Draws the hexagon bug on the screen.
-
-        Parameters:
-            screen (pygame.Surface): The surface on which to draw the bug.
-        """
-        current_image_index = self._image_index % len(HexagonBug.expanded_fly_bug_image)
-        current_image = HexagonBug.expanded_fly_bug_image[current_image_index]
-        screen.blit(current_image, (self._x, self._y))
-        self._image_index += 1
+    def draw(self, dt, screen):
+        super().draw_alive(screen,dt,self.__fly_bug_image)
 
     def draw_health_bar(self, screen):
         """
@@ -458,7 +440,7 @@ class HexagonBug(Bug):
         pygame.draw.rect(screen, (152, 251, 152), fill_rect)
         pygame.draw.rect(screen, (0, 0, 0), outline_rect, 1)
 
-    def draw_death(self, screen):
+    def draw_dead(self, dt,screen):
         """
         Draws the Haxegon 's death animation on the screen.
 
@@ -468,32 +450,23 @@ class HexagonBug(Bug):
         Returns:
             bool: True if the death animation is complete, False otherwise.
         """
-        if self._current_image_index_dead < len(HexagonBug.expanded_fly_bug_image_dead):
-            current_image = HexagonBug.expanded_fly_bug_image_dead[self._current_image_index_dead]
-            screen.blit(current_image, (self._x, self._y))
-            self._current_image_index_dead += 1
-        else:
-            return True
-        return False
+        super().draw_dead(screen,dt,self.__fly_bug_image_dead)
     
-    def draw_attack(self, screen): 
-        current_image_index = self._image_attack % len(HexagonBug.expanded_fly_bug_image_attack)
-        current_image = HexagonBug.expanded_fly_bug_image_attack[current_image_index]
-        screen.blit(current_image, (self._x, self._y))
-        self._image_attack += 1
+    def draw_attack(self,dt, screen): 
+        super().draw_attack(screen,dt,self.__fly_bug_image_attack)
 
     def get_rect(self): 
         return pygame.Rect(self._x + 150, self._y+250, self._rect_x, self._rect_y)
 
 # Timers to spawn bugs
 spawn_bug_event = pygame.USEREVENT + 1
-pygame.time.set_timer(spawn_bug_event, 20000)
+pygame.time.set_timer(spawn_bug_event, 200000)
 
 spawn_big_bug_event = pygame.USEREVENT + 2
-pygame.time.set_timer(spawn_big_bug_event, 13000000)
+pygame.time.set_timer(spawn_big_bug_event, 30000)
 
 spawn_triangle_bug_event = pygame.USEREVENT + 3
 pygame.time.set_timer(spawn_triangle_bug_event, 1800000)
 
 spawn_hexagon_bug_event = pygame.USEREVENT + 4
-pygame.time.set_timer(spawn_hexagon_bug_event, 1000000)
+pygame.time.set_timer(spawn_hexagon_bug_event, 2000)
