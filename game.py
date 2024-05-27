@@ -12,12 +12,13 @@ from bug_manager import BugManager
 pygame.init()
 
 bug_manager = BugManager()
+clock = pygame.time.Clock()
+dt = 0 
 
 # Main game loop variables
 slow_placed_time = 0
 slow_placed = False
 running = True
-clock = pygame.time.Clock()
 rect_size = grid.get_cell_size()
 
 # A list to keep track of explosions
@@ -34,7 +35,7 @@ def collision_all(bug):
                 return False
 
 while running:
-    clock.tick(FPS)
+    dt = clock.tick(FPS)
     screen.fill(WHITE)
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -183,7 +184,7 @@ while running:
             else: 
                 if not collision_all(bug) or bug.get_name()!="HexagonBug" : 
                     bug.update()
-                    bug.draw(screen)
+                    bug.draw(screen, dt)
                 elif collision_all(bug) and bug.get_name()=="HexagonBug": 
                     bug.draw_attack(screen)
                 
