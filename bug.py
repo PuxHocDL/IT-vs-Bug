@@ -132,19 +132,49 @@ class NormalBug(Bug):
         draw_health_bar(self._ screen): Draws the health bar of the normal bug.
     """
 
-    __normal_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","alive", f"pic_{i}.png")), (150, 150)) for i in range(0, 60)]
+    __normal_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","alive", f"pic_{i}.png")), (150, 150)) for i in range(0, 9)]
     __normal_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","dead", f"{i}.png")), (150, 150)) for i in range(0, 60)]
-    def draw(self, screen):
+    def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
+        """
+        Initializes a HexagonBug instance with the given parameters.
+        
+        Parameters:
+            x (int): The x-coordinate of the bug.
+            y (int): The y-coordinate of the bug.
+            speed (float): The speed of the bug.
+            health (int): The current health of the bug.
+            max_health (int): The maximum health of the bug.
+            bug_size (int): The size of the bug.
+            rect_x (int): The width of the bug's rectangle.
+            rect_y (int): The height of the bug's rectangle.
+            name (str): The name of the bug.
+        """
+        super().__init__(x, y, speed, health, max_health, bug_size, rect_x, rect_y, name)
+        self._x = WIDTH
+        self._y =  random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-50)//2 + 50
+        self._speed = 0.5
+        self._health = 1900
+        self._max_health = 1900 
+        self._bug_size = 50
+        self._rect_x = 150
+        self._rect_y = 150
+        self._name = "NormalBug"
+        self._current_time = 0
+
+    def draw(self, screen, dt):
         """
         Draws the normal bug on the screen.
         
         Parameters:
             screen (pygame.Surface): The surface on which to draw the bug.
         """
-        current_image_index = self._image_index % len(NormalBug.__normal_bug_images)
-        current_image = NormalBug.__normal_bug_images[current_image_index]
+        self._current_time += dt
+        if self._current_time > 1/9*1000:
+            self._image_index = (self._image_index+1) % len(NormalBug.__normal_bug_images)
+            self._current_time = 0
+        current_image = NormalBug.__normal_bug_images[self._image_index]
         screen.blit(current_image, (self._x, self._y))
-        self._image_index += 1
+        print(self._image_index)
 
     def draw_death(self, screen):
         """
@@ -164,19 +194,6 @@ class NormalBug(Bug):
         else:
             return True
         return False
-
-    @staticmethod
-    def create_bug(bugs, grid):
-        """
-        Static method to create and add a normal bug to the game.
-
-        Parameters:
-            bugs (list): The list to which the new bug will be added.
-            grid (Grid): The grid object to determine the bug's starting position.
-        """
-        bug_x = WIDTH
-        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-50)//2 + 50
-        bugs.append(NormalBug(bug_x, bug_y, 0.5, 1900, 1900, 50, 150, 150, name="NormalBug"))
 
     def draw_health_bar(self, screen):
         """
@@ -219,6 +236,32 @@ class BigBug(Bug):
         expanded_big_bug_images.extend([image] * 8)
     for image in __big_bug_images_dead:
         expanded_big_bug_images_dead.extend([image] * 10)
+    def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
+        """
+        Initializes a HexagonBug instance with the given parameters.
+        
+        Parameters:
+            x (int): The x-coordinate of the bug.
+            y (int): The y-coordinate of the bug.
+            speed (float): The speed of the bug.
+            health (int): The current health of the bug.
+            max_health (int): The maximum health of the bug.
+            bug_size (int): The size of the bug.
+            rect_x (int): The width of the bug's rectangle.
+            rect_y (int): The height of the bug's rectangle.
+            name (str): The name of the bug.
+        """
+        super().__init__(x, y, speed, health, max_health, bug_size, rect_x, rect_y, name)
+        self._x = WIDTH
+        self._y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-80)//2 + 70
+        self._speed = 0.5
+        self._health = 1000
+        self._max_health = 1000 
+        self._bug_size = 80
+        self._rect_x = 150
+        self._rect_y = 150
+        self._name = "BigBug"
+
 
     def draw(self, screen):
         """
@@ -251,19 +294,6 @@ class BigBug(Bug):
             return True
         return False
 
-    @staticmethod
-    def create_big_bug(bugs, grid):
-        """
-        Static method to create and add a big bug to the game.
-
-        Parameters:
-            bugs (list): The list to which the new bug will be added.
-            grid (Grid): The grid object to determine the bug's starting position.
-        """
-        bug_x = WIDTH
-        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-80)//2 + 70
-        bugs.append(BigBug(bug_x, bug_y, 0.5, 1000, 1000, 80, 150, 150, name="BigBug"))
-
     def draw_health_bar(self, screen):
         """
         Draws the health bar of the big bug.
@@ -290,7 +320,31 @@ class TriangleBug(Bug):
         draw_health_bar(self._ screen): Draws the health bar of the triangle bug.
         create_triangle_bug(bugs, grid): Static method to create and add a triangle bug to the game.
     """
-
+    def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
+        """
+        Initializes a HexagonBug instance with the given parameters.
+        
+        Parameters:
+            x (int): The x-coordinate of the bug.
+            y (int): The y-coordinate of the bug.
+            speed (float): The speed of the bug.
+            health (int): The current health of the bug.
+            max_health (int): The maximum health of the bug.
+            bug_size (int): The size of the bug.
+            rect_x (int): The width of the bug's rectangle.
+            rect_y (int): The height of the bug's rectangle.
+            name (str): The name of the bug.
+        """
+        super().__init__(x, y, speed, health, max_health, bug_size, rect_x, rect_y, name)
+        self._x = WIDTH
+        self._y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()+20)//2
+        self._speed = 0.5
+        self._health = 200
+        self._max_health = 200 
+        self._bug_size = 50
+        self._rect_x = 70
+        self._rect_y = 70
+        self._name = "TriangleBug"
     def draw(self, screen):
         """
         Draws the triangle bug on the screen.
@@ -315,19 +369,6 @@ class TriangleBug(Bug):
         fill_rect = pygame.Rect(self._x - self._bug_size, self._y + self._bug_size // 3, fill, health_bar_height)
         pygame.draw.rect(screen, (152, 251, 152), fill_rect)
         pygame.draw.rect(screen, (0, 0, 0), outline_rect, 1)
-
-    @staticmethod
-    def create_triangle_bug(bugs, grid):
-        """
-        Static method to create and add a triangle bug to the game.
-
-        Parameters:
-            bugs (list): The list to which the new bug will be added.
-            grid (Grid): The grid object to determine the bug's starting position.
-        """
-        bug_x = WIDTH
-        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()+20)//2
-        bugs.append(TriangleBug(bug_x, bug_y, 2, 70, 70, 50, 70, 70, name="TriangleBug"))
 
 class HexagonBug(Bug):
     """
@@ -375,17 +416,21 @@ class HexagonBug(Bug):
             name (str): The name of the bug.
         """
         super().__init__(x, y, speed, health, max_health, bug_size, rect_x, rect_y, name)
-        self._angle = 0
-        self._dy = 0
+        self._x = WIDTH
+        self._y = random.choice(range(HEIGHT  - grid.get_cell_size() * grid.get_rows(), HEIGHT  , grid.get_cell_size())) + (grid.get_cell_size()-50)//2 - 350
+        self._speed = 0.5
+        self._health = 1000
+        self._max_health = 1000 
+        self._bug_size = 100
+        self._rect_x = 120
+        self._rect_y = 100
+        self._name = "HexagonBug"
 
     def update(self):
         """
         Updates the bug's position and speed, including a flying effect.
         """
         super().update()
-        self._dy = 0.0 * math.sin(pygame.time.get_ticks() / 400)
-        self._y += self._dy
-
     def draw(self, screen):
         """
         Draws the hexagon bug on the screen.
@@ -412,19 +457,6 @@ class HexagonBug(Bug):
         fill_rect = pygame.Rect(self._x + self._bug_size//3, self._y + self._bug_size//2-20, fill, health_bar_height)
         pygame.draw.rect(screen, (152, 251, 152), fill_rect)
         pygame.draw.rect(screen, (0, 0, 0), outline_rect, 1)
-
-    @staticmethod
-    def create_hexagon_bug(bugs, grid):
-        """
-        Static method to create and add a hexagon bug to the game.
-
-        Parameters:
-            bugs (list): The list to which the new bug will be added.
-            grid (Grid): The grid object to determine the bug's starting position.
-        """
-        bug_x = WIDTH - 300
-        bug_y = random.choice(range(HEIGHT  - grid.get_cell_size() * grid.get_rows(), HEIGHT  , grid.get_cell_size())) + (grid.get_cell_size()-50)//2 - 350
-        bugs.append(HexagonBug(bug_x, bug_y, 0.5, 1000, 1000, 100, 120, 100, name="HexagonBug"))
 
     def draw_death(self, screen):
         """
@@ -455,13 +487,13 @@ class HexagonBug(Bug):
 
 # Timers to spawn bugs
 spawn_bug_event = pygame.USEREVENT + 1
-pygame.time.set_timer(spawn_bug_event, 10000)
+pygame.time.set_timer(spawn_bug_event, 20000)
 
 spawn_big_bug_event = pygame.USEREVENT + 2
-pygame.time.set_timer(spawn_big_bug_event, 13000)
+pygame.time.set_timer(spawn_big_bug_event, 13000000)
 
 spawn_triangle_bug_event = pygame.USEREVENT + 3
-pygame.time.set_timer(spawn_triangle_bug_event, 18000)
+pygame.time.set_timer(spawn_triangle_bug_event, 1800000)
 
 spawn_hexagon_bug_event = pygame.USEREVENT + 4
-pygame.time.set_timer(spawn_hexagon_bug_event, 4000)
+pygame.time.set_timer(spawn_hexagon_bug_event, 1000000)
