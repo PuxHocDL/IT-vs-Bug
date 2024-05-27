@@ -27,12 +27,12 @@ explosions = []
 # Thêm nút mua tháp băng
 
 def collision_all(bug): 
-                for i, tower in enumerate(grid.get_objects()):
-                    tower_rect = pygame.Rect(tower.get_x() - rect_size // 2, tower.get_y() - rect_size // 2, rect_size, rect_size)
-                    bug.collision_with_tower = Interact.check_collision_2(bug.get_rect(), tower_rect)
-                    if bug.collision_with_tower: 
-                                return True
-                return False
+    for i, tower in enumerate(grid.get_objects()):
+        tower_rect = pygame.Rect(tower.get_x() - rect_size // 2, tower.get_y() - rect_size // 2, rect_size, rect_size)
+        bug.collision_with_tower = Interact.check_collision_2(bug.get_rect(), tower_rect)
+        if bug.collision_with_tower: 
+                    return True
+    return False
 
 while running:
     dt = clock.tick(FPS)
@@ -61,7 +61,7 @@ while running:
                 upgrade_tower = False
                 if placing_tower:
                     if gold.gold >= tower_cost:
-                        grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
+                        grid.add_object(grid_x, grid_y, BasicTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2, grid.get_cell_size()))
                         shoot_counters.append(0)
                         gold.gold -= tower_cost
                         placing_tower = False
@@ -77,7 +77,7 @@ while running:
                     if gold.gold >= ice_cost:
                         grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
                         if (grid_x, grid_y) != (-1, -1):
-                            grid.add_object(grid_x, grid_y, IceTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2))
+                            grid.add_object(grid_x, grid_y, IceTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2, grid.get_cell_size()))
                             shoot_counters.append(0)
                             gold.gold -= ice_cost
 

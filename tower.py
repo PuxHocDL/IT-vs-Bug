@@ -4,7 +4,7 @@ from collections import defaultdict
 
 class BasicTower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
-    def __init__(self, x, y):
+    def __init__(self, x, y, size):
         self._x = x
         self._y = y
         self._level = 1
@@ -12,8 +12,8 @@ class BasicTower:
         self._color_for_levels = {1: BLUE, 2: YELLOW, 3: RED}
         self._tower_type = "Tower"
         self._health=100
-        self._image=None
-        self._idle_imgs = [pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")) for i in range(6)]
+        self._size = size
+        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(6)]
         self._atk_imgs = []
         self._destroy_imgs = []
         self._img_mode = {0: self._idle_imgs, 1: self._atk_imgs, 2: self._destroy_imgs}
@@ -53,7 +53,7 @@ class BasicTower:
         current_imgs = self._img_mode[self._mode]
         if self._current_time > self._animate_time[self._mode]:
             self._img_index = (self._img_index + 1) % len(current_imgs)
-        screen.blit(current_imgs[self._img_index], (self._x, self._y))
+        screen.blit(current_imgs[self._img_index], (self._x - self._size // 2, self._y - self._size // 2))
         self._current_time += dt
 
     def set_mode(self, mode):
@@ -72,8 +72,8 @@ class BasicTower:
 
 class SlowTower(BasicTower):
     """Tháp làm chậm, kế thừa từ basic_tower, làm chậm tốc độ di chuyển của quái"""
-    def __init__(self, x, y):
-        super().__init__(x, y)
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size)
         self._cost = 100
         self._color_for_levels = defaultdict(lambda: PURPLE)  # Màu là PURPLE cho mọi cấp
         self._tower_type = "Slow"
@@ -91,22 +91,14 @@ class TowerGame:
         gold_text = font.render(f"Gold: {gold.gold}", True, BLACK)
         screen.blit(gold_text, (10, 10))
     
-    def draw_tower(x, y, level):
-        """Vẽ tháp ở vị trí x, y với cấp độ level"""
-        color_for_levels = {1: BLUE, 2: YELLOW, 3: RED}
-        pygame.draw.rect(screen, color_for_levels[level], (x, y, TOWER_SIZE, TOWER_SIZE))
-    def upgrade_tower(index):
-        """Nâng cấp tháp tại vị trí index"""
-        BasicTower.upgrade(index)
-    
     def draw_slow(x, y):
         """Vẽ vật làm chậm ở vị trí x, y"""
         pygame.draw.rect(screen, PURPLE, (x, y, TOWER_SIZE, TOWER_SIZE))
         
 class IceTower(BasicTower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
-    def __init__(self, x, y):
-        super().__init__(x, y)
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size)
         self._cost = 150
         self._color_for_levels = {1: LIGHT_BLUE, 2: ICE_BLUE, 3: DARK_BLUE}
         self._tower_type = "Ice"
