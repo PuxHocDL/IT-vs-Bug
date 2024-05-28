@@ -12,7 +12,7 @@ class Bullet:
         self._speed = 10
         self._slow = 1
         self._slow_time = 0
-        self._img_path = os.path.join("assets", "Projectiles", "bullet.png")
+        self._img_path = os.path.join("assets", "Projectiles", "fire_bullet.png")
         self._destroy_img_path = os.path.join("assets", "PeaNormalExplode_0.png")
         self._is_reverse = reverse
 
