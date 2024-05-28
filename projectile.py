@@ -9,10 +9,10 @@ class Bullet:
         self._size = 16
         self._angle = angle
         self._damage = 50
-        self._speed = 5
+        self._speed = 10
         self._slow = 1
         self._slow_time = 0
-        self._img_path = os.path.join("assets", "PeaNormal_0.png")
+        self._img_path = os.path.join("assets", "Projectiles", "bullet.png")
         self._destroy_img_path = os.path.join("assets", "PeaNormalExplode_0.png")
 
     def increase_damage(self, damage):
@@ -54,6 +54,7 @@ class IceBullet(Bullet):
         self._damage = 30
         self._slow = 0.8
         self._slow_time = 20000
+        self._img_path = os.path.join("assets", "Projectiles", "ice_bullet.png")
 
 class FireBullet(Bullet):
     def __init__(self, x, y, angle=0.0):
