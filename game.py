@@ -129,7 +129,7 @@ while running:
 
         if bug.get_name() == "BigBug": 
             if bug.attacking == True: 
-                 bug.draw_attack(screen,dt) 
+                 bug_projectiles.add_projectiles(bug.draw_attack(screen,dt))
             else: 
                 if bug.is_dead():
                         if bug.draw_dead(dt,screen):
@@ -241,6 +241,9 @@ while running:
             if bug._slowed_bullet and pygame.time.get_ticks() > bug._slow_timer_bullet:
                 bug._speed /= 0.7  # Khôi phục tốc độ ban đầu
                 bug._slowed_bullet = False
+
+    bug_projectiles.draw(screen)
+
     if placing_tower:
         grid.draw_on_mouse_pos(screen, (mouse_x, mouse_y))
     elif placing_slow:

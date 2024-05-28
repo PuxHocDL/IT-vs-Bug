@@ -72,3 +72,4 @@ tile_imgs = [
 grid = Grid(WIDTH, HEIGHT, tile_imgs)
 
 projectiles = ProjectileManager()
+bug_projectiles = ProjectileManager()

@@ -3,7 +3,7 @@ import pygame
 import math
 
 class Bullet:
-    def __init__(self, x, y, angle=0.0):
+    def __init__(self, x, y, reverse=False, angle=0.0):
         self._x = x
         self._y = y
         self._size = 16
@@ -14,6 +14,9 @@ class Bullet:
         self._slow_time = 0
         self._img_path = os.path.join("assets", "Projectiles", "bullet.png")
         self._destroy_img_path = os.path.join("assets", "PeaNormalExplode_0.png")
+
+        if reverse:
+            self._speed *= -1
 
     def increase_damage(self, damage):
         self._damage += damage

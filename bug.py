@@ -2,6 +2,7 @@ import pygame
 import random
 import math
 from config import *
+from projectile import *
 
 class Bug:
     """
@@ -96,10 +97,14 @@ class Bug:
         return False
             
     def draw_attack(self,screen,dt,image): 
+        projectile = []
         self._current_time_attack += dt
         if self._attack_times > len(image)-1:
             self.attacking = False
             self._attack_times = 0
+        elif self._attack_times == 5:
+            projectile = [Bullet(self._x, self._y+self._rect_y//2, reverse=True)]
+            self._attack_times +=1
         else:
             if self._current_time_attack >= 1/(len(image))*1000:
                 self._image_index_attack = (self._image_index_attack +1) % len(image)
@@ -107,6 +112,7 @@ class Bug:
                 self._attack_times +=1
             current_image = image[self._image_index_attack]
             screen.blit(current_image, (self._x, self._y))
+        return projectile
         
 
     def get_rect(self):
