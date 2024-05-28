@@ -1,3 +1,4 @@
+import pygame
 from config import *
 from collections import defaultdict
 from projectile import *
@@ -9,10 +10,8 @@ class BasicTower:
         self._y = y
         self._level = 1
         self._cost = 50  # Giá mua tháp
-        self._color_for_levels = {1: BLUE, 2: YELLOW, 3: RED}
         self._health = 100
         self._size = size
-        self._test = "Lmao"
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(1, 7)]
         self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(1, 17)]
         self._destroy_imgs = []
@@ -38,7 +37,7 @@ class BasicTower:
         if self._level == 1:
             return [Bullet(self._x, self._y)]
         elif self._level == 2:
-            return [Bullet(self._x, self._y, -0.2), Bullet(self._x, self._y, 0), Bullet(self._x, self._y, 0.2)]
+            return [Bullet(self._x, self._y, angle=-0.2), Bullet(self._x, self._y, angle=0), Bullet(self._x, self._y, angle=0.2)]
             
         else:
            # if bugs:
@@ -64,10 +63,22 @@ class BasicTower:
             self.set_mode(0)
         return proj
 
+    def damage(self, val):
+        self._health -= val
+
+    def apply_slow(self, slow, slow_time):
+        return
+
+    def is_dead(self):
+        return self._health <= 0
+
     def set_mode(self, mode):
         if mode != self._mode:
             self._mode = mode
             self._img_index = 0
+
+    def get_rect(self):
+        return pygame.Rect(self._x - self._size//2, self._y - self._size//2, self._size, self._size)
 
     def get_pos(self):
         return self._x, self._y
@@ -84,7 +95,6 @@ class SlowTower(BasicTower):
     def __init__(self, x, y, size):
         super().__init__(x, y, size)
         self._cost = 100
-        self._color_for_levels = defaultdict(lambda: PURPLE)  # Màu là PURPLE cho mọi cấp
         self._tower_type = "Slow"
 
 
@@ -114,7 +124,7 @@ class IceTower(BasicTower):
         if self._level == 1:
             return [IceBullet(self._x, self._y)]
         elif self._level == 2:
-            return [IceBullet(self._x, self._y, -0.2), IceBullet(self._x, self._y, 0), IceBullet(self._x, self._y, 0.2)]
+            return [IceBullet(self._x, self._y, angle=-0.2), IceBullet(self._x, self._y, angle=0), IceBullet(self._x, self._y, angle=0.2)]
             
         else:
            # if bugs:

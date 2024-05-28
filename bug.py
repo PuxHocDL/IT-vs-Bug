@@ -74,7 +74,6 @@ class Bug:
             self._image_index_alive = (self._image_index_alive +1) % len(image)
             self._current_time_alive = 0
             self._time_actions_alive +=1 
-            print(self._time_actions_alive)
         current_image = image[self._image_index_alive]
         screen.blit(current_image, (self._x, self._y))
         
@@ -140,7 +139,7 @@ class Bug:
         """
         self._speed = self._original_speed * slow
         self._slowed = True
-        self._slow_timer = slow_time
+        self._slow_timer = slow_time + pygame.time.get_ticks()
 
     def draw(self, screen):
         """

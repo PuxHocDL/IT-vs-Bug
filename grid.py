@@ -78,6 +78,14 @@ class Grid:
         """
         self.__objects[x][y] = object
 
+    def remove_objects(self):
+        for i in range(self.__rows):
+            for j in range(self.__cols):
+                if self.__objects[i][j]:
+                    if self.__objects[i][j].is_dead():
+                        self.__objects[i][j] = None
+
+
     def convert_to_grid_pos(self, x, y):
         """
         Converts xy screen position to xy Grid position if possible.

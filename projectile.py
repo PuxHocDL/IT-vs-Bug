@@ -14,8 +14,12 @@ class Bullet:
         self._slow_time = 0
         self._img_path = os.path.join("assets", "Projectiles", "bullet.png")
         self._destroy_img_path = os.path.join("assets", "PeaNormalExplode_0.png")
+        self._is_reverse = reverse
 
-        if reverse:
+        self._reverse()
+
+    def _reverse(self):
+        if self._is_reverse:
             self._speed *= -1
 
     def increase_damage(self, damage):
@@ -52,12 +56,13 @@ class Bullet:
         return self._slow_time
 
 class IceBullet(Bullet):
-    def __init__(self, x, y, angle=0.0):
-        super().__init__(x, y, angle)
+    def __init__(self, x, y, reverse=False, angle=0.0):
+        super().__init__(x, y, reverse, angle)
         self._damage = 30
         self._slow = 0.8
         self._slow_time = 20000
         self._img_path = os.path.join("assets", "Projectiles", "ice_bullet.png")
+        self._reverse()
 
 class FireBullet(Bullet):
     def __init__(self, x, y, angle=0.0):

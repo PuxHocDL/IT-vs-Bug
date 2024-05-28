@@ -104,27 +104,14 @@ while running:
     for tower in grid.get_objects():
         tower.set_mode(1)
 
-    for projectile in projectiles.get_projectiles():
-        bugs = bug_manager.get_bugs()
-        bullet_rect = projectile.get_rect()
-        removed = False
-        for bug in bug_manager.get_bugs():
-            bug_rect = bug.get_rect()
-            collision_coordinates = Interact.check_collision(bullet_rect, bug_rect)
-            if collision_coordinates and not bug.is_dead():
-                explosions.append((collision_coordinates[0], collision_coordinates[1], pygame.time.get_ticks()))
-                projectiles.add_remove_projectile(projectile)
-                bug.damage(projectile.get_damage())
-                bug.apply_slow(projectile.get_slow(), pygame.time.get_ticks() + projectile.get_slow_time())
-                removed = True
-                break
-
-        if projectile.check_border(WIDTH, HEIGHT) and not removed:
-            projectiles.add_remove_projectile(projectile)
-
+    # Check bullet-bug collision
+    projectiles.check_collision(bug_manager.get_bugs(), WIDTH, HEIGHT)
     projectiles.remove_projectiles(screen)
     projectiles.draw(screen)
 
+    grid.remove_objects()
+
+    # Spawn bugs
     for bug in bug_manager.get_bugs():
 
         if bug.get_name() == "BigBug": 
@@ -242,6 +229,9 @@ while running:
                 bug._speed /= 0.7  # Khôi phục tốc độ ban đầu
                 bug._slowed_bullet = False
 
+    # Check bullet-tower collision
+    bug_projectiles.check_collision(grid.get_objects(), WIDTH, HEIGHT)
+    bug_projectiles.remove_projectiles(screen)
     bug_projectiles.draw(screen)
 
     if placing_tower:
