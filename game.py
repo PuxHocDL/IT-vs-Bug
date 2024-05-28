@@ -126,34 +126,118 @@ while running:
     projectiles.draw(screen)
 
     for bug in bug_manager.get_bugs():
-        if bug.is_dead():
-            if bug.get_name() in ["NormalBug", "BigBug", "HexagonBug"]:
-                if bug.draw_dead(dt,screen):
-                    gold.gold +=30
-                    bug_manager.remove_bug(bug)  # Remove bug from list if death animation is complete
-            else:
-                gold.gold +=30 
-                bug_manager.remove_bug(bug)
 
-        else:
-            bug_rect = bug.get_rect()
-            pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
-            bug_speed = bug.get_current_speed()
-            bug.draw_health_bar(screen)
+        if bug.get_name() == "BigBug": 
+            if bug.attacking == True: 
+                 bug.draw_attack(screen,dt) 
+            else: 
+                if bug.is_dead():
+                        if bug.draw_dead(dt,screen):
+                            gold.gold +=30
+                            bug_manager.remove_bug(bug)  # Remove bug from list if death animation is complete
 
-            #if bug.slowed and pygame.time.get_ticks() > bug.slow_timer:
-            #    bug.speed = 2
-            #    bug.slowed = False
+                else:
+                    bug_rect = bug.get_rect()
+                    pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
+                    bug_speed = bug.get_current_speed()
+                    bug.update()
+                    bug.draw(dt,screen)
             if bug.get_x() <= 0:
                 bug_manager.remove_bug(bug)
-            else: 
+        
+            """else: 
                 if not collision_all(bug) or bug.get_name()!="HexagonBug" : 
                     bug.update()
                     bug.draw(dt,screen)
                 elif collision_all(bug) and bug.get_name()=="HexagonBug": 
-                    bug.draw_attack(dt,screen)
-                
-            
+                    bug.draw_attack(dt,screen)"""
+            if bug._slowed_bullet and pygame.time.get_ticks() > bug._slow_timer_bullet:
+                bug._speed /= 0.7  # Khôi phục tốc độ ban đầu
+                bug._slowed_bullet = False
+
+        elif bug.get_name() == "NormalBug": 
+            if bug.attacking == True: 
+                 bug.draw_attack(screen,dt) 
+            else: 
+                if bug.is_dead():
+                        if bug.draw_dead(dt,screen):
+                            gold.gold +=30
+                            bug_manager.remove_bug(bug)  # Remove bug from list if death animation is complete
+
+                else:
+                    bug_rect = bug.get_rect()
+                    pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
+                    bug_speed = bug.get_current_speed()
+                    bug.draw_health_bar(screen)
+                    bug.update()
+                    bug.draw(dt,screen)
+            if bug.get_x() <= 0:
+                bug_manager.remove_bug(bug)
+        
+            """else: 
+                if not collision_all(bug) or bug.get_name()!="HexagonBug" : 
+                    bug.update()
+                    bug.draw(dt,screen)
+                elif collision_all(bug) and bug.get_name()=="HexagonBug": 
+                    bug.draw_attack(dt,screen)"""
+            if bug._slowed_bullet and pygame.time.get_ticks() > bug._slow_timer_bullet:
+                bug._speed /= 0.7  # Khôi phục tốc độ ban đầu
+                bug._slowed_bullet = False
+
+        elif bug.get_name() == "HexagonBug": 
+            if bug.attacking == True: 
+                 bug.draw_attack(screen,dt) 
+            else: 
+                if bug.is_dead():
+                        if bug.draw_dead(dt,screen):
+                            gold.gold +=30
+                            bug_manager.remove_bug(bug)  # Remove bug from list if death animation is complete
+
+                else:
+                    bug_rect = bug.get_rect()
+                    pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
+                    bug_speed = bug.get_current_speed()
+                    bug.draw_health_bar(screen)
+                    bug.update()
+                    bug.draw(dt,screen)
+            if bug.get_x() <= 0:
+                bug_manager.remove_bug(bug)
+        
+            """else: 
+                if not collision_all(bug) or bug.get_name()!="HexagonBug" : 
+                    bug.update()
+                    bug.draw(dt,screen)
+                elif collision_all(bug) and bug.get_name()=="HexagonBug": 
+                    bug.draw_attack(dt,screen)"""
+            if bug._slowed_bullet and pygame.time.get_ticks() > bug._slow_timer_bullet:
+                bug._speed /= 0.7  # Khôi phục tốc độ ban đầu
+                bug._slowed_bullet = False
+
+        elif bug.get_name() == "TriangleBug": 
+            if bug.attacking == True: 
+                 bug.draw_attack(screen,dt) 
+            else: 
+                if bug.is_dead():
+                        if bug.draw_dead(dt,screen):
+                            gold.gold +=30
+                            bug_manager.remove_bug(bug)  # Remove bug from list if death animation is complete
+
+                else:
+                    bug_rect = bug.get_rect()
+                    pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
+                    bug_speed = bug.get_current_speed()
+                    bug.draw_health_bar(screen)
+                    bug.update()
+                    bug.draw(dt,screen)
+            if bug.get_x() <= 0:
+                bug_manager.remove_bug(bug)
+        
+            """else: 
+                if not collision_all(bug) or bug.get_name()!="HexagonBug" : 
+                    bug.update()
+                    bug.draw(dt,screen)
+                elif collision_all(bug) and bug.get_name()=="HexagonBug": 
+                    bug.draw_attack(dt,screen)"""
             if bug._slowed_bullet and pygame.time.get_ticks() > bug._slow_timer_bullet:
                 bug._speed /= 0.7  # Khôi phục tốc độ ban đầu
                 bug._slowed_bullet = False
