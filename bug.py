@@ -2,6 +2,7 @@ import pygame
 import random
 import math
 from config import *
+from projectile import *
 
 class Bug:
     """
@@ -46,14 +47,17 @@ class Bug:
         self._name = name
         self._death = False
         self._image_index_alive = 0
-        self._attacking = True
+        self.attacking = False
         self._collision_with_tower = False
         self._current_time_dead = 0 
         self._image_index_dead = 0
         self._current_time_alive = 0
         self._image_index_alive = 0
-        self._image_index_attack = 0
+        self._image_index_attack = -1
         self._current_time_attack = 0
+        self._time_actions_alive = 0
+        self._attack_times = 0
+        self._bullet_check = False
     
     def draw_alive(self, screen, dt, image):
         """
@@ -62,10 +66,14 @@ class Bug:
         Parameters:
             screen (pygame.Surface): The surface on which to draw the bug.
         """
+        if self._time_actions_alive > 7*len(image): 
+            self.attacking = True
+            self._time_actions_alive = 0
         self._current_time_alive += dt
         if self._current_time_alive >= 1/(len(image))*1000:
             self._image_index_alive = (self._image_index_alive +1) % len(image)
             self._current_time_alive = 0
+            self._time_actions_alive +=1 
         current_image = image[self._image_index_alive]
         screen.blit(current_image, (self._x, self._y))
         
@@ -87,14 +95,23 @@ class Bug:
             return True
         return False
             
-    def draw_attack(self,screen,dt,image): 
+    def draw_attack(self,screen,dt,image,time): 
+        projectile = []
         self._current_time_attack += dt
-        if self._current_time_attack >= 1/(len(image))*1000:
-            self._image_index_attack = (self._image_index_attack +1) % len(image)
-            self._current_time_attack = 0
-        current_image = image[self._image_index_attack]
-        screen.blit(current_image, (self._x, self._y))
-        
+        if self._attack_times > len(image):
+            self.attacking = False
+            self._attack_times = 0
+        elif self._attack_times == 7:
+            projectile = [Skull_attack(self._x, self._y+self._rect_y//2 - 20, reverse=True)]
+            self._attack_times +=1
+        else:
+            if self._current_time_attack >= time/(len(image))*1000:
+                self._image_index_attack = (self._image_index_attack +1) % len(image)
+                self._current_time_attack = 0
+                self._attack_times +=1
+            current_image = image[self._image_index_attack]
+            screen.blit(current_image, (self._x, self._y))
+        return projectile
         
 
     def get_rect(self):
@@ -122,7 +139,7 @@ class Bug:
         """
         self._speed = self._original_speed * slow
         self._slowed = True
-        self._slow_timer = slow_time
+        self._slow_timer = slow_time + pygame.time.get_ticks()
 
     def draw(self, screen):
         """
@@ -162,7 +179,8 @@ class Bug:
 
     def get_name(self):
         return self._name
-
+    def get_check_bullet(self): 
+        return self._bullet_check
 class NormalBug(Bug):
     """
     A class representing a normal bug in the game, inheriting from Bug.
@@ -199,6 +217,7 @@ class NormalBug(Bug):
         self._rect_y = 150
         self._name = "NormalBug"
         
+        
         self.__normal_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","alive", f"pic_{i}.png")), (150, 150)) for i in range(0, 9)]
         self.__normal_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","dead", f"{i}.png")), (150, 150)) for i in range(0, 12)]
 
@@ -208,13 +227,13 @@ class NormalBug(Bug):
     def draw_dead(self,dt,screen):
         super().draw_dead(screen,dt,self.__normal_bug_images_dead)
 
-    def draw_health_bar(self, screen):
-        """
+    """def draw_health_bar(self, screen):
+        
         Draws the health bar of the normal bug.
 
         Parameters:
             screen (pygame.Surface): The surface on which to draw the health bar.
-        """
+        
         if self._x > 11:
             health_bar_length = self._bug_size
             health_bar_height = 5
@@ -223,7 +242,7 @@ class NormalBug(Bug):
             outline_rect = pygame.Rect(rect[0]+40, self._y - 10, health_bar_length, health_bar_height)
             fill_rect = pygame.Rect(rect[0]+40, self._y - 10, fill, health_bar_height)
             pygame.draw.rect(screen, (152, 251, 152), fill_rect)
-            pygame.draw.rect(screen, BLACK, outline_rect, 1)
+            pygame.draw.rect(screen, BLACK, outline_rect, 1)"""
 
 class BigBug(Bug):
     """
@@ -263,13 +282,12 @@ class BigBug(Bug):
         self._health = 1000
         self._max_health = 1000 
         self._bug_size = 80
-        self._rect_x = 150
-        self._rect_y = 150
+        self._rect_x = 100
+        self._rect_y = 100
         self._name = "BigBug"
-
         self.__big_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","alive", f"{i}.png")), (150, 150)) for i in range(0, 8)]
         self.__big_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","dead", f"{i}.png")), (150, 150)) for i in range(0, 6)]
-
+        self.__big_bug_images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","attack", f"{i}.png")), (150, 150)) for i in range(0, 10)]
 
     def draw(self,dt,screen):
         """
@@ -291,13 +309,16 @@ class BigBug(Bug):
         """
         super().draw_dead(screen,dt,self.__big_bug_images_dead)
 
-    def draw_health_bar(self, screen):
-        """
+    def draw_attack(self, screen, dt):
+        return super().draw_attack(screen, dt, self.__big_bug_images_attack,1)
+    
+    """ def draw_health_bar(self, screen):
+        
         Draws the health bar of the big bug.
 
         Parameters:
             screen (pygame.Surface): The surface on which to draw the health bar.
-        """
+        
         if self._x > 11:
             health_bar_length = self._bug_size
             health_bar_height = 5
@@ -306,8 +327,9 @@ class BigBug(Bug):
             outline_rect = pygame.Rect(rect[0], self._y - 10, health_bar_length, health_bar_height)
             fill_rect = pygame.Rect(rect[0], self._y - 10, fill, health_bar_height)
             pygame.draw.rect(screen, (152, 251, 152), fill_rect)
-            pygame.draw.rect(screen, BLACK, outline_rect, 1)
-
+            pygame.draw.rect(screen, BLACK, outline_rect, 1)"""
+    def get_rect(self): 
+        return pygame.Rect(self._x + 25, self._y + 25, self._rect_x, self._rect_y)
 class TriangleBug(Bug):
     """
     A class representing a triangle bug in the game, inheriting from Bug.
@@ -339,34 +361,55 @@ class TriangleBug(Bug):
         self._health = 200
         self._max_health = 200 
         self._bug_size = 50
-        self._rect_x = 70
-        self._rect_y = 70
+        self._rect_x = 130
+        self._rect_y = 150
         self._name = "TriangleBug"
+        self.__triangle_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","alive", f"{i}.png")), (180, 180)) for i in range(0, 7)]
+        self.__triangle_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","dead", f"{i}.png")), (180, 180)) for i in range(0, 7)]
+        self.__triangle_bug_images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","attack", f"{i}.png")), (180, 180)) for i in range(0, 10)]
 
-    def draw(self, screen):
+    def draw(self,dt,screen):
         """
-        Draws the triangle bug on the screen.
+        Draws the big bug on the screen.
 
         Parameters:
             screen (pygame.Surface): The surface on which to draw the bug.
         """
-        points = [(self._x - self._bug_size, self._y - self._bug_size // 2), (self._x, self._y - self._bug_size), (self._x, self._y)]
-        pygame.draw.polygon(screen, (72, 61, 139), points)
-
-    def draw_health_bar(self, screen):
+        super().draw_alive(screen,dt,self.__triangle_bug_images)
+    def draw_dead(self, dt,screen):
         """
-        Draws the health bar of the triangle bug.
+        Draws the big bug's death animation on the screen.
+
+        Parameters:
+            screen (pygame.Surface): The surface on which to draw the bug's death animation.
+
+        Returns:
+            bool: True if the death animation is complete, False otherwise.
+        """
+        super().draw_dead(screen,dt,self.__triangle_bug_images_dead)
+
+    def draw_attack(self, screen, dt):
+        return super().draw_attack(screen, dt, self.__triangle_bug_images_attack,2)
+    
+    """ def draw_health_bar(self, screen):
+        
+        Draws the health bar of the big bug.
 
         Parameters:
             screen (pygame.Surface): The surface on which to draw the health bar.
-        """
-        health_bar_length = self._bug_size
-        health_bar_height = 5
-        fill = (self._health / self._max_health) * health_bar_length
-        outline_rect = pygame.Rect(self._x - self._bug_size, self._y + self._bug_size // 3, health_bar_length, health_bar_height)
-        fill_rect = pygame.Rect(self._x - self._bug_size, self._y + self._bug_size // 3, fill, health_bar_height)
-        pygame.draw.rect(screen, (152, 251, 152), fill_rect)
-        pygame.draw.rect(screen, (0, 0, 0), outline_rect, 1)
+        
+        if self._x > 11:
+            health_bar_length = self._bug_size
+            health_bar_height = 5
+            fill = (self._health / self._max_health) * health_bar_length
+            rect = self.get_rect()
+            outline_rect = pygame.Rect(rect[0], self._y - 10, health_bar_length, health_bar_height)
+            fill_rect = pygame.Rect(rect[0], self._y - 10, fill, health_bar_height)
+            pygame.draw.rect(screen, (152, 251, 152), fill_rect)
+            pygame.draw.rect(screen, BLACK, outline_rect, 1)"""
+    def get_rect(self): 
+        return pygame.Rect(self._x +20 , self._y + 15, self._rect_x, self._rect_y)
+
 
 class HexagonBug(Bug):
     """
@@ -421,20 +464,20 @@ class HexagonBug(Bug):
     def draw(self, dt, screen):
         super().draw_alive(screen,dt,self.__fly_bug_image)
 
-    def draw_health_bar(self, screen):
-        """
+    """def draw_health_bar(self, screen):
+        
         Draws the health bar of the hexagon bug.
 
         Parameters:
             screen (pygame.Surface): The surface on which to draw the health bar.
-        """
+        
         health_bar_length = self._bug_size
         health_bar_height = 5
         fill = (self._health / self._max_health) * health_bar_length
         outline_rect = pygame.Rect(self._x + self._bug_size//3, self._y + self._bug_size//2-20, health_bar_length, health_bar_height)
         fill_rect = pygame.Rect(self._x + self._bug_size//3, self._y + self._bug_size//2-20, fill, health_bar_height)
         pygame.draw.rect(screen, (152, 251, 152), fill_rect)
-        pygame.draw.rect(screen, (0, 0, 0), outline_rect, 1)
+        pygame.draw.rect(screen, (0, 0, 0), outline_rect, 1)"""
 
     def draw_dead(self, dt,screen):
         """
@@ -456,13 +499,13 @@ class HexagonBug(Bug):
 
 # Timers to spawn bugs
 spawn_bug_event = pygame.USEREVENT + 1
-pygame.time.set_timer(spawn_bug_event, 200000)
+pygame.time.set_timer(spawn_bug_event, 2000000)
 
 spawn_big_bug_event = pygame.USEREVENT + 2
-pygame.time.set_timer(spawn_big_bug_event, 30000)
+pygame.time.set_timer(spawn_big_bug_event, 3000)
 
 spawn_triangle_bug_event = pygame.USEREVENT + 3
-pygame.time.set_timer(spawn_triangle_bug_event, 1800000)
+pygame.time.set_timer(spawn_triangle_bug_event, 3000)
 
 spawn_hexagon_bug_event = pygame.USEREVENT + 4
-pygame.time.set_timer(spawn_hexagon_bug_event, 2000)
+pygame.time.set_timer(spawn_hexagon_bug_event, 1000000)

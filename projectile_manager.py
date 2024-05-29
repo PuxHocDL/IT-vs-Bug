@@ -1,4 +1,5 @@
 from projectile import *
+from interact import Interact
 
 class ProjectileManager:
     def __init__(self):
@@ -20,6 +21,23 @@ class ProjectileManager:
             self.__projectiles.remove(p)
         self.__remove_projectiles = []
 
-    def draw(self, screen):
+    def draw(self, screen, dt):
         for projectile in self.__projectiles:
-            projectile.draw(screen)
+            projectile.draw_ani(screen,dt,projectile.get_img_path())
+
+    def check_collision(self, objects, width, height):
+        for projectile in self.__projectiles:
+            proj_rect = projectile.get_rect()
+            removed = False
+            for obj in objects:
+                obj_rect = obj.get_rect()
+                collision_coordinates = Interact.check_collision(proj_rect, obj_rect)
+                if collision_coordinates and not obj.is_dead():
+                    self.add_remove_projectile(projectile)
+                    obj.damage(projectile.get_damage())
+                    obj.apply_slow(projectile.get_slow(), projectile.get_slow_time())
+                    removed = True
+                    break
+
+            if projectile.check_border(width, height) and not removed:
+                self.add_remove_projectile(projectile)
