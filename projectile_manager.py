@@ -15,15 +15,15 @@ class ProjectileManager:
     def get_projectiles(self):
         return self.__projectiles
 
-    def remove_projectiles(self, screen):
+    def remove_projectiles(self):
         for p in self.__remove_projectiles:
-            p.draw_destroy(screen)
+            p.draw_destroy()
             self.__projectiles.remove(p)
         self.__remove_projectiles = []
 
     def draw(self, screen, dt):
         for projectile in self.__projectiles:
-            projectile.draw_ani(screen,dt,projectile.get_img_path())
+            projectile.draw(screen,dt)
 
     def check_collision(self, objects, width, height):
         for projectile in self.__projectiles:

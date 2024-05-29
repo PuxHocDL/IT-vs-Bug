@@ -4,6 +4,7 @@ from bug import *
 from interact import Interact
 from tower import *
 from bug_manager import BugManager
+from vfx_manager import VFXManager
 
 # Initialize pygame
 pygame.init()
@@ -105,7 +106,7 @@ while running:
 
     # Check bullet-bug collision
     projectiles.check_collision(bug_manager.get_bugs(), WIDTH, HEIGHT)
-    projectiles.remove_projectiles(screen)
+    projectiles.remove_projectiles()
     projectiles.draw(screen,dt)
 
     grid.remove_objects()
@@ -229,7 +230,7 @@ while running:
 
     # Check bullet-tower collision
     bug_projectiles.check_collision(grid.get_objects(), WIDTH, HEIGHT)
-    bug_projectiles.remove_projectiles(screen)
+    bug_projectiles.remove_projectiles()
     bug_projectiles.draw(screen,dt)
 
     if placing_tower:
@@ -249,6 +250,9 @@ while running:
     buy_tower_btn.draw(screen)
     buy_slow_btn.draw(screen)
     buy_ice_btn.draw(screen)
+
+    # Draw vfx
+    VFXManager.draw(screen, dt)
 
     pygame.display.flip()
 

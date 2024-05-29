@@ -102,7 +102,7 @@ class Bug:
             self.attacking = False
             self._attack_times = 0
         elif self._attack_times == 7:
-            projectile = [Skull_attack(self._x, self._y+self._rect_y//2 - 20, reverse=True)]
+            projectile = [Skull(self._x, self._y+self._rect_y//2 - 20, reverse=True)]
             self._attack_times +=1
         else:
             if self._current_time_attack >= time/(len(image))*1000:
