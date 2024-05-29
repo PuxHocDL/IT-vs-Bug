@@ -15,7 +15,7 @@ class BugManager:
         """
         bug_x = WIDTH
         bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-80)//2 + 70
-        self.__bugs.append(BugManager.__bug_types[name](bug_x, bug_y, 0.5, 1000, 1000, 80, 150, 150, name=name))
+        self.__bugs.append(BugManager.__bug_types[name](bug_x, bug_y))
 
     def get_bugs(self):
         return self.__bugs

@@ -1,6 +1,5 @@
 import pygame
 import random
-import math
 from config import *
 from projectile import *
 
@@ -17,7 +16,7 @@ class Bug:
         draw_death(self._ screen): Abstract method to draw the bug's death animation on the screen.
     """
 
-    def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
+    def __init__(self, x, y, speed, max_health, bug_size, rect_x, rect_y, name):
         """
         Initializes a Bug instance with the given parameters.
         
@@ -36,8 +35,8 @@ class Bug:
         self._y = y
         self._speed = speed
         self._original_speed = speed
-        self._health = health
         self._max_health = max_health
+        self._health = max_health
         self._slowed = False
         self._slow_timer = 0
         self._bug_size = bug_size
@@ -191,7 +190,7 @@ class NormalBug(Bug):
         create_bug(bugs, grid): Static method to create and add a normal bug to the game.
         draw_health_bar(self._ screen): Draws the health bar of the normal bug.
     """
-    def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
+    def __init__(self, x, y):
         """
         Initializes a HexagonBug instance with the given parameters.
         
@@ -206,17 +205,9 @@ class NormalBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed, health, max_health, bug_size, rect_x, rect_y, name)
+        super().__init__(x, y, speed=0.5, max_health=900, bug_size=50, rect_x=150, rect_y=150, name="NormalBug")
         self._x = WIDTH
         self._y =  random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-50)//2 + 50
-        self._speed = 0.5
-        self._health = 900
-        self._max_health = 900 
-        self._bug_size = 50
-        self._rect_x = 150
-        self._rect_y = 150
-        self._name = "NormalBug"
-        
         
         self.__normal_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","alive", f"pic_{i}.png")), (150, 150)) for i in range(0, 9)]
         self.__normal_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","dead", f"{i}.png")), (150, 150)) for i in range(0, 12)]
@@ -260,7 +251,7 @@ class BigBug(Bug):
         create_big_bug(bugs, grid): Static method to create and add a big bug to the game.
         draw_health_bar(self._ screen): Draws the health bar of the big bug.
     """
-    def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
+    def __init__(self, x, y):
         """
         Initializes a HexagonBug instance with the given parameters.
         
@@ -275,16 +266,9 @@ class BigBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed, health, max_health, bug_size, rect_x, rect_y, name)
+        super().__init__(x, y, speed=0.5, max_health=1000, bug_size=80, rect_x=100, rect_y=100, name="BigBug")
         self._x = WIDTH
         self._y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()-80)//2 + 70
-        self._speed = 0.5
-        self._health = 1000
-        self._max_health = 1000 
-        self._bug_size = 80
-        self._rect_x = 100
-        self._rect_y = 100
-        self._name = "BigBug"
         self.__big_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","alive", f"{i}.png")), (150, 150)) for i in range(0, 8)]
         self.__big_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","dead", f"{i}.png")), (150, 150)) for i in range(0, 6)]
         self.__big_bug_images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","attack", f"{i}.png")), (150, 150)) for i in range(0, 10)]
@@ -339,7 +323,7 @@ class TriangleBug(Bug):
         draw_health_bar(self._ screen): Draws the health bar of the triangle bug.
         create_triangle_bug(bugs, grid): Static method to create and add a triangle bug to the game.
     """
-    def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
+    def __init__(self, x, y):
         """
         Initializes a HexagonBug instance with the given parameters.
         
@@ -354,16 +338,9 @@ class TriangleBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed, health, max_health, bug_size, rect_x, rect_y, name)
+        super().__init__(x, y, speed=0.5, max_health=200, bug_size=50, rect_x=130, rect_y=150, name="TriangleBug")
         self._x = WIDTH
         self._y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + (grid.get_cell_size()+20)//2
-        self._speed = 0.5
-        self._health = 200
-        self._max_health = 200 
-        self._bug_size = 50
-        self._rect_x = 130
-        self._rect_y = 150
-        self._name = "TriangleBug"
         self.__triangle_bug_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","alive", f"{i}.png")), (180, 180)) for i in range(0, 7)]
         self.__triangle_bug_images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","dead", f"{i}.png")), (180, 180)) for i in range(0, 7)]
         self.__triangle_bug_images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","attack", f"{i}.png")), (180, 180)) for i in range(0, 10)]
@@ -427,7 +404,7 @@ class HexagonBug(Bug):
         create_hexagon_bug(bugs, grid): Static method to create and add a hexagon bug to the game.
     """
 
-    def __init__(self, x, y, speed, health, max_health, bug_size, rect_x, rect_y, name):
+    def __init__(self, x, y):
         """
         Initializes a HexagonBug instance with the given parameters.
         
@@ -442,17 +419,9 @@ class HexagonBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed, health, max_health, bug_size, rect_x, rect_y, name)
+        super().__init__(x, y, speed=0.5, max_health=1000, bug_size=100, rect_x=120, rect_y=100, name="HexagonBug")
         self._x = WIDTH
         self._y = random.choice(range(HEIGHT  - grid.get_cell_size() * grid.get_rows(), HEIGHT  , grid.get_cell_size())) + (grid.get_cell_size()-50)//2 - 350
-        self._speed = 0.5
-        self._health = 1000
-        self._max_health = 1000 
-        self._bug_size = 100
-        self._rect_x = 120
-        self._rect_y = 100
-        self._name = "HexagonBug"
-
         self.__fly_bug_image = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","alive", f"{i}.png")), (400, 400)) for i in range(0, 6)]
         self.__fly_bug_image_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","dead", f"{i}.png")), (400, 400)) for i in range(0, 3)]
         self.__fly_bug_image_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","attack", f"{i}.png")), (400, 400)) for i in range(0, 18)]
