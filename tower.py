@@ -66,6 +66,9 @@ class BasicTower:
             self._mode = mode
             self._img_index = 0
 
+    def damage(self, val):
+        self._health -= val
+
     def get_pos(self):
         return self._x, self._y
 
