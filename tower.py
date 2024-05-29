@@ -26,7 +26,6 @@ class BasicTower:
 
         
     def upgrade(self):
-        global gold
         if gold.gold >= upgrade_cost and self._level < 3:
             self._level += 1
             gold.gold -= upgrade_cost

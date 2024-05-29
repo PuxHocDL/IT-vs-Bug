@@ -11,7 +11,6 @@ pygame.init()
 bug_manager = BugManager()
 clock = pygame.time.Clock()
 dt = 0 
-
 # Main game loop variables
 slow_placed_time = 0
 slow_placed = False
@@ -107,7 +106,7 @@ while running:
     # Check bullet-bug collision
     projectiles.check_collision(bug_manager.get_bugs(), WIDTH, HEIGHT)
     projectiles.remove_projectiles(screen)
-    projectiles.draw(screen)
+    projectiles.draw(screen,dt)
 
     grid.remove_objects()
 
@@ -147,8 +146,8 @@ while running:
                  bug.draw_attack(screen,dt) 
             else: 
                 if bug.is_dead():
+                        gold.gold +=30
                         if bug.draw_dead(dt,screen):
-                            gold.gold +=30
                             bug_manager.remove_bug(bug)  # Remove bug from list if death animation is complete
 
                 else:
@@ -202,7 +201,7 @@ while running:
 
         elif bug.get_name() == "TriangleBug": 
             if bug.attacking == True: 
-                 bug.draw_attack(screen,dt) 
+                 bug_projectiles.add_projectiles(bug.draw_attack(screen,dt))
             else: 
                 if bug.is_dead():
                         if bug.draw_dead(dt,screen):
@@ -213,7 +212,6 @@ while running:
                     bug_rect = bug.get_rect()
                     pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  # Vẽ khung hình màu đỏ với độ dày 2 pixel
                     bug_speed = bug.get_current_speed()
-                    bug.draw_health_bar(screen)
                     bug.update()
                     bug.draw(dt,screen)
             if bug.get_x() <= 0:
@@ -232,7 +230,7 @@ while running:
     # Check bullet-tower collision
     bug_projectiles.check_collision(grid.get_objects(), WIDTH, HEIGHT)
     bug_projectiles.remove_projectiles(screen)
-    bug_projectiles.draw(screen)
+    bug_projectiles.draw(screen,dt)
 
     if placing_tower:
         grid.draw_on_mouse_pos(screen, (mouse_x, mouse_y))

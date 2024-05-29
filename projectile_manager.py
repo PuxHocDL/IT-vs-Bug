@@ -21,9 +21,9 @@ class ProjectileManager:
             self.__projectiles.remove(p)
         self.__remove_projectiles = []
 
-    def draw(self, screen):
+    def draw(self, screen, dt):
         for projectile in self.__projectiles:
-            projectile.draw(screen)
+            projectile.draw_ani(screen,dt,projectile.get_img_path())
 
     def check_collision(self, objects, width, height):
         for projectile in self.__projectiles:

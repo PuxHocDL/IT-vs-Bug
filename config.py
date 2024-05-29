@@ -43,7 +43,7 @@ count = 0
 upgrade_cost = 200
 class gold:
     gold = 3000
-
+gold = gold()
 # Tần suất bắn đạn (tính bằng khung hình)
 shoot_delay = 60
 shoot_counters = []
