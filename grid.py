@@ -1,38 +1,6 @@
 import pygame
 import colors
 
-class Cell:
-    """
-    Class for Cell object.
-    """
-    def __init__(self, x, y, object, image=None):
-        """
-        Initializes the Cell object.
-
-        Parameters:
-            image (pygame.Image): Image to be displayed.
-        """
-        self.__x = x
-        self.__y = y
-        self.__image = image
-        self.__object = object
-
-    def get_image(self):
-        """
-        Returns Image to be drawn.
-        """
-        return self.__image
-
-    def get_pos(self):
-        """
-        Returns Cell's position on the Grid.
-        """
-        return self.__x, self.__y
-
-    def get_object(self):
-        return self.__object
-
-
 class Grid:
     """
     Class for Grid object.
@@ -97,12 +65,19 @@ class Grid:
         Returns:
             (x, y): the xy position of the Grid. (-1, -1) if the passed position is beyond Grid's position or the Cell already has an object.
         """
-        i, j = (y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, (x-50)//self.__size
+        return (y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, (x-50)//self.__size
+
+    def is_inside_gird(self, i, j):
         if j in range(self.__cols) and i in range(self.__rows):
-            if self.__objects[i][j]:
-                return -2, -2
-            return i, j
-        return -1, -1
+            return True
+        return False
+    
+    def is_occupied(self, i, j):
+        if not self.is_inside_gird(i, j):
+            return False
+        if self.__objects[i][j]:
+            return True
+        return False
     
     def convert_to_screen_pos(self, i, j):
         """
@@ -118,6 +93,9 @@ class Grid:
         y = y_offset + i*self.__size
         return x, y
 
+    def upgrade_tower(self, i, j):
+        if self.is_occupied(i, j):
+            self.__objects[i][j].upgrade()
 
     def draw(self, screen, dt):
         """
@@ -175,6 +153,14 @@ class Grid:
             for j in range(self.__cols):
                 poses.append((i, j))
         return poses
+
+    def get_objs_in_row(self, row):
+        temp = []
+        if row in range(self.__rows):
+            for obj in self.__objects[row]:
+                if obj:
+                    temp.append(obj)
+        return temp
 
     def get_rows(self):
         return self.__rows

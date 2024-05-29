@@ -53,7 +53,7 @@ while running:
             bug_manager.add_bug(grid, "HexagonBug")
         elif event.type == pygame.MOUSEBUTTONDOWN:
             grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
-            if (grid_x, grid_y) not in [(-1, -1), (-2, -2)]:
+            if not grid.is_occupied(grid_x, grid_y):
                 screen_pos = grid.convert_to_screen_pos(grid_x, grid_y)
                 upgrade_tower = False
                 if placing_tower:
@@ -74,13 +74,12 @@ while running:
                         grid.add_object(grid_x, grid_y, IceTower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2, grid.get_cell_size()))
                         gold.gold -= ice_cost
                         placing_ice = False
+            else:
+                upgrade_tower = True
 
-            if (grid_x, grid_y) == (-2, -2) and not (placing_slow or placing_ice or placing_tower):
-                for tower in grid.get_objects():
-                    tower_rect = pygame.Rect(tower.get_x() - rect_size // 2, tower.get_y() - rect_size // 2, rect_size, rect_size)
-                    if tower_rect.collidepoint(mouse_x, mouse_y):
-                        tower.upgrade()
-                        break
+            if upgrade_tower and not (placing_tower or placing_slow or placing_ice):
+                grid.upgrade_tower(grid_x, grid_y)
+                upgrade_tower = False
             
             if buy_tower_btn.check_for_input((mouse_x, mouse_y)) and not placing_tower:
                 buy_tower_btn.click_color()
@@ -101,8 +100,9 @@ while running:
     projectiles.add_projectiles(grid.draw(screen, dt))
     
     # Towers shoot
-    for tower in grid.get_objects():
-        tower.set_mode(1)
+    for bug_pos in bug_manager.get_bugs_pos():
+        for tower in grid.get_objs_in_row(grid.convert_to_grid_pos(bug_pos[0], bug_pos[1])[0]):
+            tower.set_mode(1)
 
     # Check bullet-bug collision
     projectiles.check_collision(bug_manager.get_bugs(), WIDTH, HEIGHT)
