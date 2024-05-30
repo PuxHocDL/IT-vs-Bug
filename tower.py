@@ -12,8 +12,8 @@ class BasicTower:
         self._cost = 50  # Giá mua tháp
         self._health = 100
         self._size = size
-        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(1, 7)]
-        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(1, 17)]
+        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(8)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(16)]
         self._destroy_imgs = []
         self._animate_time = {0: 200, 1: 2000, 2: 500}
         self._mode = 0

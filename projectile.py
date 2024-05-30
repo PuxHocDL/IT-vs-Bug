@@ -7,14 +7,14 @@ class Bullet:
     def __init__(self, x, y, reverse=False, angle=0.0):
         self._x = x
         self._y = y
-        self._size = 16
+        self._size = 32
         self._angle = angle
         self._damage = 50
         self._speed = 10
         self._slow = 1
         self._slow_time = 0
-        self._imgs = [os.path.join("assets", "Projectiles", "fire_bullet.png")]
-        self._destroy_imgs = [os.path.join("assets", "PeaNormalExplode_0.png")]
+        self._imgs = [os.path.join("assets", "Projectiles", "move", "Bullet", f"bullet{i}.png") for i in range(8)]
+        self._destroy_imgs = [os.path.join("assets", "Projectiles", "explode", "Bullet", f"bullet{i}.png") for i in range(8)]
         self._is_reverse = reverse
         self._current_time = 0
         self._img_index = 0
