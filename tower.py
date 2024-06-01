@@ -10,7 +10,7 @@ class BasicTower:
         self._y = y
         self._level = 1
         self._cost = 50  # Giá mua tháp
-        self._health = 100
+        self._health = 500
         self._size = size
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(8)]
         self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(16)]
