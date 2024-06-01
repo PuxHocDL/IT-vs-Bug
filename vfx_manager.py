@@ -3,22 +3,22 @@ import pygame
 class VFXManager:
     class __VFX:
         def __init__(self, x, y, shape, duration, img_path):
-            self._x = x
-            self._y = y
-            self._shape = shape
-            self._duration = duration
-            self._img_path = img_path
-            self._current_time = 0
-            self._img_index = 0
+            self.__x = x
+            self.__y = y
+            self.__shape = shape
+            self.__duration = duration
+            self.__img_path = img_path
+            self.__current_time = 0
+            self.__img_index = 0
 
         def draw(self, screen, dt):
-            img = pygame.transform.scale(pygame.image.load(self._img_path[self._img_index]), self._shape)
-            screen.blit(img, (self._x, self._y))
-            if self._current_time >= 1/len(self._img_path)*self._duration:
-                self._img_index += 1
-                self._current_time = 0
-            self._current_time += dt
-            if self._img_index == len(self._img_path):
+            img = pygame.transform.scale(pygame.image.load(self.__img_path[self.__img_index]), self.__shape)
+            screen.blit(img, (self.__x, self.__y))
+            if self.__current_time >= 1/len(self.__img_path)*self.__duration:
+                self.__img_index += 1
+                self.__current_time = 0
+            self.__current_time += dt
+            if self.__img_index == len(self.__img_path):
                 return True
             return False
 
