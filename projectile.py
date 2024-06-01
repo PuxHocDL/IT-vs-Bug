@@ -47,7 +47,7 @@ class Bullet:
         return pygame.mask.from_surface(self._imgs[self._img_index], threshold=255).to_surface()
 
     def check_border(self, width, height):
-        if 0 < self._x < width or 0 < self._y < height:
+        if 0 < self._x < width and 0 < self._y < height:
             return False
         return True
 
