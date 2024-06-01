@@ -1,4 +1,7 @@
-from bug import *
+from Bug.BigBug import *
+from Bug.HexagonBug import *
+from Bug.NormalBug import *
+from Bug.TriangleBug import *
 
 class BugManager:
     __bug_types = {"NormalBug": NormalBug, "BigBug": BigBug, "TriangleBug": TriangleBug, "HexagonBug": HexagonBug}
@@ -28,4 +31,4 @@ class BugManager:
 
     def apply_slow_effect(self):
         for bug in self.__bugs:
-            bug.apply_slow()
+            bug.apply_slow(0.5, 3)
