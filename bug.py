@@ -90,6 +90,10 @@ class Bug:
             self._current_atk_interval +=1 
         screen.blit(images[self._img_index], (self._x, self._y))
         proj = self._shoot()
+        if self._img_index == len(images)-1:
+            self.set_mode(0)
+        if self._mode not in [1,3]:
+            self.update()
         return proj
 
     def _shoot(self):

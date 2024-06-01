@@ -115,7 +115,6 @@ while running:
             bug.draw_dead()
             bug_manager.remove_bug(bug)  
         else:
-            bug.update()
             bug_projectiles.add_projectiles(bug.draw(screen, dt))
         if bug.get_x() <= 0:
             bug_manager.remove_bug(bug)

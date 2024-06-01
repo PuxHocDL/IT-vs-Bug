@@ -31,7 +31,7 @@ class BigBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed=3, max_health=1000, bug_size=80, rect_x=100, rect_y=100, name="BigBug")
+        super().__init__(x, y, speed=1, max_health=1000, bug_size=80, rect_x=100, rect_y=100, name="BigBug")
         self._atk_interval = 7
         self._shoot_index = 7
 
