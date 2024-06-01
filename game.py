@@ -1,4 +1,3 @@
-
 from bug import *
 from interact import Interact
 from tower import *
@@ -24,8 +23,7 @@ explosions = []
 
 def collision_all(bug): 
     for tower in grid.get_objects():
-        tower_rect = pygame.Rect(tower.get_x() - rect_size // 2, tower.get_y() - rect_size // 2, rect_size, rect_size)
-        bug.collision_with_tower = Interact.check_collision_2(bug.get_rect(), tower_rect)
+        bug.collision_with_tower = Interact.collide_mask(bug.get_rect(), tower.get_rect())
         if bug.collision_with_tower: 
             return True
     return False
@@ -110,33 +108,18 @@ while running:
 
     grid.remove_objects()
 
-    # Spawn bugs
+    # Update bugs
     for bug in bug_manager.get_bugs():
-            if bug.attacking == True: 
-                 bug_projectiles.add_projectiles(bug.draw_attack(screen,dt))
-            else: 
-                if bug.is_dead():
-                        if bug.draw_dead(dt,screen):
-                            gold.gold +=30
-                            bug_manager.remove_bug(bug)  
+        if bug.is_dead():
+            gold.gold +=30
+            bug.draw_dead()
+            bug_manager.remove_bug(bug)  
+        else:
+            bug.update()
+            bug_projectiles.add_projectiles(bug.draw(screen, dt))
+        if bug.get_x() <= 0:
+            bug_manager.remove_bug(bug)
 
-                else:
-                    bug_rect = bug.get_rect()
-                    pygame.draw.rect(screen, (255, 0, 0), bug_rect, 2)  
-                    bug_speed = bug.get_current_speed()
-                    bug.update()
-                    bug.draw(dt,screen)
-            if bug.get_x() <= 0:
-                bug_manager.remove_bug(bug)
-            """else: 
-                if not collision_all(bug) or bug.get_name()!="HexagonBug" : 
-                    bug.update()
-                    bug.draw(dt,screen)
-                elif collision_all(bug) and bug.get_name()=="HexagonBug": 
-                    bug.draw_attack(dt,screen)"""
-            if bug._slowed_bullet and pygame.time.get_ticks() > bug._slow_timer_bullet:
-                bug._speed /= 0.7  # Khôi phục tốc độ ban đầu
-                bug._slowed_bullet = False
     # Check bullet-tower collision
     bug_projectiles.check_collision(grid.get_objects(), WIDTH, HEIGHT)
     bug_projectiles.remove_projectiles()
@@ -155,7 +138,7 @@ while running:
         else:
             slow_placed = False
 
-    print(projectiles.get_projectiles())
+    projectiles.get_projectiles()
     
     TowerGame.draw_gold()
     buy_tower_btn.draw(screen)

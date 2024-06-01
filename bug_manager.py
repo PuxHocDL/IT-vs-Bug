@@ -1,3 +1,5 @@
+import random
+from config import WIDTH, HEIGHT
 from Bug.BigBug import *
 from Bug.HexagonBug import *
 from Bug.NormalBug import *
@@ -24,7 +26,7 @@ class BugManager:
         return self.__bugs
 
     def get_bugs_pos(self):
-        return [[bug.get_rect().center[0],bug.get_rect().center[1]] for bug in self.__bugs]
+        return [[bug.get_x(), bug.get_y()] for bug in self.__bugs]
 
     def remove_bug(self, bug):
         self.__bugs.remove(bug)

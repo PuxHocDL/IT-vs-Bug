@@ -1,7 +1,7 @@
 import pygame
-import random
-from config import *
+from config import grid
 from projectile import *
+from vfx_manager import VFXManager
 
 class Bug:
     """
@@ -11,11 +11,10 @@ class Bug:
         __init__(self x, y, speed, health, max_health, bug_size, rect_x, rect_y, name): Initializes a Bug instance with its properties.
         get_rect(self): Returns the rectangular area of the bug for collision detection.
         update(self): Updates the bug's position and speed based on its current state.
-        apply_slow(self._: Applies a slowing effect to the bug.
+        apply_slow(self): Applies a slowing effect to the bug.
         draw(self._ screen): Abstract method to draw the bug on the screen.
         draw_death(self._ screen): Abstract method to draw the bug's death animation on the screen.
     """
-
     def __init__(self, x, y, speed, max_health, bug_size, rect_x, rect_y, name):
         """
         Initializes a Bug instance with the given parameters.
@@ -45,86 +44,72 @@ class Bug:
         self._slowed_bullet = False
         self._name = name
         self._death = False
-        self._image_index_alive = 0
         self.attacking = False
         self._collision_with_tower = False
         self._current_time_dead = 0 
         self._image_index_dead = 0
-        self._current_time_alive = 0
-        self._image_index_alive = 0
+        self._current_time = 0
+        self._img_index = 0
         self._image_index_attack = -1
         self._current_time_attack = 0
-        self._time_actions_alive = 0
+        self._current_atk_interval = 0
         self._attack_times = 0
         self._bullet_check = False
-    
-    def draw_alive(self, screen, dt, image):
-        """
-        Draws the normal bug on the screen.
-        
-        Parameters:
-            screen (pygame.Surface): The surface on which to draw the bug.
-        """
-        if self._time_actions_alive > 7*len(image): 
-            self.attacking = True
-            self._time_actions_alive = 0
-        self._current_time_alive += dt
-        if self._current_time_alive >= 1/(len(image))*1000:
-            self._image_index_alive = (self._image_index_alive +1) % len(image)
-            self._current_time_alive = 0
-            self._time_actions_alive +=1 
-        current_image = image[self._image_index_alive]
-        screen.blit(current_image, (self._x, self._y))
-    def draw_alive_no_attacking(self, screen, dt, image):
-        """
-        Draws the normal bug on the screen.
-        
-        Parameters:
-            screen (pygame.Surface): The surface on which to draw the bug.
-        """
-        self._current_time_alive += dt
-        if self._current_time_alive >= 1/(len(image))*1000:
-            self._image_index_alive = (self._image_index_alive +1) % len(image)
-            self._current_time_alive = 0
-            self._time_actions_alive +=1 
-        current_image = image[self._image_index_alive]
-        screen.blit(current_image, (self._x, self._y))
 
-    def draw_dead(self, screen, dt, image):
+        self._shoot_index = -1
+        self._atk_interval = 0
+        self._mode = 0
+        self._animate_time = {0: 1000, 1: 1000, 2: 1000, 3: 1000}    # 0: Move, 1: Attack, 2: Dead, 3: Shoot
+
+        self._images = []
+        self._images_attack = []
+        self._images_dead = []
+        self._images_shoot = []
+
+        self._load_imgs()
+
+    def _load_imgs(self):
+        self._img_mode = {0: self._images, 1: self._images_attack, 2: self._images_dead, 3: self._images_shoot}
+    
+    def draw(self, screen, dt):
+        """
+        Draws the normal bug on the screen.
+        
+        Parameters:
+            screen (pygame.Surface): The surface on which to draw the bug.
+        """
+        proj = []
+        if self._current_atk_interval > self._atk_interval*len(self._images) and self._atk_interval: 
+            self.set_mode(3)
+            self._current_atk_interval = 0
+        images = self._img_mode[self._mode]
+        self._current_time += dt
+        if self._current_time >= self._animate_time[self._mode]/len(images):
+            self._img_index = (self._img_index +1) % len(images)
+            self._current_time = 0
+            self._current_atk_interval +=1 
+        screen.blit(images[self._img_index], (self._x, self._y))
+        proj = self._shoot()
+        return proj
+
+    def _shoot(self):
+        proj = []
+        if self._mode == 3 and self._img_index == self._shoot_index:
+            proj = [Skull(self._x, self._y+self._rect_y//2 - 20, reverse=True)]
+        return proj
+        
+    def draw_dead(self):
         """
         Draws the normal bug on the screen.
         Parameters:
             screen (pygame.Surface): The surface on which to draw the bug.
         """
-        if self._image_index_dead < len(image):
-            self._current_time_dead += dt
-            current_image = image[self._image_index_dead]
-            screen.blit(current_image, (self._x, self._y))
-            if self._current_time_dead >= 1/(len(image))*1000:
-                self._current_time_dead = 0 
-                self._image_index_dead = (self._image_index_dead +1)
-        else: 
-            return True
-        return False
-            
-    def draw_attack(self,screen,dt,image,time): 
-        projectile = []
-        self._current_time_attack += dt
-        if self._attack_times > len(image):
-            self.attacking = False
-            self._attack_times = 0
-        elif self._attack_times == 7:
-            projectile = [Skull(self._x, self._y+self._rect_y//2 - 20, reverse=True)]
-            self._attack_times +=1
-        else:
-            if self._current_time_attack >= time/(len(image))*1000:
-                self._image_index_attack = (self._image_index_attack +1) % len(image)
-                self._current_time_attack = 0
-                self._attack_times +=1
-            current_image = image[self._image_index_attack]
-            screen.blit(current_image, (self._x, self._y))
-        return projectile
-        
+        VFXManager.add_vfx(self._x, self._y, self._animate_time[2], self._img_mode[2])
+
+    def set_mode(self, mode):
+        if mode != self._mode:
+            self._mode = mode
+            self._img_index = 0
 
     def get_rect(self):
         """
@@ -133,13 +118,13 @@ class Bug:
         Returns:
             pygame.Rect: The rectangle representing the bug's area.
         """
-        return pygame.Rect(self._x, self._y, self._rect_x, self._rect_y)
+        return pygame.mask.from_surface(self._images[0], threshold=254)
 
     def update(self):
         """
         Updates the bug's position and speed based on its current state.
         """
-        if not self._slowed and pygame.time.get_ticks() > self._slow_timer:
+        if self._slowed and pygame.time.get_ticks() > self._slow_timer:
             self._speed = self._original_speed
             self._slowed = False
 
@@ -153,24 +138,6 @@ class Bug:
         self._slowed = True
         self._slow_timer = slow_time + pygame.time.get_ticks()
 
-    def draw(self, screen):
-        """
-        Abstract method to draw the bug on the screen.
-        
-        Parameters:
-            screen (pygame.Surface): The surface on which to draw the bug.
-        """
-        pass
-
-    def draw_death(self, screen) -> bool:
-        """
-        Abstract method to draw the bug's death animation on the screen.
-        
-        Parameters:
-            screen (pygame.Surface): The surface on which to draw the bug's death animation.
-        """
-        pass
-
     def damage(self, dmg):
         self._health -= dmg
     
@@ -182,12 +149,15 @@ class Bug:
 
     def is_slowed(self):
         return self._slowed 
+
+    def get_pos(self):
+        return self._x, self._y
     
     def get_x(self):
         return self._x
 
     def get_y(self):
-        return self._y
+        return self._y + self._bug_size//2
 
     def get_name(self):
         return self._name

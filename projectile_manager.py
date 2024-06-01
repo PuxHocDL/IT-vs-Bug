@@ -31,7 +31,7 @@ class ProjectileManager:
             removed = False
             for obj in objects:
                 obj_rect = obj.get_rect()
-                collision_coordinates = Interact.check_collision(proj_rect, obj_rect)
+                collision_coordinates = Interact.collide_mask(proj_rect, obj_rect, projectile.get_pos(), obj.get_pos())
                 if collision_coordinates and not obj.is_dead():
                     self.add_remove_projectile(projectile)
                     obj.damage(projectile.get_damage())

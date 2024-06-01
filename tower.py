@@ -14,8 +14,8 @@ class BasicTower:
         self._max_health = 500
         self._health = self._max_health
         self._size = size
-        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(8)]
-        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "BasicTower", f"tower{i}.png")), (size, size)) for i in range(16)]
+        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", f"tower{i}.png")).convert_alpha(), (size, size)) for i in range(8)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "BasicTower", f"tower{i}.png")).convert_alpha(), (size, size)) for i in range(16)]
         self._destroy_imgs = []
         self._animate_time = {0: 200, 1: 2000, 2: 500}
         self._mode = 0
@@ -84,10 +84,10 @@ class BasicTower:
             self._img_index = 0
 
     def get_rect(self):
-        return pygame.mask.from_surface(self._idle_imgs[self._img_index], threshold=255).to_surface()
+        return pygame.mask.from_surface(self._idle_imgs[0], threshold=244)
 
     def get_pos(self):
-        return self._x, self._y
+        return self._x - self._size//2, self._y - self._size//2
 
     def get_x(self):
         return self._x
