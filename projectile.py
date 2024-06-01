@@ -13,7 +13,7 @@ class Bullet:
         self._speed = 10
         self._slow = 1
         self._slow_time = 0
-        self._imgs = [os.path.join("assets", "Projectiles", "move", "Bullet", f"bullet{i}.png") for i in range(8)]
+        self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "move", "Bullet", f"bullet{i}.png")).convert_alpha(), (self._size, self._size)) for i in range(8)]
         self._destroy_imgs = [os.path.join("assets", "Projectiles", "explode", "Bullet", f"bullet{i}.png") for i in range(8)]
         self._is_reverse = reverse
         self._current_time = 0
@@ -35,8 +35,7 @@ class Bullet:
         if self._current_time >= 1/(len(self._imgs))*self._ani_interval:
             self._img_index = (self._img_index + 1) % len(self._imgs)
             self._current_time = 0 
-        img = pygame.transform.scale(pygame.image.load(self._imgs[self._img_index]).convert_alpha(), (self._size, self._size))
-        screen.blit(img, (self._x, self._y))
+        screen.blit(self._imgs[self._img_index], (self._x, self._y))
         self._x += self._speed * math.cos(self._angle)
         self._y += self._speed * math.sin(self._angle)
         self._current_time += dt
@@ -44,9 +43,8 @@ class Bullet:
     def draw_destroy(self):
         VFXManager.add_vfx(self._x, self._y, (self._size, self._size), 200, self._destroy_imgs)
         
-
     def get_rect(self):
-        return pygame.Rect(self._x, self._y, self._size, self._size)
+        return pygame.mask.from_surface(self._imgs[self._img_index], threshold=255).to_surface()
 
     def check_border(self, width, height):
         if 0 < self._x < width or 0 < self._y < height:

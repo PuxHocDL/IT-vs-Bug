@@ -1,5 +1,4 @@
-import pygame
-from config import *
+
 from bug import *
 from interact import Interact
 from tower import *
