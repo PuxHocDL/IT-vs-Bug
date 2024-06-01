@@ -246,6 +246,8 @@ while running:
         else:
             slow_placed = False
 
+    print(projectiles.get_projectiles())
+    
     TowerGame.draw_gold()
     buy_tower_btn.draw(screen)
     buy_slow_btn.draw(screen)

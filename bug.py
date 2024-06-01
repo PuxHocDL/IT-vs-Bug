@@ -216,7 +216,7 @@ class NormalBug(Bug):
         super().draw_alive(screen,dt,self.__normal_bug_images)
 
     def draw_dead(self,dt,screen):
-        super().draw_dead(screen,dt,self.__normal_bug_images_dead)
+        return(super().draw_dead(screen,dt,self.__normal_bug_images_dead))
 
     """def draw_health_bar(self, screen):
         
@@ -291,7 +291,7 @@ class BigBug(Bug):
         Returns:
             bool: True if the death animation is complete, False otherwise.
         """
-        super().draw_dead(screen,dt,self.__big_bug_images_dead)
+        return(super().draw_dead(screen,dt,self.__big_bug_images_dead))
 
     def draw_attack(self, screen, dt):
         return super().draw_attack(screen, dt, self.__big_bug_images_attack,1)
@@ -363,7 +363,7 @@ class TriangleBug(Bug):
         Returns:
             bool: True if the death animation is complete, False otherwise.
         """
-        super().draw_dead(screen,dt,self.__triangle_bug_images_dead)
+        return(super().draw_dead(screen,dt,self.__triangle_bug_images_dead))
 
     def draw_attack(self, screen, dt):
         return super().draw_attack(screen, dt, self.__triangle_bug_images_attack,2)
@@ -458,7 +458,7 @@ class HexagonBug(Bug):
         Returns:
             bool: True if the death animation is complete, False otherwise.
         """
-        super().draw_dead(screen,dt,self.__fly_bug_image_dead)
+        return(super().draw_dead(screen,dt,self.__fly_bug_image_dead))
     
     def draw_attack(self,dt, screen): 
         super().draw_attack(screen,dt,self.__fly_bug_image_attack)
@@ -471,10 +471,10 @@ spawn_bug_event = pygame.USEREVENT + 1
 pygame.time.set_timer(spawn_bug_event, 2000000)
 
 spawn_big_bug_event = pygame.USEREVENT + 2
-pygame.time.set_timer(spawn_big_bug_event, 3000)
+pygame.time.set_timer(spawn_big_bug_event, 10000)
 
 spawn_triangle_bug_event = pygame.USEREVENT + 3
-pygame.time.set_timer(spawn_triangle_bug_event, 3000)
+pygame.time.set_timer(spawn_triangle_bug_event, 10000)
 
 spawn_hexagon_bug_event = pygame.USEREVENT + 4
 pygame.time.set_timer(spawn_hexagon_bug_event, 1000000)
