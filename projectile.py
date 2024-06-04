@@ -91,3 +91,12 @@ class Skull(Bullet):
         self._speed = 3
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","Skull_attack", f"{i}.png")), (self._size, self._size)).convert_alpha() for i in range(0, 8)]
         self._reverse()
+class Winter(Bullet): 
+    def __init__(self, x, y, reverse=True, angle=0.0):
+        super().__init__(x, y, reverse, angle)
+        self._size = 100
+        self._damage = 30
+        self._speed = 3
+        self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","Winter_attack", f"0{i}.png")), (self._size, self._size)).convert_alpha() for i in range(0, 5)]
+        self._destroy_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "explode", "Winter", f"{i}.png")).convert_alpha(), (130, 130)) for i in range(5)]
+        self._reverse()

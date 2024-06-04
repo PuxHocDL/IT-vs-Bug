@@ -1,2 +1,30 @@
-arr = [1,2,3,45]
-print(arr[-1])
+def DFS(graph, visited, node, hacker):
+  visited.append(node)
+  hacker.append(node)
+
+  for neighbor in graph[node]:
+    if neighbor not in visited:
+      DFS(graph, visited, neighbor, hacker)
+
+n, m = map(int, input().split())
+graph = {}
+for _ in range(m):
+    u, v = map(int, input().split())
+    if u not in graph:
+      graph[u] = []
+    graph[u].append(v)
+    if v not in graph:
+      graph[v] = []
+    graph[v].append(u)
+s = int(input())
+
+visited = []
+hacker = []
+
+DFS(graph, visited, s, hacker)
+
+print(len(hacker))
+
+hacker.sort()
+for node in hacker:
+    print(node, end=" ")
