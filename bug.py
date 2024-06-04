@@ -42,7 +42,7 @@ class Bug:
         self._rect_x = rect_x
         self._rect_y = rect_y
         self._slowed_bullet = False
-        self._name = name
+        self.name = name
         self._death = False
         self.attacking = False
         self._collision_with_tower = False
@@ -55,6 +55,9 @@ class Bug:
         self._current_atk_interval = 0
         self._attack_times = 0
         self._bullet_check = False
+        self._current_atk_collision = -1
+        self._times = 0
+        self._ban = False
 
         self._shoot_index = -1
         self._atk_interval = 0
@@ -65,12 +68,17 @@ class Bug:
         self._images_attack = []
         self._images_dead = []
         self._images_shoot = []
+        
 
         self._load_imgs()
 
     def _load_imgs(self):
         self._img_mode = {0: self._images, 1: self._images_attack, 2: self._images_dead, 3: self._images_shoot}
-    
+    def get_bug_pos(self):
+        return [self.get_x(), self.get_y()]
+
+    def get_bug_size(self): 
+        return self._bug_size
     def draw(self, screen, dt):
         """
         Draws the normal bug on the screen.
@@ -79,27 +87,42 @@ class Bug:
             screen (pygame.Surface): The surface on which to draw the bug.
         """
         proj = []
-        if self._current_atk_interval > self._atk_interval*len(self._images) and self._atk_interval: 
-            self.set_mode(3)
-            self._current_atk_interval = 0
-        images = self._img_mode[self._mode]
-        self._current_time += dt
-        if self._current_time >= self._animate_time[self._mode]/len(images):
-            self._img_index = (self._img_index +1) % len(images)
-            self._current_time = 0
-            self._current_atk_interval +=1 
-        screen.blit(images[self._img_index], (self._x, self._y))
-        proj = self._shoot()
-        if self._img_index == len(images)-1:
-            self.set_mode(0)
-        if self._mode not in [1,3]:
-            self.update()
-        return proj
+        if self.attacking == False: 
+            if self._current_atk_interval > self._atk_interval*len(self._images) and self._atk_interval: 
+                self.set_mode(3)
+                self._current_atk_interval = 0
+            images = self._img_mode[self._mode]
+            self._current_time += dt
+            if self._current_time >= self._animate_time[self._mode]/len(images):
+                self._img_index = (self._img_index +1) % len(images)
+                self._current_time = 0
+                self._current_atk_interval +=1 
+            screen.blit(images[self._img_index], (self._x, self._y))
+            if self._mode == 3 and self._img_index == self._shoot_index and self._ban == True: 
+                proj = self._shoot()
+                self._ban = False
+            if self._img_index == len(images)-1:
+                self.set_mode(0)
+                self._ban = True
+            if self._mode not in [1,3]:
+                self.update()
+            
+        else: 
+            self.set_mode(1)
+            images = self._img_mode[self._mode]
+            self._current_time += dt
+            if self._current_time >= self._animate_time[self._mode]/len(images):
+                self._img_index = (self._img_index +1) % len(images)
+                self._current_time = 0
+            screen.blit(images[self._img_index], (self._x, self._y))
 
+
+        return proj
+    
+    def get_img_index(self): 
+        return self._img_index
     def _shoot(self):
-        proj = []
-        if self._mode == 3 and self._img_index == self._shoot_index:
-            proj = [Skull(self._x, self._y+self._rect_y//2 - 20, reverse=True)]
+        proj = [Skull(self._x, self._y+self._rect_y//2 - 20, reverse=True)]
         return proj
         
     def draw_dead(self):
@@ -169,8 +192,8 @@ class Bug:
         return self._bullet_check
 
 monster_schedule = [
-    {"time": 5, "name": "HexagonBug"},
-    {"time": 15, "name": "TriangleBug"},
-    {"time": 20, "name": "BigBug"},
+    {"time": 5, "name": "BigBug"},
+    {"time": 6, "name": "TriangleBug"},
+    {"time": 10, "name": "BigBug"},
     {"time": 25, "name": "HexagonBug"},
 ]

@@ -74,7 +74,8 @@ class BasicTower:
 
     def apply_slow(self, slow, slow_time):
         return
-
+    def get_health(self): 
+        return self._health
     def is_dead(self):
         return self._health <= 0
 

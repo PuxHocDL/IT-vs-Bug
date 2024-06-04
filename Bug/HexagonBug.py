@@ -30,9 +30,9 @@ class HexagonBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed=0.5, max_health=1000, bug_size=100, rect_x=120, rect_y=100, name="HexagonBug")
+        super().__init__(x, y, speed=0.5, max_health=1000, bug_size=200, rect_x=120, rect_y=100, name="HexagonBug")
 
-        self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","alive", f"{i}.png")), (400, 400)) for i in range(6)]
-        self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","dead", f"{i}.png")), (400, 400)) for i in range(3)]
-        self._images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","attack", f"{i}.png")), (400, 400)) for i in range(18)]
+        self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","alive", f"{i}.png")), (200, 200)) for i in range(6)]
+        self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","dead", f"{i}.png")), (200, 200)) for i in range(3)]
+        self._images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_4","attack", f"{i}.png")), (300, 300)) for i in range(18)]
         self._load_imgs()

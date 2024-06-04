@@ -15,18 +15,6 @@ slow_placed_time = 0
 slow_placed = False
 running = True
 rect_size = grid.get_cell_size()
-
-# A list to keep track of explosions
-explosions = []
-
-# Thêm nút mua tháp băng
-
-def collision_all(bug): 
-    for tower in grid.get_objects():
-        bug.collision_with_tower = Interact.collide_mask(bug.get_rect(), tower.get_rect())
-        if bug.collision_with_tower: 
-            return True
-    return False
 start_time = time.time()
 
 while running:
@@ -108,6 +96,9 @@ while running:
 
     grid.remove_objects()
 
+    bug_manager.check_collision(grid) 
+
+
     # Update bugs
     for bug in bug_manager.get_bugs():
         if bug.is_dead():
@@ -123,7 +114,7 @@ while running:
     bug_projectiles.check_collision(grid.get_objects(), WIDTH, HEIGHT)
     bug_projectiles.remove_projectiles()
     bug_projectiles.draw(screen,dt)
-
+    
     if placing_tower:
         grid.draw_on_mouse_pos(screen, (mouse_x, mouse_y))
     elif placing_slow:

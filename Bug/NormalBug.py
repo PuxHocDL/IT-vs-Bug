@@ -24,7 +24,7 @@ class NormalBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed=0.5, max_health=900, bug_size=50, rect_x=150, rect_y=150, name="NormalBug")
+        super().__init__(x, y, speed=0.5, max_health=900, bug_size=150, rect_x=150, rect_y=150, name="NormalBug")
         
         self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","alive", f"pic_{i}.png")), (150, 150)) for i in range(9)]
         self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","dead", f"{i}.png")), (150, 150)) for i in range(12)]

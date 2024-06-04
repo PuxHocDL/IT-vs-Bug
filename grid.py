@@ -164,3 +164,6 @@ class Grid:
 
     def get_rows(self):
         return self.__rows
+    
+    def get_cols(self): 
+        return self.__cols

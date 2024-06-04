@@ -23,7 +23,7 @@ class TriangleBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed=0.5, max_health=200, bug_size=50, rect_x=130, rect_y=150, name="TriangleBug")
+        super().__init__(x, y, speed=0.5, max_health=200, bug_size=180, rect_x=130, rect_y=150, name="TriangleBug")
         self._animate_time = {0: 1000, 1: 1000, 2: 1000, 3: 2000}
         self._atk_interval = 7
         self._shoot_index = 7
@@ -31,4 +31,5 @@ class TriangleBug(Bug):
         self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","alive", f"{i}.png")), (180, 180)) for i in range(7)]
         self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","dead", f"{i}.png")), (180, 180)) for i in range(7)]
         self._images_shoot = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","attack", f"{i}.png")), (180, 180)) for i in range(10)]
+        self._images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","attack", f"{i}.png")), (180, 180)) for i in range(10)]
         self._load_imgs()
