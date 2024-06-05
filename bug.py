@@ -61,7 +61,7 @@ class Bug:
         self._shoot_index = -1
         self._atk_interval = 0
         self._mode = 0
-        self._animate_time = {0: 1000, 1: 1000, 2: 1500, 3: 1000}    # 0: Move, 1: Attack, 2: Dead, 3: Shoot
+        self._animate_time = {0: 1000, 1: 1000, 2: 1500, 3: 1500}    # 0: Move, 1: Attack, 2: Dead, 3: Shoot
 
         self._images = []
         self._images_attack = []
@@ -113,6 +113,8 @@ class Bug:
                 proj = [Winter(self._x, self._y+self._rect_y//2+30, reverse=True)]
             if self.name == "TriangleBug": 
                 proj = [Skull(self._x, self._y+self._rect_y//2, reverse=True)]
+            if self.name == "HexagonBug": 
+                proj = [Bomb(self._x, self._y+self._rect_y//2, reverse=True)]
         return proj
         
     def draw_dead(self):
@@ -185,5 +187,5 @@ monster_schedule = [
     {"time": 5, "name": "BigBug"},
     {"time": 6, "name": "TriangleBug"},
     {"time": 10, "name": "BigBug"},
-    {"time": 25, "name": "HexagonBug"},
+    {"time": 11, "name": "HexagonBug"},
 ]
