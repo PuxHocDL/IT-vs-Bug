@@ -47,6 +47,7 @@ while running:
 
             option = hand.select(mouse_x, mouse_y)
 
+
     projectiles.add_projectiles(grid.draw(screen, dt))
     # Towers shoot
     for bug_pos in bug_manager.get_bugs_pos():
@@ -82,6 +83,9 @@ while running:
     # Draw vfx
     VFXManager.draw(screen, dt)
     hand.draw(screen, dt)
+
+    # Draws selected tower on mouse pos.
+    hand.draw_selected(screen, mouse_x, mouse_y)
 
     pygame.display.flip()
 

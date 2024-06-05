@@ -19,6 +19,10 @@ class Hand:
         for i, card in enumerate(self.__cards):
             card.draw(screen, dt)
 
+    def draw_selected(self, screen, mouse_x, mouse_y):
+        if self.__selected != -1:
+            screen.blit(self.__cards[self.__selected].get_img(), (mouse_x-self.__card_size//2, mouse_y-self.__card_size//2))
+
     def select(self, mouse_x, mouse_y):
         for i, card in enumerate(self.__cards):
             if card.check_input(mouse_x, mouse_y) and card.check_avail():

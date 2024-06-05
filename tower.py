@@ -6,6 +6,7 @@ from bar import Bar
 
 class BasicTower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
+    AVT = pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", "tower0.png"))
 
     def __init__(self, x, y, size):
         self._x = x
@@ -96,6 +97,7 @@ class SlowTower(BasicTower):
 
 class IceTower(BasicTower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
+    AVT = pygame.image.load(os.path.join("assets", "Towers", "idle", "IceTower", "tower1.png"))
     def __init__(self, x, y, size):
         super().__init__(x, y, size)
         self._cost = 150

@@ -57,6 +57,9 @@ class Card:
     def get_price(self):
         return self.__price
 
+    def get_img(self):
+        return self._tower.AVT
+
 
 class BasicTowerCard(Card):
     def __init__(self, x, y, size):
@@ -66,5 +69,5 @@ class BasicTowerCard(Card):
 
 class IceTowerCard(Card):
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "card.png")), 50000, "Ice Tower", 500)
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "ice_tower_card.png")), 50000, "Ice Tower", 500)
         self._tower = IceTower
