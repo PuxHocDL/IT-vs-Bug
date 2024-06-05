@@ -1,11 +1,12 @@
 import pygame
-from config import *
-from colors import *
+import colors
 from projectile import *
 from bar import Bar
 
+
 class BasicTower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
+
     def __init__(self, x, y, size):
         self._x = x
         self._y = y
@@ -27,30 +28,15 @@ class BasicTower:
     def _load_imgs(self):
         self._img_mode = {0: self._idle_imgs, 1: self._atk_imgs, 2: self._destroy_imgs}
 
-        
     def upgrade(self):
-        if gold.gold >= upgrade_cost and self._level < 3:
-            self._level += 1
-            gold.gold -= upgrade_cost
-            
+        self._level = min(self.__level + 1, 3)
+
     def _shoot(self):
         """Tháp bắn đạn"""
-        
         if self._level == 1:
             return [Bullet(self._x, self._y)]
-        elif self._level == 2:
-            return [Bullet(self._x, self._y, angle=-0.2), Bullet(self._x, self._y, angle=0), Bullet(self._x, self._y, angle=0.2)]
-            
         else:
-           # if bugs:
-           #     nearest_bug = min(bugs, key=lambda m: math.hypot(m.get_x() - bullet_x, m.get_y() - bullet_y))
-           #     angle = math.atan2(nearest_bug.get_y() - bullet_y, nearest_bug.get_x() - bullet_x)
-           # else:
-           #     angle = 0
-           # bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
-           # bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
-           # bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
-            return []
+            return [Bullet(self._x, self._y, angle=-0.2), Bullet(self._x, self._y, angle=0), Bullet(self._x, self._y, angle=0.2)]
 
     def draw(self, screen, dt):
         proj = []
@@ -74,8 +60,10 @@ class BasicTower:
 
     def apply_slow(self, slow, slow_time):
         return
-    def get_health(self): 
+
+    def get_health(self):
         return self._health
+
     def is_dead(self):
         return self._health <= 0
 
@@ -99,23 +87,13 @@ class BasicTower:
 
 class SlowTower(BasicTower):
     """Tháp làm chậm, kế thừa từ basic_tower, làm chậm tốc độ di chuyển của quái"""
+
     def __init__(self, x, y, size):
         super().__init__(x, y, size)
         self._cost = 100
         self._tower_type = "Slow"
 
 
-class TowerGame:
-    """Các chức năng liên quan đến game tháp"""
-    def draw_gold():
-        """Vẽ thông tin vàng"""
-        gold_text = font.render(f"Gold: {gold.gold}", True, BLACK)
-        screen.blit(gold_text, (10, 10))
-    
-    def draw_slow(x, y):
-        """Vẽ vật làm chậm ở vị trí x, y"""
-        pygame.draw.rect(screen, PURPLE, (x, y, TOWER_SIZE, TOWER_SIZE))
-        
 class IceTower(BasicTower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
     def __init__(self, x, y, size):
@@ -126,20 +104,7 @@ class IceTower(BasicTower):
         self._load_imgs()
 
     def _shoot(self):
-        """Tháp bắn đạn"""
-        
         if self._level == 1:
             return [IceBullet(self._x, self._y)]
-        elif self._level == 2:
-            return [IceBullet(self._x, self._y, angle=-0.2), IceBullet(self._x, self._y, angle=0), IceBullet(self._x, self._y, angle=0.2)]
-            
         else:
-           # if bugs:
-           #     nearest_bug = min(bugs, key=lambda m: math.hypot(m.get_x() - bullet_x, m.get_y() - bullet_y))
-           #     angle = math.atan2(nearest_bug.get_y() - bullet_y, nearest_bug.get_x() - bullet_x)
-           # else:
-           #     angle = 0
-           # bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
-           # bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
-           # bullets.append([bullet_x, bullet_y, angle, self._level, "normal"])  # Đạn đuổi
-            return []
+            return [IceBullet(self._x, self._y, angle=-0.2), IceBullet(self._x, self._y, angle=0), IceBullet(self._x, self._y, angle=0.2)]

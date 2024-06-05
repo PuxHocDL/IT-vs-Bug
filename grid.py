@@ -73,10 +73,9 @@ class Grid:
         return False
     
     def is_occupied(self, i, j):
-        if not self.is_inside_gird(i, j):
-            return False
-        if self.__objects[i][j]:
-            return True
+        if self.is_inside_gird(i, j):
+            if self.__objects[i][j]:
+                return True
         return False
     
     def convert_to_screen_pos(self, i, j):

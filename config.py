@@ -6,9 +6,10 @@ import colors
 from button import Button
 from grid import Grid
 from projectile_manager import ProjectileManager
+from hand import Hand
 # Kích thước màn hình
 pygame.init()
-WIDTH, HEIGHT = 1300, 750
+WIDTH, HEIGHT = 1300, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tower Defense Game")
 
@@ -48,23 +49,6 @@ gold = gold()
 shoot_delay = 60
 shoot_counters = []
 
-# Phông chữ
-font = pygame.font.Font(os.path.join("assets", "vinque.otf"), 36)
-
-buy_tower_btn = Button((10, HEIGHT - 50), "Buy Tower - $50", font, colors.black, colors.lime, colors.red)
-
-buy_slow_btn = Button((350, HEIGHT - 50), "Buy Slow - $100", font, colors.black, colors.dark_yellow, colors.red)
-
-buy_ice_btn = Button((700, HEIGHT - 50), "Buy Ice - $300", font, colors.black, colors.dark_yellow, colors.red)
-# Chế độ đặt tháp hoặc vật làm chậm
-placing_tower = False
-placing_slow = False
-placing_ice = False
-upgrade_tower = True
-# Tạo danh sách chứa các quái vật, đạn, tháp, và vật làm chậm
-bullets = []
-
-
 tile_imgs = [
     pygame.image.load(os.path.join("assets", "grass1.jpg")), 
     pygame.image.load(os.path.join("assets", "grass2.jpg"))
@@ -73,3 +57,5 @@ grid = Grid(WIDTH, HEIGHT, tile_imgs)
 
 projectiles = ProjectileManager()
 bug_projectiles = ProjectileManager()
+
+hand = Hand(100, 0, 80)
