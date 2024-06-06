@@ -76,6 +76,7 @@ class FireBullet(Bullet):
     def __init__(self, x, y, reverse=False, angle=0.0):
         super().__init__(x, y, reverse, angle)
         self._damage = 100
+        self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "fire_bullet.png")), (self._size, self._size)).convert_alpha()]
 
 class IceFireBullet(Bullet):
     def __init__(self, x, y, reverse=False, angle=0.0):

@@ -6,7 +6,6 @@ from bar import Bar
 
 class BasicTower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
-    AVT = pygame.image.load(os.path.join("assets", "Towers", "idle", "BasicTower", "tower0.png"))
 
     def __init__(self, x, y, size):
         self._x = x
@@ -35,7 +34,7 @@ class BasicTower:
     def _shoot(self):
         """Tháp bắn đạn"""
         if self._level == 1:
-            return [Bullet(self._x, self._y)]
+            return [Bullet(self._x, self._y-16)]
         else:
             return [Bullet(self._x, self._y, angle=-0.2), Bullet(self._x, self._y, angle=0), Bullet(self._x, self._y, angle=0.2)]
 
@@ -97,16 +96,30 @@ class SlowTower(BasicTower):
 
 class IceTower(BasicTower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
-    AVT = pygame.image.load(os.path.join("assets", "Towers", "idle", "IceTower", "tower1.png"))
     def __init__(self, x, y, size):
         super().__init__(x, y, size)
         self._cost = 150
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "IceTower", f"tower{i}.png")), (size, size)) for i in range(1, 7)]
-        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "IceTower", f"tower{i}.png")), (size, size)) for i in range(1, 17)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "IceTower", f"tower{i}.png")), (size, size)) for i in range(16)]
         self._load_imgs()
 
     def _shoot(self):
         if self._level == 1:
-            return [IceBullet(self._x, self._y)]
+            return [IceBullet(self._x, self._y-16)]
         else:
             return [IceBullet(self._x, self._y, angle=-0.2), IceBullet(self._x, self._y, angle=0), IceBullet(self._x, self._y, angle=0.2)]
+
+class FireTower(BasicTower):
+    """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size)
+        self._cost = 150
+        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "FireTower", f"tower{i}.png")), (size, size)) for i in range(8)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "IceTower", f"tower{i}.png")), (size, size)) for i in range(16)]
+        self._load_imgs()
+
+    def _shoot(self):
+        if self._level == 1:
+            return [FireBullet(self._x, self._y-16)]
+        else:
+            return [FireBullet(self._x, self._y, angle=-0.2), IceBullet(self._x, self._y, angle=0), IceBullet(self._x, self._y, angle=0.2)]

@@ -58,4 +58,4 @@ grid = Grid(WIDTH, HEIGHT, tile_imgs)
 projectiles = ProjectileManager()
 bug_projectiles = ProjectileManager()
 
-hand = Hand(100, 0, 80)
+hand = Hand(50, 5, 80)

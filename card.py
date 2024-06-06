@@ -26,7 +26,7 @@ class Card:
     def draw(self, screen, dt):
         screen.blit(self.__img, (self.__x, self.__y))
         screen.blit(self.__name, (self.__x+(self.__size-self.__name_rect.w)/2, self.__y+self.__name_rect.h/2))
-        screen.blit(self.__price_text, (self.__x+(self.__size-self.__price_rect.w)/2, self.__y + 1.25*self.__size))
+        screen.blit(self.__price_text, (self.__x+(self.__size-self.__price_rect.w)/2, self.__y + 1.2*self.__size))
         timer_img = pygame.transform.scale(self.__timer_img, (self.__size, 1.5*self.__size*(1-(self.__current_time/self.__time))))
         if self.__selected:
             screen.blit(self.__timer_img, (self.__x, self.__y))
@@ -71,6 +71,12 @@ class BasicTowerCard(Card):
 
 class IceTowerCard(Card):
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "ice_tower_card.png")), 50000, "Ice Tower", 500)
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "ice_tower_card.png")), 30000, "Ice Tower", 500)
         self._tower = IceTower
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "ice_tower.png")), (size, size))
+
+class FireTowerCard(Card):
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "fire_tower_card.png")), 10000, "Fire Tower", 800)
+        self._tower = FireTower
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "fire_tower.png")), (size, size))
