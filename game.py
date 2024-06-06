@@ -40,13 +40,11 @@ while running:
             if option != -1:
                 if not grid.is_occupied(grid_x, grid_y) and grid.is_inside_gird(grid_x, grid_y):
                     hand.add_tower(grid, grid_x, grid_y)
-                    hand.reset_time(option)
                 hand.toggle_select(option)
             else:
                 pass
 
             option = hand.select(mouse_x, mouse_y)
-
 
     projectiles.add_projectiles(grid.draw(screen, dt))
     # Towers shoot
@@ -61,15 +59,15 @@ while running:
 
     grid.remove_objects()
 
-    bug_manager.check_collision(grid) 
+    bug_manager.check_collision(grid)
 
 
     # Update bugs
     for bug in bug_manager.get_bugs():
         if bug.is_dead():
-            gold.gold +=30
+            hand.add_energy(50)
             bug.draw_dead()
-            bug_manager.remove_bug(bug)  
+            bug_manager.remove_bug(bug)
         else:
             bug_projectiles.add_projectiles(bug.draw(screen, dt))
         if bug.get_x() <= 0:

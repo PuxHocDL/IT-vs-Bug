@@ -43,10 +43,8 @@ class BugManager:
                         for obj in grid.get_objs_in_row(grid.convert_to_grid_pos(bug_pos[0], bug_pos[1])[0]):
                             obj_rect = obj.get_rect()
                             collision_coordinates = Interact.collide_mask(bug_rect, obj_rect, bug.get_pos(), obj.get_pos())
-                            if collision_coordinates: 
+                            if collision_coordinates:
+                                if bug.get_img_index() == bug.get_atk_index():
+                                    obj.damage(10)
                                 if not obj.is_dead():
                                     bug.set_mode(1)
-                                    if bug.get_img_index() == 0: 
-                                        obj.damage(10)
-                    else: 
-                         pass

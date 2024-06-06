@@ -58,6 +58,7 @@ class Bug:
         self._current_atk_collision = -1
         self._ban = False
 
+        self._atk_index = -1
         self._shoot_index = -1
         self._atk_interval = 0
         self._mode = 0
@@ -180,8 +181,12 @@ class Bug:
 
     def get_name(self):
         return self._name
+
     def get_check_bullet(self): 
         return self._bullet_check
+    
+    def get_atk_index(self):
+        return self._atk_index
 
 monster_schedule = [
     {"time": 5, "name": "BigBug"},

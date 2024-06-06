@@ -4,12 +4,13 @@ from tower import *
 
 
 class Card:
-    def __init__(self, x, y, size, img=pygame.image.load(os.path.join("assets", "UI", "unknown.png")), time=1, name="", price=""):
+    price = 0
+    def __init__(self, x, y, size, img=pygame.image.load(os.path.join("assets", "UI", "unknown.png")), time=1, name=""):
         self.__font = pygame.font.Font(os.path.join("assets", "vinque.otf"), 10)
         self.__name = self.__font.render(name, True, "black")
         self.__name_rect = self.__name.get_rect()
-        self.__price = price
-        self.__price_text = self.__font.render(str(price), True, "black")
+        self._price = Card.price
+        self.__price_text = self.__font.render(str(self._price), True, "black")
         self.__price_rect = self.__price_text.get_rect()
 
         self._tower = None
@@ -22,6 +23,10 @@ class Card:
         self.__current_time = 0
         self.__time = time
         self.__selected = False
+
+    def _load_price(self):
+        self.__price_text = self.__font.render(str(self._price), True, "black")
+        self.__price_rect = self.__price_text.get_rect()
 
     def draw(self, screen, dt):
         screen.blit(self.__img, (self.__x, self.__y))
@@ -61,22 +66,37 @@ class Card:
     def get_img(self):
         return self._avatar
 
+    def set_affordable(self, value):
+        if value < self._price:
+            self.__price_text = self.__font.render(str(self._price), True, "red")
+        else:
+            self.__price_text = self.__font.render(str(self._price), True, "black")
+
 
 class BasicTowerCard(Card):
+    price = 300
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "basic_tower_card.png")), 10000, "Basic Tower", 300)
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "basic_tower_card.png")), 10000, "Basic Tower")
+        self._price = BasicTowerCard.price
         self._tower = BasicTower
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "basic_tower.png")), (size, size))
+        self._load_price()
 
 
 class IceTowerCard(Card):
+    price = 500
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "ice_tower_card.png")), 30000, "Ice Tower", 500)
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "ice_tower_card.png")), 30000, "Ice Tower")
+        self._price = IceTowerCard.price
         self._tower = IceTower
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "ice_tower.png")), (size, size))
+        self._load_price()
 
 class FireTowerCard(Card):
+    price = 800
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "fire_tower_card.png")), 10000, "Fire Tower", 800)
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "fire_tower_card.png")), 10000, "Fire Tower")
+        self._price = FireTowerCard.price
         self._tower = FireTower
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "fire_tower.png")), (size, size))
+        self._load_price()
