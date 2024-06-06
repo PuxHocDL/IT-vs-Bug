@@ -13,6 +13,7 @@ class Card:
         self.__price_rect = self.__price_text.get_rect()
 
         self._tower = None
+        self._avatar = None
         self.__x = x
         self.__y = y
         self.__size = size
@@ -58,16 +59,18 @@ class Card:
         return self.__price
 
     def get_img(self):
-        return self._tower.AVT
+        return self._avatar
 
 
 class BasicTowerCard(Card):
     def __init__(self, x, y, size):
         super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "basic_tower_card.png")), 10000, "Basic Tower", 300)
         self._tower = BasicTower
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "basic_tower.png")), (size, size))
 
 
 class IceTowerCard(Card):
     def __init__(self, x, y, size):
         super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "ice_tower_card.png")), 50000, "Ice Tower", 500)
         self._tower = IceTower
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "ice_tower.png")), (size, size))

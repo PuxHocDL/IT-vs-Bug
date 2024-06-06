@@ -2,7 +2,7 @@ from card import *
 
 
 class Hand:
-    __cards = {-1: Card, 0: BasicTowerCard, 1: IceTowerCard}
+    __card_types = {-1: Card, 0: BasicTowerCard, 1: IceTowerCard}
     def __init__(self, x, y, card_size):
         self.__x = x
         self.__y = y
@@ -13,7 +13,7 @@ class Hand:
         self.add_card(1)
 
     def add_card(self, card_num):
-        self.__cards.append(Hand.__cards[card_num](self.__x + len(self.__cards)*(self.__card_size+20), self.__y, size=self.__card_size))
+        self.__cards.append(Hand.__card_types[card_num](self.__x + len(self.__cards)*(self.__card_size+20), self.__y, size=self.__card_size))
 
     def draw(self, screen, dt):
         for i, card in enumerate(self.__cards):

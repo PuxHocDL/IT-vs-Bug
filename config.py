@@ -9,7 +9,7 @@ from projectile_manager import ProjectileManager
 from hand import Hand
 # Kích thước màn hình
 pygame.init()
-WIDTH, HEIGHT = 1300, 800
+WIDTH, HEIGHT = 1300, 750
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tower Defense Game")
 
