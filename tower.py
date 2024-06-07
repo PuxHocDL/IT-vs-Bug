@@ -115,7 +115,7 @@ class FireTower(BasicTower):
         super().__init__(x, y, size)
         self._cost = 150
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "FireTower", f"tower{i}.png")), (size, size)) for i in range(8)]
-        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "IceTower", f"tower{i}.png")), (size, size)) for i in range(16)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "FireTower", f"tower{i}.png")), (size, size)) for i in range(16)]
         self._load_imgs()
 
     def _shoot(self):
