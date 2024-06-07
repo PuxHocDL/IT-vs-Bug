@@ -100,3 +100,12 @@ class FireTowerCard(Card):
         self._tower = FireTower
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "fire_tower.png")), (size, size))
         self._load_price()
+
+class TheWallCard(Card):
+    price = 100
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "fire_tower_card.png")), 10000, "The Wall")
+        self._price = TheWallCard.price
+        self._tower = TheWall
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "fire_tower.png")), (size, size))
+        self._load_price()

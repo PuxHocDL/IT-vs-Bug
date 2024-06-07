@@ -2,7 +2,7 @@ from card import *
 
 
 class Hand:
-    __card_types = {-1: Card, 0: BasicTowerCard, 1: IceTowerCard, 2: FireTowerCard}
+    __card_types = {-1: Card, 0: BasicTowerCard, 1: IceTowerCard, 2: FireTowerCard, 3: TheWallCard}
     def __init__(self, x, y, card_size):
         self.__x = x
         self.__y = y
@@ -13,6 +13,7 @@ class Hand:
         self.add_card(0)
         self.add_card(1)
         self.add_card(2)
+        self.add_card(3)
         self.__energy_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "energy.png")), (card_size, card_size))
 
         self.__font = pygame.font.Font(os.path.join("assets", "vinque.otf"), 15)
