@@ -57,9 +57,6 @@ class Card:
         rect_size = grid.get_cell_size()
         grid.add_object(grid_x, grid_y, self._tower(screen_pos[0] + rect_size // 2, screen_pos[1] + rect_size // 2, rect_size))
 
-    def get_ID(self):
-        return self.__id
-
     def get_price(self):
         return self.__price
 

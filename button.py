@@ -1,6 +1,5 @@
 class Button():
-    """
-    Class for the Button object.
+    """ Class for the Button object.
     """
     def __init__(self, pos, text_input, font, base_color, hovering_color, click_color):
         """
