@@ -70,6 +70,7 @@ class IceBullet(Bullet):
         self._slow = 0.8
         self._slow_time = 2000
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "ice_bullet.png")), (self._size, self._size)).convert_alpha()]
+        self._destroy_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "explode", "IceBullet", f"bullet{i}.png")), (self._size, self._size)).convert_alpha() for i in range(12)]
         self._reverse()
 
 class FireBullet(Bullet):
