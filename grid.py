@@ -96,7 +96,7 @@ class Grid:
         if self.is_occupied(i, j):
             self.__objects[i][j].upgrade()
 
-    def draw(self, screen, dt):
+    def draw(self, screen, dt, towers, bugs):
         """
         Draws the Grid to the screen.
 
@@ -119,7 +119,10 @@ class Grid:
                 img_counter += 1
 
                 if self.__objects[i][j]:
-                    projectiles.extend(self.__objects[i][j].draw(screen, dt))
+                    if self.__objects[i][j].get_name() != "Utility":
+                        projectiles.extend(self.__objects[i][j].draw(screen, dt))
+                    else:
+                        projectiles.extend(self.__objects[i][j].utility(screen, dt, towers, bugs))
         return projectiles
 
     def draw_on_mouse_pos(self, screen, pos, img=None):

@@ -212,16 +212,17 @@ def game_loop(level):
 
                     option = hand.select(mouse_x, mouse_y)
 
-            projectiles.add_projectiles(grid.draw(screen, dt))
+            projectiles.add_projectiles(grid.draw(screen, dt, grid.get_objects(), bug_manager.get_bugs()))
             # Towers shoot
             for bug_pos in bug_manager.get_bugs_pos():
                 for tower in grid.get_objs_in_row(grid.convert_to_grid_pos(bug_pos[0], bug_pos[1])[0]):
-                    tower.set_mode(1)
+                    if tower.get_name() == "Tower":
+                        tower.set_mode(1)
 
             # Check bullet-bug collision
             projectiles.check_collision(bug_manager.get_bugs(), WIDTH, HEIGHT)
             projectiles.remove_projectiles()
-            projectiles.draw(screen,dt)
+            projectiles.draw(screen, dt)
 
             grid.remove_objects()
 

@@ -2,9 +2,10 @@ import pygame
 import colors
 from projectile import *
 from bar import Bar
+from vfx_manager import VFXManager
 
 
-class BasicTower:
+class Tower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
 
     def __init__(self, x, y, size, max_health=500):
@@ -83,8 +84,14 @@ class BasicTower:
     def get_y(self):
         return self._y
 
+    def get_name(self):
+        return "Tower"
 
-class SlowTower(BasicTower):
+class BasicTower(Tower):
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size)
+
+class SlowTower(Tower):
     """Tháp làm chậm, kế thừa từ basic_tower, làm chậm tốc độ di chuyển của quái"""
 
     def __init__(self, x, y, size):
@@ -92,7 +99,7 @@ class SlowTower(BasicTower):
         self._tower_type = "Slow"
 
 
-class IceTower(BasicTower):
+class IceTower(Tower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
     def __init__(self, x, y, size):
         super().__init__(x, y, size)
@@ -106,7 +113,7 @@ class IceTower(BasicTower):
         else:
             return [IceBullet(self._x, self._y, angle=-0.2), IceBullet(self._x, self._y, angle=0), IceBullet(self._x, self._y, angle=0.2)]
 
-class FireTower(BasicTower):
+class FireTower(Tower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
     def __init__(self, x, y, size):
         super().__init__(x, y, size)
@@ -120,7 +127,7 @@ class FireTower(BasicTower):
         else:
             return [FireBullet(self._x, self._y, angle=-0.2), IceBullet(self._x, self._y, angle=0), IceBullet(self._x, self._y, angle=0.2)]
 
-class TheWall(BasicTower):
+class TheWall(Tower):
     def __init__(self, x, y, size):
         super().__init__(x, y, size, 1000)
         self._idle_imgs = self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "TheWall", f"wall.png")), (size, size))]
@@ -128,3 +135,58 @@ class TheWall(BasicTower):
 
     def _shoot(self):
         return []
+
+class TheRook(Tower):
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size, 1000)
+        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "TheRook", f"the_rook{i}.png")), (size, size)) for i in range(8)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "TheRook", f"the_rook{i}.png")), (size, size)) for i in range(8)]
+        self._load_imgs()
+        self._vfx_added = False
+        self._animate_time = {0: 200, 1: 4000, 2: 500}
+
+    def utility(self, screen, dt, towers, bugs):
+        proj = []
+        if bugs:
+            self.set_mode(1)
+        current_imgs = self._img_mode[self._mode]
+        if self._current_time > self._animate_time[self._mode]/len(current_imgs):
+            self._img_index = (self._img_index + 1) % len(current_imgs)
+            self._current_time = 0
+        screen.blit(current_imgs[self._img_index], (self._x - self._size // 2, self._y - self._size // 2))
+        self._current_time += dt
+        if self._mode == 1:
+            if self._img_index == 4 and not self._vfx_added:
+                pos = self.get_pos()
+                VFXManager.add_vfx(pos[0], 0, 1800, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, pos[1]+20)) for i in range(8)])
+                self._vfx_added = True
+            elif self._img_index == len(current_imgs)-1:
+                if bugs:
+                    proj = self._utility(bugs[0])
+                self.set_mode(0)
+                self._vfx_added = False
+
+        if self._health < self._max_health:
+            self._health_bar.draw(screen)
+        return proj
+
+    def _utility(self, obj):
+        #VFXManager.add_vfx(obj.get_x(), obj.get_y(), 500, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png"), (self._size, self._y))) for i in range(8)])
+        return [SilverLining(obj.get_x(), obj.get_y())]
+
+    def get_name(self):
+        return "Utility"
+
+class HealTower(TheRook):
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size, 1000)
+        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "TheRook", f"the_rook{i}.png")), (size, size)) for i in range(8)]
+        self._atk_imgs = []
+        self._load_imgs()
+
+class EnergyTower(TheRook):
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size, 1000)
+
+class TheBomb:
+    pass

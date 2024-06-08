@@ -111,3 +111,11 @@ class Bomb(Bullet):
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets","Projectiles","Bomb", "Bomb", f"{i}.png")), (self._size, self._size)).convert_alpha() for i in range(0, 3)]
         self._destroy_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets","Projectiles","Bomb", "Bomb_explotion", f"{i}.png")).convert_alpha(), (200, 200)) for i in range(11)]
         self._reverse()
+
+class SilverLining(Bullet):
+    def __init__(self, x, y, reverse=False, angle=0.0):
+        super().__init__(x, y, reverse, angle)
+        self._damage = 3000
+        self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "ice_bullet.png")), (self._size, self._size)).convert_alpha()]
+        self._destroy_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "explode", "IceBullet", f"bullet{i}.png")), (self._size, self._size)).convert_alpha() for i in range(12)]
+        self._reverse()
