@@ -18,7 +18,7 @@ def initialize_game(x, y, FPS):
            upgrade_cost, gold, shoot_delay, shoot_counters, pause_button_img, pause_button_choose_img, \
            continue_button_img, continue_button_choose_img, exit_game_button_img, exit_game_button_choose_img, \
            rules_button_img, rules_button_choose_img, back_button_img, back_button_choose_img, brightness, monster_schedule,\
-           shovel_choose_img, shovel_img, rules_background_img,gray
+           shovel_choose_img, shovel_img, rules_background_img,gray, background1_img
 
     pygame.init()
     WIDTH, HEIGHT = 1300, 750
@@ -103,6 +103,7 @@ def initialize_game(x, y, FPS):
     exit_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
     optition_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Option_choose.png"))
     background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
+    background1_img = pygame.image.load(os.path.join("assets", "menu", "Background1.png"))
 
     # Thiết lập kích thước cửa sổ cho màn hình menu
     menu_screen_width = 1080
@@ -300,7 +301,7 @@ def draw_game_over():
 
 # Hàm vẽ màn hình chọn level
 def draw_level_select(mouse_pos):
-    screen.fill(white)
+    screen.blit(background1_img, (0, 0))
     for i, (button_img, button_choose_img) in enumerate(zip(level_buttons, level_buttons_choose)):
         x = (i % 3) * (button_img.get_width() + 20) + (menu_screen_width - 3 * button_img.get_width() - 40) // 2
         y = (i // 3) * (button_img.get_height() + 20) + 200
@@ -311,7 +312,7 @@ def draw_level_select(mouse_pos):
 def game_loop(level):
     global screen, current_screen, brightness
     initialize_game(1300, 750, FPS)  
-    print(level)
+    
     bug_manager = BugManager()
     bulldozers = [Bulldozer(grid, row) for row in range(6)]
     clock = pygame.time.Clock()
@@ -330,8 +331,9 @@ def game_loop(level):
 
     while running:
         if not paused:
+            
             dt = clock.tick(FPS)
-            screen.fill(WHITE)
+
 
             current_time = time.time() - start_time
 
@@ -438,11 +440,13 @@ def game_loop(level):
 
             mouse_pos = pygame.mouse.get_pos()
             current_screen = draw_pause_screen(mouse_pos)
+            screen = apply_brightness(screen, brightness)
             if current_screen == "game_resume":
                 paused = False
                 current_screen = f"game_screen_{level}"
             elif current_screen == "main_menu":
                 running = False
+        
         pygame.display.flip()
 
     pygame.quit()
@@ -473,6 +477,5 @@ while True:
         current_screen = draw_pause_screen(mouse_pos)
         if current_screen == "game_resume":
             current_screen = f"game_screen_{level}"
-    print(brightness)
     screen = apply_brightness(screen, brightness)
     pygame.display.flip()
