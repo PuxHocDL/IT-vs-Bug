@@ -1,30 +1,33 @@
-def DFS(graph, visited, node, hacker):
-  visited.append(node)
-  hacker.append(node)
+import pygame
 
-  for neighbor in graph[node]:
-    if neighbor not in visited:
-      DFS(graph, visited, neighbor, hacker)
+def apply_brightness(surface, brightness):
+    """Apply brightness to the surface."""
+    overlay = pygame.Surface(surface.get_size())
+    
+    if brightness >= 1:
+        # Maximum brightness means no change
+        return surface
+    elif brightness > 0:
+        # Increase brightness
+        overlay.fill((255, 255, 255))
+        overlay.set_alpha(int(brightness * 255))
+        surface.blit(overlay, (0, 0), special_flags=pygame.BLEND_RGB_ADD)
+    else:
+        # Decrease brightness
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(int((1 - abs(brightness)) * 255))
+        surface.blit(overlay, (0, 0), special_flags=pygame.BLEND_RGB_SUB)
+    
+    return surface
 
-n, m = map(int, input().split())
-graph = {}
-for _ in range(m):
-    u, v = map(int, input().split())
-    if u not in graph:
-      graph[u] = []
-    graph[u].append(v)
-    if v not in graph:
-      graph[v] = []
-    graph[v].append(u)
-s = int(input())
+# Initialize Pygame and create a surface for testing
+pygame.init()
+surface = pygame.Surface((100, 100))
+surface.fill((128, 128, 128))  # Fill the surface with a gray color for testing
 
-visited = []
-hacker = []
+# Apply brightness change
+new_surface = apply_brightness(surface, 0.5)  # Increase brightness by 50%
 
-DFS(graph, visited, s, hacker)
-
-print(len(hacker))
-
-hacker.sort()
-for node in hacker:
-    print(node, end=" ")
+# Save or display the surface for verification
+pygame.image.save(new_surface, "brightened_surface.png")
+pygame.display.flip()

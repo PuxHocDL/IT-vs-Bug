@@ -18,7 +18,7 @@ def initialize_game(x, y, FPS):
            upgrade_cost, gold, shoot_delay, shoot_counters, pause_button_img, pause_button_choose_img, \
            continue_button_img, continue_button_choose_img, exit_game_button_img, exit_game_button_choose_img, \
            rules_button_img, rules_button_choose_img, back_button_img, back_button_choose_img, brightness, monster_schedule,\
-           shovel_choose_img, shovel_img, rules_background_img 
+           shovel_choose_img, shovel_img, rules_background_img,gray
 
     pygame.init()
     WIDTH, HEIGHT = 1300, 750
@@ -32,12 +32,12 @@ def initialize_game(x, y, FPS):
     continue_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
     exit_game_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
     exit_game_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
-    rules_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
-    rules_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
+    rules_button_img = pygame.image.load(os.path.join("assets", "menu", "Help.png"))
+    rules_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Help_choose.png"))
     back_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
     back_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
-    shovel_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
-    shovel_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
+    shovel_img = pygame.image.load(os.path.join("assets", "menu", "Hammer.png"))
+    shovel_choose_img = pygame.image.load(os.path.join("assets", "menu", "Hammer_choose.png"))
     rules_background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
 
     # Màu sắc
@@ -55,7 +55,7 @@ def initialize_game(x, y, FPS):
 
 
     # Độ sáng mặc định
-    brightness = 1.0
+  
 
     # Kích thước quái vật và đạn
     BULLET_SIZE = 16
@@ -117,8 +117,9 @@ def initialize_game(x, y, FPS):
     black = (0, 0, 0)
     green = (0, 255, 0)
     blue = (0, 0, 255)
+    gray = (128, 128, 128)
     
-    monster_schedule = [
+    monster_schedule = [[
     {"time": 5, "name": "BigBug"},
     {"time": 6, "name": "TriangleBug"},
     {"time": 10, "name": "BigBug"},
@@ -137,7 +138,24 @@ def initialize_game(x, y, FPS):
     {"time": 30, "name": "HexagonBug"},
     {"time": 31, "name": "HexagonBug"},
     {"time": 40, "name": "HexagonBug"},
-    ]
+    ], [{"time": 5, "name": "BigBug"},
+    {"time": 6, "name": "TriangleBug"},
+    {"time": 10, "name": "BigBug"},
+    {"time": 11, "name": "HexagonBug"},
+    {"time": 12, "name": "HexagonBug"},
+    {"time": 21, "name": "HexagonBug"},
+    {"time": 22, "name": "HexagonBug"},
+    {"time": 27, "name": "HexagonBug"},
+    {"time": 21, "name": "BigBug"},
+    {"time": 22, "name": "BigBug"},
+    {"time": 27, "name": "BigBug"},
+    {"time": 21, "name": "HexagonBug"},
+    {"time": 22, "name": "HexagonBug"},
+    {"time": 27, "name": "HexagonBug"},
+    {"time": 28, "name": "BigBug"},
+    {"time": 30, "name": "TriangleBug"},
+    {"time": 31, "name": "HexagonBug"},
+    {"time": 40, "name": "HexagonBug"}]]
 
 # Initialize Pygame
 initialize_game(1080,607,FPS)
@@ -148,10 +166,13 @@ current_screen = "main_menu"
 button_pressed = False  # Biến theo dõi trạng thái nhấn nút
 def apply_brightness(surface, brightness):
     """Apply brightness to the surface."""
-    overlay = pygame.Surface(surface.get_size())
-    overlay.fill((255, 255, 255))
-    overlay.set_alpha(int((1 - brightness) * 255))
-    surface.blit(overlay, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+    overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+    if brightness > 0 :
+        # Decrease brightness
+        overlay.fill((0, 0, 0, int((1 - brightness) * 255)))
+    
+    surface.blit(overlay, (0,0))
+    return surface
 
 def draw_options_menu(mouse_pos):
     global FPS, brightness
@@ -168,15 +189,38 @@ def draw_options_menu(mouse_pos):
     # Draw Brightness Slider
     brightness_text = pygame.font.SysFont(None, 40).render(f"Brightness: {int(brightness * 100)}%", True, black)
     screen.blit(brightness_text, (center_x - 100, 350))
-    if draw_slider(center_x, 400, 200, mouse_pos, brightness * 100, 50, 150):
-        brightness = adjust_value_based_on_slider(center_x, 400, 200, mouse_pos, 50, 150) / 100.0
+    if draw_slider(center_x, 400, 200, mouse_pos, brightness * 100, 0, 100):  # Adjusted min and max values
+        brightness = adjust_value_based_on_slider(center_x, 400, 200, mouse_pos, 0, 100) / 100.0  # Adjusted to 0-100 range
 
     # Draw Back Button
     if draw_button(back_button_img, back_button_choose_img, center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), mouse_pos):
         return "main_menu"
         
-
     return "options_menu"
+
+def draw_slider(x, y, width, mouse_pos, current_value, min_value, max_value):
+    # Draw slider background
+    pygame.draw.rect(screen, gray, (x - width // 2, y, width, 5))
+
+    # Calculate slider position
+    slider_pos = int((current_value - min_value) / (max_value - min_value) * width)
+    pygame.draw.rect(screen, black, (x - width // 2 + slider_pos - 5, y - 10, 10, 25))
+
+    # Check if the mouse is clicking the slider
+    mouse_x, mouse_y = mouse_pos
+    if y - 10 <= mouse_y <= y + 15 and x - width // 2 <= mouse_x <= x + width // 2:
+        if pygame.mouse.get_pressed()[0]:
+            new_value = (mouse_x - (x - width // 2)) / width * (max_value - min_value) + min_value
+            return new_value
+    
+    return None
+
+def adjust_value_based_on_slider(x, y, width, mouse_pos, min_value, max_value):
+    mouse_x, mouse_y = mouse_pos
+    if y - 10 <= mouse_y <= y + 15 and x - width // 2 <= mouse_x <= x + width // 2:
+        new_value = (mouse_x - (x - width // 2)) / width * (max_value - min_value) + min_value
+        return new_value
+    return None
 
 def draw_rules_screen(mouse_pos):
     global rules_background_img  # Ensure the background image is accessible here
@@ -207,21 +251,6 @@ def draw_rules_screen(mouse_pos):
 
     return "rules_screen"
 
-
-def draw_slider(x, y, width, mouse_pos, current_value, min_value, max_value):
-    slider_rect = pygame.Rect(x - width // 2, y, width, 10)
-    handle_x = int(x - width // 2 + (current_value - min_value) / (max_value - min_value) * width)
-    handle_rect = pygame.Rect(handle_x - 5, y - 5, 10, 20)
-
-    pygame.draw.rect(screen, black, slider_rect)
-    pygame.draw.rect(screen, blue, handle_rect)
-
-    return slider_rect.collidepoint(mouse_pos) and pygame.mouse.get_pressed()[0]
-
-def adjust_value_based_on_slider(x, y, width, mouse_pos, min_value, max_value):
-    relative_x = mouse_pos[0] - (x - width // 2)
-    value = min_value + (max_value - min_value) * relative_x / width
-    return max(min_value, min(max_value, value))
 
 
 def draw_pause_screen(mouse_pos):
@@ -280,14 +309,14 @@ def draw_level_select(mouse_pos):
     return "level_select"
 
 def game_loop(level):
-    global screen, current_screen
-    initialize_game(1300, 750,FPS)  
-
+    global screen, current_screen, brightness
+    initialize_game(1300, 750, FPS)  
+    print(level)
     bug_manager = BugManager()
     bulldozers = [Bulldozer(grid, row) for row in range(6)]
     clock = pygame.time.Clock()
-    dt = 0 
-    
+    dt = 0   
+    print(brightness)
     slow_placed_time = 0
     slow_placed = False
     paused = False
@@ -306,10 +335,10 @@ def game_loop(level):
 
             current_time = time.time() - start_time
 
-            for schedule in monster_schedule[:]:
+            for schedule in monster_schedule[:][1]:
                 if current_time >= schedule["time"]:
                     bug_manager.add_bug(grid, schedule["name"])
-                    monster_schedule.remove(schedule)
+                    monster_schedule[1].remove(schedule)
 
             mouse_x, mouse_y = pygame.mouse.get_pos()
 
@@ -431,7 +460,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
+    
     mouse_pos = pygame.mouse.get_pos()
     if current_screen == "main_menu":
         current_screen = draw_main_menu(mouse_pos)
@@ -452,5 +481,6 @@ while True:
         current_screen = draw_pause_screen(mouse_pos)
         if current_screen == "game_resume":
             current_screen = f"game_screen_{level}"
-
+    print(brightness)
+    screen = apply_brightness(screen, brightness)
     pygame.display.flip()
