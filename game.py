@@ -349,20 +349,18 @@ def game_loop(level):
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
                     
-                    if option != -1 and not shovel_selected:
+                    if option not in [-1, -2]:
                         if not grid.is_occupied(grid_x, grid_y) and grid.is_inside_gird(grid_x, grid_y):
                             hand.add_tower(grid, grid_x, grid_y)
                         hand.toggle_select(option)
-                    elif shovel_selected:  # If shovel is selected, remove the tower
+                    elif option == -2:  # If shovel is selected, remove the tower
                         if grid.is_occupied(grid_x, grid_y):
                             tower = grid.get_object_in_one_grid(grid_x, grid_y)
-                            tower.is_deleted = True
+                            tower.damage(9999999)
                     else:
                         pass
 
                     option = hand.select(mouse_x, mouse_y)
-                    if option == -1 and shovel_selected:  # If shovel was selected, deselect it
-                        shovel_selected = False
 
 
             projectiles.add_projectiles(grid.draw(screen, dt, grid.get_objects(), bug_manager.get_bugs()))
@@ -405,7 +403,7 @@ def game_loop(level):
 
             # Draw vfx
             VFXManager.draw(screen, dt)
-            hand.draw(screen, dt)
+            hand.draw(screen, dt, mouse_x, mouse_y)
 
             for bulldozer in bulldozers:
                 bulldozer.update(bug_manager)
@@ -425,15 +423,9 @@ def game_loop(level):
             pause_button_y = 10
             if draw_button(pause_button_img, pause_button_choose_img, pause_button_x, pause_button_y, pause_button_img.get_width(), pause_button_img.get_height(), (mouse_x, mouse_y)):
                 paused = True
-            
-            shovel_button_x = WIDTH - pause_button_img.get_width() - shovel_img.get_width() - 20
-            shovel_button_y = 10
-            if draw_button(shovel_img, shovel_choose_img, shovel_button_x, shovel_button_y, shovel_img.get_width(), shovel_img.get_height(), (mouse_x, mouse_y)):
-                shovel_selected = not shovel_selected  # Toggle shovel selection
 
             # Apply brightness adjustment here
             apply_brightness(screen, brightness)
-
 
             pygame.display.flip()
         else:

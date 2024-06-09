@@ -50,7 +50,7 @@ class Grid:
         for i in range(self.__rows):
             for j in range(self.__cols):
                 if self.__objects[i][j]:
-                    if self.__objects[i][j].is_dead() or self.__objects[i][j].is_deleted:
+                    if self.__objects[i][j].is_dead():
                         self.__objects[i][j] = None
 
 

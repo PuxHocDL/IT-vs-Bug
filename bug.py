@@ -192,8 +192,8 @@ class Bug:
         return self._bug_size
 
 monster_schedule = [
-    {"time": 5, "name": "BigBug"},
-    {"time": 6, "name": "TriangleBug"},
-    {"time": 10, "name": "BigBug"},
-    {"time": 11, "name": "HexagonBug"},
+    {"time": 1, "name": "BigBug"},
+    {"time": 1, "name": "TriangleBug"},
+    {"time": 1, "name": "BigBug"},
+    {"time": 1, "name": "HexagonBug"},
 ]
