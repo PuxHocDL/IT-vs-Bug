@@ -88,7 +88,8 @@ class Bug:
         """
         proj = []
         if self._current_atk_interval > self._atk_interval*len(self._images) and self._atk_interval: 
-            self.set_mode(3)
+            if self.attacking:
+                self.set_mode(3)
             self._current_atk_interval = 0
         images = self._img_mode[self._mode]
         self._current_time += dt
@@ -104,7 +105,6 @@ class Bug:
         if self._mode not in [1,3]:
             self.update()
         return proj
-    
     def get_img_index(self): 
         return self._img_index
     def _shoot(self):

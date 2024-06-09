@@ -50,7 +50,7 @@ class Grid:
         for i in range(self.__rows):
             for j in range(self.__cols):
                 if self.__objects[i][j]:
-                    if self.__objects[i][j].is_dead():
+                    if self.__objects[i][j].is_dead() or self.__objects[i][j].is_deleted:
                         self.__objects[i][j] = None
 
 
@@ -148,6 +148,11 @@ class Grid:
                 if self.__objects[i][j]:
                     temp.append(self.__objects[i][j])
         return temp
+    
+    def get_object_in_one_grid(self,i,j): 
+        if self.is_inside_gird(i, j): 
+            if self.__objects[i][j]:
+                return self.__objects[i][j]
 
     def get_objects_pos(self):
         poses = []

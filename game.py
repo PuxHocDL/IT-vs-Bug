@@ -5,24 +5,25 @@ from interact import Interact
 from bug_manager import BugManager
 from vfx_manager import VFXManager
 import time
+from bulldozer import Bulldozer
 import os
 import sys
 
-def initialize_game(x, y):
+def initialize_game(x, y, FPS):
     global screen, WIDTH, HEIGHT, tile_imgs, grid, projectiles, bug_projectiles, hand, \
-           game_screen_width, game_screen_height, play_button_img, exit_button_img, help_button_img, \
-           play_button_choose_img, exit_button_choose_img, help_button_choose_img, background_img, \
+           game_screen_width, game_screen_height, play_button_img, exit_button_img, optition_button_img, \
+           play_button_choose_img, exit_button_choose_img, optition_button_choose_img, background_img, \
            menu_screen_width, menu_screen_height, level_buttons, level_buttons_choose, white, black, green, blue, \
-           FPS, BULLET_SIZE, TOWER_SIZE, SLOW_SIZE, bullet_speed, tower_cost, slow_cost, ice_cost, count, \
+           BULLET_SIZE, TOWER_SIZE, SLOW_SIZE, bullet_speed, tower_cost, slow_cost, ice_cost, count, \
            upgrade_cost, gold, shoot_delay, shoot_counters, pause_button_img, pause_button_choose_img, \
-           continue_button_img, continue_button_choose_img, exit_game_button_img, exit_game_button_choose_img
+           continue_button_img, continue_button_choose_img, exit_game_button_img, exit_game_button_choose_img, \
+           rules_button_img, rules_button_choose_img, back_button_img, back_button_choose_img, brightness, monster_schedule,\
+           shovel_choose_img, shovel_img, rules_background_img 
 
     pygame.init()
-    WIDTH, HEIGHT = 1300, 800
+    WIDTH, HEIGHT = 1300, 750
     screen = pygame.display.set_mode((x, y))
     pygame.display.set_caption("Tower Defense Game")
-
-
 
     # Load button images
     pause_button_img = pygame.image.load(os.path.join("assets", "menu", "Pause.png"))
@@ -31,8 +32,13 @@ def initialize_game(x, y):
     continue_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
     exit_game_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
     exit_game_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
-
-
+    rules_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
+    rules_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
+    back_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
+    back_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
+    shovel_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
+    shovel_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
+    rules_background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
 
     # Màu sắc
     LIGHT_BLUE = (173, 216, 230)
@@ -47,8 +53,9 @@ def initialize_game(x, y):
     GREEN = (0, 128, 0)
     mediumaquamarine = (102, 205, 170)
 
-    # Tốc độ khung hình
-    FPS = 60
+
+    # Độ sáng mặc định
+    brightness = 1.0
 
     # Kích thước quái vật và đạn
     BULLET_SIZE = 16
@@ -82,19 +89,19 @@ def initialize_game(x, y):
     projectiles = ProjectileManager()
     bug_projectiles = ProjectileManager()
 
-    hand = Hand(100, 0, 80)
+    hand = Hand(50, 5, 80)
 
     # Thiết lập kích thước cửa sổ cho màn hình game
     game_screen_width = 1300
-    game_screen_height = 800
+    game_screen_height = 750
 
     # Tải hình ảnh nút và hình nền
     play_button_img = pygame.image.load(os.path.join("assets", "menu", "Play.png"))
     exit_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
-    help_button_img = pygame.image.load(os.path.join("assets", "menu", "Option.png"))
+    optition_button_img = pygame.image.load(os.path.join("assets", "menu", "Option.png"))
     play_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Play_choose.png"))
     exit_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
-    help_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Option_choose.png"))
+    optition_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Option_choose.png"))
     background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
 
     # Thiết lập kích thước cửa sổ cho màn hình menu
@@ -110,13 +117,112 @@ def initialize_game(x, y):
     black = (0, 0, 0)
     green = (0, 255, 0)
     blue = (0, 0, 255)
+    
+    monster_schedule = [
+    {"time": 5, "name": "BigBug"},
+    {"time": 6, "name": "TriangleBug"},
+    {"time": 10, "name": "BigBug"},
+    {"time": 11, "name": "HexagonBug"},
+    {"time": 12, "name": "HexagonBug"},
+    {"time": 21, "name": "HexagonBug"},
+    {"time": 22, "name": "HexagonBug"},
+    {"time": 27, "name": "HexagonBug"},
+    {"time": 21, "name": "HexagonBug"},
+    {"time": 22, "name": "HexagonBug"},
+    {"time": 27, "name": "HexagonBug"},
+    {"time": 21, "name": "HexagonBug"},
+    {"time": 22, "name": "HexagonBug"},
+    {"time": 27, "name": "HexagonBug"},
+    {"time": 28, "name": "HexagonBug"},
+    {"time": 30, "name": "HexagonBug"},
+    {"time": 31, "name": "HexagonBug"},
+    {"time": 40, "name": "HexagonBug"},
+    ]
 
 # Initialize Pygame
-initialize_game(1080,607)
+initialize_game(1080,607,FPS)
 
+# Trạng thái của màn hình
 # Trạng thái của màn hình
 current_screen = "main_menu"
 button_pressed = False  # Biến theo dõi trạng thái nhấn nút
+def apply_brightness(surface, brightness):
+    """Apply brightness to the surface."""
+    overlay = pygame.Surface(surface.get_size())
+    overlay.fill((255, 255, 255))
+    overlay.set_alpha(int((1 - brightness) * 255))
+    surface.blit(overlay, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+
+def draw_options_menu(mouse_pos):
+    global FPS, brightness
+
+    screen.fill(white)
+    center_x = menu_screen_width // 2
+
+    # Draw FPS Slider
+    fps_text = pygame.font.SysFont(None, 40).render(f"FPS: {FPS}", True, black)
+    screen.blit(fps_text, (center_x - 100, 200))
+    if draw_slider(center_x, 250, 200, mouse_pos, FPS, 30, 120):
+        FPS = int(adjust_value_based_on_slider(center_x, 250, 200, mouse_pos, 30, 120))
+
+    # Draw Brightness Slider
+    brightness_text = pygame.font.SysFont(None, 40).render(f"Brightness: {int(brightness * 100)}%", True, black)
+    screen.blit(brightness_text, (center_x - 100, 350))
+    if draw_slider(center_x, 400, 200, mouse_pos, brightness * 100, 50, 150):
+        brightness = adjust_value_based_on_slider(center_x, 400, 200, mouse_pos, 50, 150) / 100.0
+
+    # Draw Back Button
+    if draw_button(back_button_img, back_button_choose_img, center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), mouse_pos):
+        return "main_menu"
+        
+
+    return "options_menu"
+
+def draw_rules_screen(mouse_pos):
+    global rules_background_img  # Ensure the background image is accessible here
+    
+    screen.blit(rules_background_img, (0, 0))  # Draw the background image first
+    center_x = menu_screen_width // 2
+
+    # Display game rules
+    rules = [
+        "Welcome to Tower Defense Game!",
+        "1. Place towers to defend against incoming bugs.",
+        "2. Each tower type has different abilities.",
+        "3. Earn gold by defeating bugs.",
+        "4. Use gold to place more towers or upgrade existing ones.",
+        "5. Stop the bugs from reaching the left edge of the screen."
+    ]
+
+    font = pygame.font.SysFont(None, 30)
+    y = 100
+    for rule in rules:
+        rule_text = font.render(rule, True, black)
+        screen.blit(rule_text, (50, y))
+        y += 50
+
+    # Draw Back Button
+    if draw_button(back_button_img, back_button_choose_img, center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), mouse_pos):
+        return "main_menu"
+
+    return "rules_screen"
+
+
+def draw_slider(x, y, width, mouse_pos, current_value, min_value, max_value):
+    slider_rect = pygame.Rect(x - width // 2, y, width, 10)
+    handle_x = int(x - width // 2 + (current_value - min_value) / (max_value - min_value) * width)
+    handle_rect = pygame.Rect(handle_x - 5, y - 5, 10, 20)
+
+    pygame.draw.rect(screen, black, slider_rect)
+    pygame.draw.rect(screen, blue, handle_rect)
+
+    return slider_rect.collidepoint(mouse_pos) and pygame.mouse.get_pressed()[0]
+
+def adjust_value_based_on_slider(x, y, width, mouse_pos, min_value, max_value):
+    relative_x = mouse_pos[0] - (x - width // 2)
+    value = min_value + (max_value - min_value) * relative_x / width
+    return max(min_value, min(max_value, value))
+
 
 def draw_pause_screen(mouse_pos):
     screen.fill(white)
@@ -126,7 +232,6 @@ def draw_pause_screen(mouse_pos):
     if draw_button(exit_game_button_img, exit_game_button_choose_img, center_x - exit_game_button_img.get_width() // 2, 400, exit_game_button_img.get_width(), exit_game_button_img.get_height(), mouse_pos):
         return "main_menu"
     return "pause_screen"
-
 
 
 # Hàm vẽ nút với hình ảnh và hiệu ứng khi rê chuột qua
@@ -148,15 +253,21 @@ def draw_button(image, image_choose, x, y, w, h, mouse_pos):
 def draw_main_menu(mouse_pos):
     screen.blit(background_img, (0, 0))
     center_x = menu_screen_width // 2
-    if draw_button(play_button_img, play_button_choose_img, center_x - play_button_img.get_width() // 2, 300, play_button_img.get_width(), play_button_img.get_height(), mouse_pos):
+    if draw_button(play_button_img, play_button_choose_img, center_x - play_button_img.get_width() // 2, 200, play_button_img.get_width(), play_button_img.get_height(), mouse_pos):
         return "level_select"
-    if draw_button(help_button_img, help_button_choose_img, center_x - help_button_img.get_width() // 2, 400, help_button_img.get_width(), help_button_img.get_height(), mouse_pos):
-        print("Display help instructions here")
-        return "main_menu"
+    if draw_button(optition_button_img, optition_button_choose_img, center_x - optition_button_img.get_width() // 2, 300, optition_button_img.get_width(), optition_button_img.get_height(), mouse_pos):
+        return "options_menu"
+    if draw_button(rules_button_img, rules_button_choose_img, center_x - rules_button_img.get_width() // 2, 400, rules_button_img.get_width(), rules_button_img.get_height(), mouse_pos):
+        return "rules_screen"
     if draw_button(exit_button_img, exit_button_choose_img, center_x - exit_button_img.get_width() // 2, 500, exit_button_img.get_width(), exit_button_img.get_height(), mouse_pos):
         pygame.quit()
         sys.exit()
     return "main_menu"
+
+def draw_game_over():
+    font = pygame.font.SysFont(None, 75)
+    game_over_text = font.render("Game Over", True, (255, 0, 0))
+    screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2 - game_over_text.get_height() // 2))
 
 # Hàm vẽ màn hình chọn level
 def draw_level_select(mouse_pos):
@@ -167,20 +278,24 @@ def draw_level_select(mouse_pos):
         if draw_button(button_img, button_choose_img, x, y, button_img.get_width(), button_img.get_height(), mouse_pos):
             return f"game_screen_{i+1}"
     return "level_select"
+
 def game_loop(level):
     global screen, current_screen
-    initialize_game(1300, 800)  
+    initialize_game(1300, 750,FPS)  
 
     bug_manager = BugManager()
+    bulldozers = [Bulldozer(grid, row) for row in range(6)]
     clock = pygame.time.Clock()
     dt = 0 
-    # Main game loop variables
+    
     slow_placed_time = 0
     slow_placed = False
     paused = False
+    game_over = False
     running = True
     rect_size = grid.get_cell_size()
     start_time = time.time()
+    shovel_selected = False
 
     option = -1
 
@@ -202,15 +317,24 @@ def game_loop(level):
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
                     grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
-                    if option != -1:
+                    
+                    if option != -1 and not shovel_selected:
                         if not grid.is_occupied(grid_x, grid_y) and grid.is_inside_gird(grid_x, grid_y):
                             hand.add_tower(grid, grid_x, grid_y)
                         hand.toggle_select(option)
+                    elif shovel_selected:  # If shovel is selected, remove the tower
+                        if grid.is_occupied(grid_x, grid_y):
+                            tower = grid.get_object_in_one_grid(grid_x, grid_y)
+                            tower.is_deleted = True
                     else:
                         pass
 
                     option = hand.select(mouse_x, mouse_y)
+                    if option == -1 and shovel_selected:  # If shovel was selected, deselect it
+                        shovel_selected = False
+
 
             projectiles.add_projectiles(grid.draw(screen, dt, grid.get_objects(), bug_manager.get_bugs()))
             # Towers shoot
@@ -237,8 +361,13 @@ def game_loop(level):
                     bug_manager.remove_bug(bug)
                 else:
                     bug_projectiles.add_projectiles(bug.draw(screen, dt))
-                if bug.get_x() <= 0:
-                    bug_manager.remove_bug(bug)
+                if bug.get_x() <= -60:
+                    row_index = grid.convert_to_grid_pos(bug.get_x(), bug.get_y())[0]
+                    if not bulldozers[row_index].active and not bulldozers[row_index].used:
+                        bulldozers[row_index].activate()
+                    elif bulldozers[row_index].used: 
+                        game_over = True
+
 
             # Check bullet-tower collision
             bug_projectiles.check_collision(grid.get_objects(), WIDTH, HEIGHT)
@@ -249,6 +378,17 @@ def game_loop(level):
             VFXManager.draw(screen, dt)
             hand.draw(screen, dt)
 
+            for bulldozer in bulldozers:
+                bulldozer.update(bug_manager)
+                bulldozer.draw(screen)
+            
+            if game_over:
+                draw_game_over()
+                pygame.display.flip()
+                time.sleep(3)
+                running = False
+                current_screen = "main_menu"
+            
             # Draws selected tower on mouse pos.
             hand.draw_selected(screen, mouse_x, mouse_y)
         # Draw pause button in the top-right corner
@@ -256,6 +396,15 @@ def game_loop(level):
             pause_button_y = 10
             if draw_button(pause_button_img, pause_button_choose_img, pause_button_x, pause_button_y, pause_button_img.get_width(), pause_button_img.get_height(), (mouse_x, mouse_y)):
                 paused = True
+            
+            shovel_button_x = WIDTH - pause_button_img.get_width() - shovel_img.get_width() - 20
+            shovel_button_y = 10
+            if draw_button(shovel_img, shovel_choose_img, shovel_button_x, shovel_button_y, shovel_img.get_width(), shovel_img.get_height(), (mouse_x, mouse_y)):
+                shovel_selected = not shovel_selected  # Toggle shovel selection
+
+            # Apply brightness adjustment here
+            apply_brightness(screen, brightness)
+
 
             pygame.display.flip()
         else:
@@ -264,6 +413,7 @@ def game_loop(level):
                     running = False
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:  # Press 'P' to unpause
                     paused = False
+            
 
             mouse_pos = pygame.mouse.get_pos()
             current_screen = draw_pause_screen(mouse_pos)
@@ -287,13 +437,17 @@ while True:
         current_screen = draw_main_menu(mouse_pos)
     elif current_screen == "level_select":
         current_screen = draw_level_select(mouse_pos)
+    elif current_screen == "options_menu":
+        current_screen = draw_options_menu(mouse_pos)
+    elif current_screen == "rules_screen":
+        current_screen = draw_rules_screen(mouse_pos)
     elif "game_screen" in current_screen:
         level = int(current_screen.split('_')[-1])
         game_loop(level)
         current_screen = "main_menu"
-
         screen = pygame.display.set_mode((menu_screen_width, menu_screen_height))
         pygame.display.set_caption("Tower Defense Game")
+        pygame.init()
     elif current_screen == "pause_screen":
         current_screen = draw_pause_screen(mouse_pos)
         if current_screen == "game_resume":

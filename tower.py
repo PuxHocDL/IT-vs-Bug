@@ -23,6 +23,7 @@ class Tower:
         self._img_index = 0
         self._current_time = 0
         self._load_imgs()
+        self.is_deleted = False
         self._health_bar = Bar(self._x - self._size//4, self._y - self._size//2, self._size//2, 5, colors.green, colors.gray, self._max_health)
 
     def _load_imgs(self):
