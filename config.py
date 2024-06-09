@@ -49,11 +49,7 @@ gold = gold()
 shoot_delay = 60
 shoot_counters = []
 
-tile_imgs = [
-    pygame.image.load(os.path.join("assets", "grass1.jpg")), 
-    pygame.image.load(os.path.join("assets", "grass2.jpg"))
-]
-grid = Grid(WIDTH, HEIGHT, tile_imgs)
+grid = Grid(WIDTH, HEIGHT)
 
 projectiles = ProjectileManager()
 bug_projectiles = ProjectileManager()
