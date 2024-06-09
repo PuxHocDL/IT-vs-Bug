@@ -8,8 +8,8 @@ class Bulldozer:
         self.grid = grid
         self.row = row
         self.y = HEIGHT - 50- ((6-self.row) * self.grid.get_cell_size()) + (self.grid.get_cell_size()-50)//2
-        self.speed = 10
-        self.img = pygame.image.load(os.path.join("assets", "bullzoder","ice_sledge.png"))
+        self.speed = 20
+        self.img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "bullzoder","ice_sledge.png")), (100, 100))
 
     def activate(self):
         if not self.used:
