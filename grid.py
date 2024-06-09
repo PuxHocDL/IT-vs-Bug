@@ -1,6 +1,7 @@
 import pygame
 import colors
 import os
+
 class Grid:
     """
     Class for Grid object.
@@ -22,7 +23,7 @@ class Grid:
         self.__cols = 11
         self.__imgs = imgs
         self.__bg_img = bg_img
-        self.__map =  pygame.image.load(os.path.join("assets", "menu", "background2.png"))
+        self.__map = pygame.image.load(os.path.join("assets", "menu", "background2.png"))
         self.__objects = []
         for _ in range(self.__rows):
             temp = []
@@ -107,19 +108,10 @@ class Grid:
         Returns:
             projectiles: a List of Projectiles shot from towers.
         """
+        screen.blit(self.__map, (0, 0))
         projectiles = []
-        x_offset = 50
-        y_offset = self.__screen_height - 50 - self.__size*self.__rows
-        img_counter = 0
         for i in range(self.__rows):
             for j in range(self.__cols):
-                x = x_offset + j*self.__size
-                y = y_offset + i*self.__size
-                screen.blit(pygame.transform.scale(self.__imgs[img_counter%len(self.__imgs)], (self.__size, self.__size)), (x, y))
-                pygame.draw.rect(screen, colors.gray, [x, y, self.__size, self.__size], 1)
-                screen.blit(self.__map, (0,0))
-                img_counter += 1
-
                 if self.__objects[i][j]:
                     if self.__objects[i][j].get_name() != "Utility":
                         projectiles.extend(self.__objects[i][j].draw(screen, dt))
