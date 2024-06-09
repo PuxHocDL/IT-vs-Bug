@@ -188,6 +188,9 @@ class Bug:
     def get_atk_index(self):
         return self._atk_index
 
+    def get_size(self):
+        return self._bug_size
+
 monster_schedule = [
     {"time": 5, "name": "BigBug"},
     {"time": 6, "name": "TriangleBug"},

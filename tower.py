@@ -172,8 +172,8 @@ class TheRook(Tower):
         return proj
 
     def _utility(self, obj):
-        #VFXManager.add_vfx(obj.get_x(), obj.get_y(), 500, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png"), (self._size, self._y))) for i in range(8)])
-        return [SilverLining(obj.get_x(), obj.get_y())]
+        VFXManager.add_vfx(obj.get_x() + obj.get_size()//4, 0, 500, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, obj.get_y())) for i in range(8)])
+        return [SilverLining(obj.get_x() + obj.get_size()//4, obj.get_y())]
 
     def get_name(self):
         return "Utility"
