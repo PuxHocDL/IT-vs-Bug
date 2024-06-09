@@ -9,6 +9,7 @@ class Bulldozer:
         self.row = row
         self.y = HEIGHT - 50- ((6-self.row) * self.grid.get_cell_size()) + (self.grid.get_cell_size()-50)//2
         self.speed = 10
+        self.img = pygame.image.load(os.path.join("assets", "bullzoder","ice_sledge.png"))
 
     def activate(self):
         if not self.used:
@@ -37,6 +38,6 @@ class Bulldozer:
 
     def draw(self, screen):
         if self.active:
-            pygame.draw.rect(screen, (255, 0, 0), (self.x, self.y, 50, 50))
+            screen.blit(self.img, (self.x,self.y)) 
         elif not self.used:
-            pygame.draw.rect(screen, (0, 255, 0), (self.x, self.y, 50, 50))  
+            screen.blit(self.img, (self.x,self.y)) 
