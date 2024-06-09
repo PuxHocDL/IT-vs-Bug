@@ -103,7 +103,7 @@ class Bug:
         if self._img_index == len(images)-1:
             self.set_mode(0)
         if self._mode not in [1,3]:
-            self.update()
+            self.update(dt)
         return proj
     def get_img_index(self): 
         return self._img_index
@@ -140,7 +140,7 @@ class Bug:
         """
         return pygame.mask.from_surface(self._images[0], threshold=254)
 
-    def update(self):
+    def update(self, dt):
         """
         Updates the bug's position and speed based on its current state.
         """
@@ -148,7 +148,7 @@ class Bug:
             self._speed = self._original_speed
             self._slowed = False
 
-        self._x -= self._speed
+        self._x -= self._speed*dt/1000
 
     def apply_slow(self, slow, slow_time):
         """
