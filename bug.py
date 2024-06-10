@@ -79,7 +79,8 @@ class Bug:
         self._current_jump_frame = 0  
         self._jump_frame_duration = 100
         self._current_jump_time = 0  
-        
+        self.fix_coli = 50
+        self.fix_thunder = 0
 
         self._load_imgs()
 
@@ -128,7 +129,7 @@ class Bug:
                 proj = self._shoot()
                 self._current_atk_interval += 1
             screen.blit(images[self._img_index], (self._x, self._y - self._modifiled))
-        if self._mode == 4:  
+        if self._mode == 4:
             self._current_jump_time += dt
             if self._current_jump_time >= self._jump_frame_duration:
                 self._current_jump_frame = (self._current_jump_frame + 1) % len(self._jump_images)
@@ -217,10 +218,10 @@ class Bug:
         return self._slowed 
 
     def get_pos(self):
-        return self._x, self._y - 50
+        return self._x, self._y - self.fix_coli
     
     def get_x(self):
-        return self._x
+        return self._x + self.fix_thunder 
 
     def get_y(self):
         return self._y + self._bug_size//2

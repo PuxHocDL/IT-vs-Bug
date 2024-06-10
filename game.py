@@ -12,16 +12,16 @@ def apply_brightness(surface, brightness):
         # Decrease brightness
         overlay.fill((0, 0, 0, int((1 - brightness) * 255)))
 
-    surface.blit(overlay, (0,0))
+    surface.blit(overlay, (0, 0))
     return surface
 
 
-def draw_options_menu(fps, brightness, screen, width, height):
+def draw_options_menu(fps, brightness, screen, width, height, hover_sound, click_sound):
     center_x = width // 2
 
     back_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
     back_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
-    back_button = Button(center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), back_button_img, back_button_choose_img, back_button_img)
+    back_button = Button(center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), back_button_img, back_button_choose_img, back_button_img, hover_sound, click_sound)
 
     while True:
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -70,6 +70,7 @@ def draw_slider(screen, x, y, width, mouse_pos, current_value, min_value, max_va
 
     return None
 
+
 def adjust_value_based_on_slider(x, y, width, mouse_pos, min_value, max_value):
     mouse_x, mouse_y = mouse_pos
     if y - 10 <= mouse_y <= y + 15 and x - width // 2 <= mouse_x <= x + width // 2:
@@ -78,13 +79,13 @@ def adjust_value_based_on_slider(x, y, width, mouse_pos, min_value, max_value):
     return None
 
 
-def draw_rules_screen(screen, width, height, brightness):
+def draw_rules_screen(screen, width, height, brightness, hover_sound, click_sound):
     center_x = width // 2
 
     rules_background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
     back_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
     back_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
-    back_button = Button(center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), back_button_img, back_button_choose_img, back_button_img)
+    back_button = Button(center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), back_button_img, back_button_choose_img, back_button_img, hover_sound, click_sound)
 
     # Display game rules
     rules = [
@@ -122,7 +123,7 @@ def draw_rules_screen(screen, width, height, brightness):
 
 
 # Hàm vẽ màn hình chính
-def draw_main_menu(fps, brightness):
+def draw_main_menu(fps, brightness, hover_sound, click_sound):
     WIDTH, HEIGHT = 1080, 607
 
     pygame.init()
@@ -141,12 +142,17 @@ def draw_main_menu(fps, brightness):
     exit_game_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
     exit_game_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
 
-    play_button = Button(center_x - play_button_img.get_width() // 2, 200, play_button_img.get_width(), play_button_img.get_height(), play_button_img, play_button_choose_img, play_button_img)
-    option_button = Button(center_x - option_button_img.get_width() // 2, 300, option_button_img.get_width(), option_button_img.get_height(), option_button_img, option_button_choose_img, option_button_img)
-    rules_button = Button(center_x - rules_button_img.get_width() // 2, 400, rules_button_img.get_width(), rules_button_img.get_height(), rules_button_img, rules_button_choose_img, rules_button_img)
-    exit_button = Button(center_x - exit_game_button_img.get_width() // 2, 500, exit_game_button_img.get_width(), exit_game_button_img.get_height(), exit_game_button_img, exit_game_button_choose_img, exit_game_button_img)
+    play_button = Button(center_x - play_button_img.get_width() // 2, 200, play_button_img.get_width(), play_button_img.get_height(), play_button_img, play_button_choose_img, play_button_img, hover_sound, click_sound)
+    option_button = Button(center_x - option_button_img.get_width() // 2, 300, option_button_img.get_width(), option_button_img.get_height(), option_button_img, option_button_choose_img, option_button_img, hover_sound, click_sound)
+    rules_button = Button(center_x - rules_button_img.get_width() // 2, 400, rules_button_img.get_width(), rules_button_img.get_height(), rules_button_img, rules_button_choose_img, rules_button_img, hover_sound, click_sound)
+    exit_button = Button(center_x - exit_game_button_img.get_width() // 2, 500, exit_game_button_img.get_width(), exit_game_button_img.get_height(), exit_game_button_img, exit_game_button_choose_img, exit_game_button_img, hover_sound, click_sound)
 
     option = "lmao"
+
+    # Load and play main menu music
+    pygame.mixer.music.load(os.path.join("assets", "music", "main_menu.ogg"))
+    pygame.mixer.music.set_volume(0.3)  # Set music volume to 50%
+    pygame.mixer.music.play(-1)
 
     while True:
         screen.blit(background_img, (0, 0))
@@ -157,13 +163,13 @@ def draw_main_menu(fps, brightness):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.check_hovering(mouse_x, mouse_y):
                     play_button.click()
-                    option = draw_level_select(screen, WIDTH, HEIGHT, brightness)
+                    option = draw_level_select(screen, WIDTH, HEIGHT, brightness, hover_sound, click_sound)
                 elif option_button.check_hovering(mouse_x, mouse_y):
                     option_button.click()
-                    option, fps, brightness = draw_options_menu(fps, brightness, screen, WIDTH, HEIGHT)
+                    option, fps, brightness = draw_options_menu(fps, brightness, screen, WIDTH, HEIGHT, hover_sound, click_sound)
                 elif rules_button.check_hovering(mouse_x, mouse_y):
                     rules_button.click()
-                    option = draw_rules_screen(screen, WIDTH, HEIGHT, brightness)
+                    option = draw_rules_screen(screen, WIDTH, HEIGHT, brightness, hover_sound, click_sound)
                 elif exit_button.check_hovering(mouse_x, mouse_y):
                     exit_button.click()
                     option = "exit"
@@ -183,8 +189,27 @@ def draw_main_menu(fps, brightness):
     return option, fps, brightness
 
 
+def draw_loading_screen(screen, width, height, brightness):
+    center_x = width // 2
+    center_y = height // 2
+
+    # Background color or image
+    screen.fill("black")
+
+    # Loading text
+    pygame.init()
+    font = pygame.font.SysFont(None, 50)
+    loading_text = font.render("Loading...", True, "white")
+    screen.blit(loading_text, (center_x - loading_text.get_width() // 2, center_y - loading_text.get_height() // 2))
+    
+    apply_brightness(screen, brightness)
+    
+    pygame.display.flip()
+    pygame.time.delay(2000)  # Display for 2 seconds
+
+
 # Hàm vẽ màn hình chọn level
-def draw_level_select(screen, width, height, brightness):
+def draw_level_select(screen, width, height, brightness, hover_sound, click_sound):
     background_img = pygame.image.load(os.path.join("assets", "menu", "Background1.png"))
 
     level_buttons = [pygame.image.load(os.path.join("assets", "menu", f"level_{i}.png")) for i in range(0, 6)]
@@ -193,7 +218,13 @@ def draw_level_select(screen, width, height, brightness):
     for i in range(len(level_buttons)):
         x = (i % 3) * (level_buttons[i].get_width() + 20) + (width - 3 * level_buttons[i].get_width() - 40) // 2
         y = (i // 3) * (level_buttons[i].get_height() + 20) + 200
-        buttons.append(Button(x, y, level_buttons[i].get_width(), level_buttons[i].get_height(), level_buttons[i], level_buttons_choose[i], level_buttons[i]))
+        buttons.append(Button(x, y, level_buttons[i].get_width(), level_buttons[i].get_height(), level_buttons[i], level_buttons_choose[i], level_buttons[i], hover_sound, click_sound))
+
+    # Load and play level select music
+    pygame.mixer.music.load(os.path.join("assets", "music", "selected.ogg"))
+    pygame.mixer.music.set_volume(0.3)  # Set music volume to 50%
+    pygame.mixer.music.play(-1)
+
     while True:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         screen.blit(background_img, (0, 0))
@@ -215,16 +246,45 @@ def draw_level_select(screen, width, height, brightness):
 
 # Vòng lặp chính của chương trình
 if __name__ == "__main__":
+    pygame.init()
+    pygame.mixer.init()  # Initialize the mixer
+
+    # Load sound effects
+    hover_sound = pygame.mixer.Sound(os.path.join("assets", "music", "hover.wav"))
+    click_sound = pygame.mixer.Sound(os.path.join("assets", "music", "click.wav"))
+    hover_sound.set_volume(1)  # Set sound effect volume to 50%
+    click_sound.set_volume(1)  # Set sound effect volume to 50%
+
     fps = 60
     brightness = 1
 
-    option, fps, brightness = draw_main_menu(fps, brightness)
+    option, fps, brightness = draw_main_menu(fps, brightness, hover_sound, click_sound)
+    WIDTH, HEIGHT = 1080, 607
+
     while True:
         if option == "exit":
             break
         if option == "main_menu":
-            option, fps, brightness = draw_main_menu(fps, brightness)
+            option, fps, brightness = draw_main_menu(fps, brightness, hover_sound, click_sound)
         else:
+            # Initialize Pygame display for loading screen
+            screen = pygame.display.set_mode((WIDTH, HEIGHT))
+            
+            # Display the loading screen
+            draw_loading_screen(screen, WIDTH, HEIGHT, brightness)
+            
+            # Load the level data
             level1_schedule = load_json(os.path.join("level_data", "level1.json"))
-            level1 = Level([0, 1, 2, 3, 4], level1_schedule)
+            level1 = Level([0, 1, 2, 3, 4, 5], level1_schedule)
+
+            # Load and play level music
+            pygame.mixer.music.load(os.path.join("assets", "music", "battle.wav"))
+            pygame.mixer.music.set_volume(1)  # Set music volume to 50%
+            pygame.mixer.music.play(-1)
+            
+            # Run the level
             option = level1.run(fps, brightness)
+
+    # Stop any playing music when exiting
+    pygame.mixer.init()
+    pygame.mixer.music.stop()

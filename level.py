@@ -9,7 +9,6 @@ from projectile_manager import ProjectileManager
 from vfx_manager import VFXManager
 from button import Button
 
-
 class Level:
     __WIDTH = 1300
     __HEIGHT = 750
@@ -17,13 +16,21 @@ class Level:
     def __init__(self, tower_ids, monster_schedule):
         self.__monster_schedule = monster_schedule
         self.__tower_ids = tower_ids
+        self.__total_time = max(event["time"] for event in monster_schedule) if monster_schedule else 0
 
     def run(self, fps, brightness):
-        # initialize_game(1300, 750, FPS)
 
         pygame.init()
+        pygame.mixer.init()
         screen = pygame.display.set_mode((Level.__WIDTH, Level.__HEIGHT))
         pygame.display.set_caption("Towers vs Monsters")
+
+        # Load sound effects
+        hover_sound = pygame.mixer.Sound(os.path.join("assets", "music", "hover.wav"))
+        click_sound = pygame.mixer.Sound(os.path.join("assets", "music", "click.wav"))
+
+        hover_sound.set_volume(0.5)
+        click_sound.set_volume(0.5)
 
         grid = Grid(Level.__WIDTH, Level.__HEIGHT)
         hand = Hand(50, 5, 80)
@@ -38,7 +45,7 @@ class Level:
 
         pause_button_img = pygame.image.load(os.path.join("assets", "menu", "Pause.png"))
         pause_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Pause_choose.png"))
-        pause_button = Button(Level.__WIDTH - pause_button_img.get_width() - 10, 10, pause_button_img.get_width(), pause_button_img.get_height(), pause_button_img, pause_button_choose_img, pause_button_img)
+        pause_button = Button(Level.__WIDTH - pause_button_img.get_width() - 10, 10, pause_button_img.get_width(), pause_button_img.get_height(), pause_button_img, pause_button_choose_img, pause_button_img, hover_sound, click_sound)
 
         clock = pygame.time.Clock()
         dt = 0
@@ -67,7 +74,7 @@ class Level:
                     if event.button == 1:       # Left click
                         if pause_button.check_hovering(mouse_x, mouse_y):
                             pause_button.click()
-                            choice = Level.__draw_pause_screen(screen)
+                            choice = Level.__draw_pause_screen(screen, hover_sound, click_sound)
                             if choice == 0:
                                 running = False
                             else:
@@ -93,7 +100,7 @@ class Level:
                         hand.set_select(-1)
                         option = -1
 
-            projectiles.add_projectiles(grid.draw(screen, dt, grid.get_objects(), bug_manager.get_bugs()))
+            projectiles.add_projectiles(grid.draw(screen, dt, grid.get_objects(), bug_manager.get_bugs(),hand))
             # Towers shoot
             for bug_pos in bug_manager.get_bugs_pos():
                 for tower in grid.get_objs_in_row(grid.convert_to_grid_pos(bug_pos[0], bug_pos[1])[0]):
@@ -148,6 +155,9 @@ class Level:
             # Draw pause button in the top-right corner
             pause_button.draw(screen, mouse_x, mouse_y)
 
+            # Draw progress bar
+            self.__draw_progress_bar(screen, current_time, self.__total_time)
+
             # Apply brightness adjustment here
             self.__apply_brightness(screen, brightness)
 
@@ -163,7 +173,7 @@ class Level:
         screen.blit(game_over_text, (Level.__WIDTH // 2 - game_over_text.get_width() // 2, Level.__HEIGHT // 2 - game_over_text.get_height() // 2))
 
     @staticmethod
-    def __draw_pause_screen(screen):
+    def __draw_pause_screen(screen, hover_sound, click_sound):
         screen.fill("white")
         center_x = Level.__WIDTH // 2
 
@@ -172,8 +182,8 @@ class Level:
         exit_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
         exit_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
 
-        continue_button = Button(center_x - continue_button_img.get_width() // 2, 400, continue_button_img.get_width(), continue_button_img.get_height(), continue_button_img, continue_button_choose_img, continue_button_img)
-        exit_button = Button(center_x - exit_button_img.get_width() // 2, 500, exit_button_img.get_width(), exit_button_img.get_height(), exit_button_img, exit_button_choose_img, exit_button_img)
+        continue_button = Button(center_x - continue_button_img.get_width() // 2, 400, continue_button_img.get_width(), continue_button_img.get_height(), continue_button_img, continue_button_choose_img, continue_button_img, hover_sound, click_sound)
+        exit_button = Button(center_x - exit_button_img.get_width() // 2, 500, exit_button_img.get_width(), exit_button_img.get_height(), exit_button_img, exit_button_choose_img, exit_button_img, hover_sound, click_sound)
 
         while True:
             screen.fill("white")
@@ -202,3 +212,23 @@ class Level:
             overlay.fill((0, 0, 0, int((1 - brightness) * 255)))
 
         surface.blit(overlay, (0, 0))
+
+    def __draw_progress_bar(self, screen, current_time, total_time):
+        # Define the size and position of the progress bar
+        bar_width = 200
+        bar_height = 20
+        bar_x = Level.__WIDTH - bar_width - 20
+        bar_y = Level.__HEIGHT - bar_height - 20
+
+        # Calculate the progress
+        progress = int((current_time / total_time) * bar_width)
+        progress = min(progress, bar_width)  # Ensure progress doesn't exceed bar width
+
+        # Draw the white background
+        pygame.draw.rect(screen, (255, 255, 255), (bar_x - 2, bar_y - 2, bar_width + 4, bar_height + 4))
+
+        # Draw the background of the bar
+        pygame.draw.rect(screen, "gray", (bar_x, bar_y, bar_width, bar_height))
+
+        # Draw the progress of the bar
+        pygame.draw.rect(screen, "green", (bar_x, bar_y, progress, bar_height))
