@@ -201,7 +201,7 @@ class Bug:
         """
         Applies a slowing effect to the bug.
         """
-        self._speed = self._original_speed * slow
+        self._speed = self._original_speed * (1-slow)
         self._slowed = True
         self._slow_timer = slow_time + pygame.time.get_ticks()
 

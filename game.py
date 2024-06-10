@@ -279,10 +279,12 @@ if __name__ == "__main__":
 
             # Load and play level music
             pygame.mixer.music.load(os.path.join("assets", "music", "battle.wav"))
-            pygame.mixer.music.set_volume(1)  # Set music volume to 50%
+            pygame.mixer.music.set_volume(1) 
             pygame.mixer.music.play(-1)
             
             # Run the level
+
+
             option = level1.run(fps, brightness)
 
     # Stop any playing music when exiting

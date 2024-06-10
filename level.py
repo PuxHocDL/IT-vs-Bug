@@ -71,6 +71,7 @@ class Level:
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
+                    grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
                     if event.button == 1:       # Left click
                         if pause_button.check_hovering(mouse_x, mouse_y):
                             pause_button.click()
@@ -80,8 +81,6 @@ class Level:
                             else:
                                 clock.tick(fps)
 
-                        grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
-
                         if option not in [-1, -2]:
                             if not grid.is_occupied(grid_x, grid_y) and grid.is_inside_gird(grid_x, grid_y):
                                 hand.add_tower(grid, grid_x, grid_y)
@@ -90,17 +89,21 @@ class Level:
                             if grid.is_occupied(grid_x, grid_y):
                                 tower = grid.get_object_in_one_grid(grid_x, grid_y)
                                 tower.damage(9999999)
-                        else:
-                            pass
 
                         option = hand.select(mouse_x, mouse_y)
                     elif event.button == 3:      # Right click
                         if option not in [-1, -2]:
                             hand.toggle_select(option)
+                        else:
+                            grid.upgrade_tower(grid_x, grid_y, hand)      # Upgrade tower
                         hand.set_select(-1)
                         option = -1
 
-            projectiles.add_projectiles(grid.draw(screen, dt, grid.get_objects(), bug_manager.get_bugs(),hand))
+
+            hand.set_affordable()
+
+            projectiles.add_projectiles(grid.draw(screen, dt, grid.get_objects(), bug_manager.get_bugs(), hand))
+
             # Towers shoot
             for bug_pos in bug_manager.get_bugs_pos():
                 for tower in grid.get_objs_in_row(grid.convert_to_grid_pos(bug_pos[0], bug_pos[1])[0]):
@@ -163,6 +166,7 @@ class Level:
 
             pygame.display.flip()
 
+        VFXManager.clear()
         pygame.quit()
         return "main_menu"
 

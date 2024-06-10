@@ -3,7 +3,6 @@ from button import Button
 
 class Hand:
     __card_types = {-1: Card, 0: BasicTowerCard, 1: IceTowerCard, 2: FireTowerCard, 3: TheWallCard, 4: TheRookCard, 5: ObeliskCard}
-
     def __init__(self, x, y, card_size):
         self.__x = x
         self.__y = y
@@ -51,7 +50,7 @@ class Hand:
     def select(self, mouse_x, mouse_y):
         for i, card in enumerate(self.__cards):
             if card.check_input(mouse_x, mouse_y) and card.check_avail():
-                if self.__is_affordable(Hand.__card_types[i].price):
+                if self.is_affordable(Hand.__card_types[i].price):
                     self.toggle_select(i)
                     self.__selected = i
                     return i
@@ -70,8 +69,7 @@ class Hand:
             return
         self.__cards[self.__selected].add_tower(grid, grid_x, grid_y)
         self.__reset_time()
-        self.__remove_energy()
-        self.__set_affordable()
+        self.remove_energy(Hand.__card_types[self.__selected].price)
 
     def add_energy(self, value):
         self.__energy += value
@@ -79,15 +77,15 @@ class Hand:
     def set_select(self, index):
         self.__selected = index
 
-    def __remove_energy(self):
-        self.__energy -= Hand.__card_types[self.__selected].price
+    def remove_energy(self, value):
+        self.__energy -= value
 
-    def __is_affordable(self, value):
+    def is_affordable(self, value):
         return self.__energy >= value
 
     def __reset_time(self):
         self.__cards[self.__selected].reset_time()
 
-    def __set_affordable(self):
+    def set_affordable(self):
         for card in self.__cards:
             card.set_affordable(self.__energy)
