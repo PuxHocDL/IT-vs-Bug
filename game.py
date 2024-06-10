@@ -1,154 +1,9 @@
 import pygame
 import os
-import sys
 from level import Level
 from button import Button
 from utilities import load_json
 
-def initialize_game(x, y, FPS):
-    global screen, WIDTH, HEIGHT, tile_imgs, grid, projectiles, bug_projectiles, hand, \
-           game_screen_width, game_screen_height, play_button_img, exit_button_img, optition_button_img, \
-           play_button_choose_img, exit_button_choose_img, optition_button_choose_img, background_img, \
-           menu_screen_width, menu_screen_height, level_buttons, level_buttons_choose, white, black, green, blue, \
-           BULLET_SIZE, TOWER_SIZE, SLOW_SIZE, bullet_speed, tower_cost, slow_cost, ice_cost, count, \
-           upgrade_cost, gold, shoot_delay, shoot_counters, pause_button_img, pause_button_choose_img, \
-           continue_button_img, continue_button_choose_img, exit_game_button_img, exit_game_button_choose_img, \
-           rules_button_img, rules_button_choose_img, back_button_img, back_button_choose_img, brightness, monster_schedule,\
-           shovel_choose_img, shovel_img, rules_background_img,gray, background1_img
-
-    pygame.init()
-    WIDTH, HEIGHT = 1300, 750
-    screen = pygame.display.set_mode((x, y))
-    pygame.display.set_caption("Tower Defense Game")
-
-    # Load button images
-    pause_button_img = pygame.image.load(os.path.join("assets", "menu", "Pause.png"))
-    pause_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Pause_choose.png"))
-    continue_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
-    continue_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
-    exit_game_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
-    exit_game_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
-    rules_button_img = pygame.image.load(os.path.join("assets", "menu", "Help.png"))
-    rules_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Help_choose.png"))
-    back_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
-    back_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
-    shovel_img = pygame.image.load(os.path.join("assets", "menu", "Hammer.png"))
-    shovel_choose_img = pygame.image.load(os.path.join("assets", "menu", "Hammer_choose.png"))
-    rules_background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
-
-    # Màu sắc
-    LIGHT_BLUE = (173, 216, 230)
-    ICE_BLUE = (135, 206, 235)
-    DARK_BLUE = (0, 0, 139)
-    BLUE = (0, 0, 255)
-    YELLOW = (255, 255, 0)
-    PURPLE = (128, 0, 128)  # Màu của vật làm chậm
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    RED = (255, 0, 0)
-    GREEN = (0, 128, 0)
-    mediumaquamarine = (102, 205, 170)
-
-
-    # Độ sáng mặc định
-  
-
-    # Kích thước quái vật và đạn
-    BULLET_SIZE = 16
-    TOWER_SIZE = 50
-    SLOW_SIZE = 50
-    # Tốc độ đạn
-    bullet_speed = 5
-    # Giá tiền mua tháp và vật làm chậm
-    tower_cost = 50
-    slow_cost = 100
-    slow_placed = False
-    ice_cost = 300
-    count = 0
-    # Giá nâng cấp tháp
-    upgrade_cost = 200
-
-    class gold:
-        gold = 3000
-
-    gold = gold()
-    # Tần suất bắn đạn (tính bằng khung hình)
-    shoot_delay = 60
-    shoot_counters = []
-
-    grid = Grid(WIDTH, HEIGHT)
-
-    projectiles = ProjectileManager()
-    bug_projectiles = ProjectileManager()
-
-    hand = Hand(50, 5, 80)
-
-    # Thiết lập kích thước cửa sổ cho màn hình game
-    game_screen_width = 1300
-    game_screen_height = 750
-
-    # Tải hình ảnh nút và hình nền
-    play_button_img = pygame.image.load(os.path.join("assets", "menu", "Play.png"))
-    exit_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
-    optition_button_img = pygame.image.load(os.path.join("assets", "menu", "Option.png"))
-    play_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Play_choose.png"))
-    exit_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
-    optition_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Option_choose.png"))
-    background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
-    background1_img = pygame.image.load(os.path.join("assets", "menu", "Background1.png"))
-
-    # Thiết lập kích thước cửa sổ cho màn hình menu
-    menu_screen_width = 1080
-    menu_screen_height = 607
-
-    # Tải hình ảnh các nút chọn level
-    level_buttons = [pygame.image.load(os.path.join("assets", "menu", f"level_{i}.png")) for i in range(0, 6)]
-    level_buttons_choose = [pygame.image.load(os.path.join("assets", "menu", f"level_{i}_choose.png")) for i in range(0, 6)]
-
-    # Thiết lập màu sắc
-    white = (255, 255, 255)
-    black = (0, 0, 0)
-    green = (0, 255, 0)
-    blue = (0, 0, 255)
-    gray = (128, 128, 128)
-    
-    monster_schedule = [[
-    {"time": 5, "name": "BigBug"},
-    {"time": 6, "name": "TriangleBug"},
-    {"time": 10, "name": "BigBug"},
-    {"time": 11, "name": "HexagonBug"},
-    {"time": 12, "name": "HexagonBug"},
-    {"time": 21, "name": "HexagonBug"},
-    {"time": 22, "name": "HexagonBug"},
-    {"time": 27, "name": "HexagonBug"},
-    {"time": 21, "name": "HexagonBug"},
-    {"time": 22, "name": "HexagonBug"},
-    {"time": 27, "name": "HexagonBug"},
-    {"time": 21, "name": "HexagonBug"},
-    {"time": 22, "name": "HexagonBug"},
-    {"time": 27, "name": "HexagonBug"},
-    {"time": 28, "name": "HexagonBug"},
-    {"time": 30, "name": "HexagonBug"},
-    {"time": 31, "name": "HexagonBug"},
-    {"time": 40, "name": "HexagonBug"},
-    ], [{"time": 5, "name": "BigBug"},
-    {"time": 6, "name": "TriangleBug"},
-    {"time": 10, "name": "BigBug"},
-    {"time": 11, "name": "HexagonBug"},
-    {"time": 12, "name": "HexagonBug"},
-    {"time": 21, "name": "HexagonBug"},
-    {"time": 22, "name": "HexagonBug"},
-    {"time": 27, "name": "HexagonBug"},
-    {"time": 21, "name": "BigBug"},
-    {"time": 22, "name": "BigBug"},
-    {"time": 27, "name": "BigBug"},
-    {"time": 21, "name": "HexagonBug"},
-    {"time": 22, "name": "HexagonBug"},
-    {"time": 27, "name": "HexagonBug"},
-    {"time": 28, "name": "BigBug"},
-    {"time": 30, "name": "TriangleBug"},
-    {"time": 31, "name": "HexagonBug"},
-    {"time": 40, "name": "HexagonBug"}]]
 
 def apply_brightness(surface, brightness):
     """Apply brightness to the surface."""
@@ -159,6 +14,7 @@ def apply_brightness(surface, brightness):
 
     surface.blit(overlay, (0,0))
     return surface
+
 
 def draw_options_menu(fps, brightness, screen, width, height):
     center_x = width // 2
@@ -372,6 +228,3 @@ if __name__ == "__main__":
             option, fps, brightness = draw_main_menu(fps, brightness)
         else:
             option = level1.run(fps, brightness)
-
-        #screen = apply_brightness(screen, brightness)
-        #pygame.display.flip()

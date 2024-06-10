@@ -1,0 +1,74 @@
+[
+    {
+        "time": 5,
+        "name": "bigbug"
+    },
+    {
+        "time": 6,
+        "name": "trianglebug"
+    },
+    {
+        "time": 10,
+        "name": "bigbug"
+    },
+    {
+        "time": 11,
+        "name": "hexagonbug"
+    },
+    {
+        "time": 12,
+        "name": "hexagonbug"
+    },
+    {
+        "time": 21,
+        "name": "hexagonbug"
+    },
+    {
+        "time": 22,
+        "name": "hexagonbug"
+    },
+    {
+        "time": 27,
+        "name": "hexagonbug"
+    },
+    {
+        "time": 21,
+        "name": "bigbug"
+    },
+    {
+        "time": 22,
+        "name": "bigbug"
+    },
+    {
+        "time": 27,
+        "name": "bigbug"
+    },
+    {
+        "time": 21,
+        "name": "hexagonbug"
+    },
+    {
+        "time": 22,
+        "name": "hexagonbug"
+    },
+    {
+        "time": 27,
+        "name": "hexagonbug"
+    },
+    {
+        "time": 28,
+        "name": "bigbug"
+    },
+    {
+        "time": 30,
+        "name": "trianglebug"
+    },
+    {
+        "time": 31,
+        "name": "hexagonbug"
+    },
+    {
+        "time": 40,
+        "name": "hexagonbug"
+    }
+]

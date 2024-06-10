@@ -1,5 +1,4 @@
 import pygame
-from config import grid
 from projectile import *
 from vfx_manager import VFXManager
 
