@@ -19,5 +19,4 @@ class Interact():
     @staticmethod
     def collide_mask(mask1, mask2, pos1, pos2):
         return mask1.overlap(mask2, (pos2[0]-pos1[0], pos2[1]-pos1[1]))
-    def collide_mask_2(mask1, mask2, pos1, pos2):
-        return mask1.overlap(mask2, (pos2[0]-pos1[0], pos2[1]-pos1[1]))
+    

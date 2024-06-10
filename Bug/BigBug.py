@@ -31,10 +31,12 @@ class BigBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed=40, max_health=1000, bug_size=200, rect_x=100, rect_y=100, name="BigBug")
+        super().__init__(x, y, speed=15, max_health=1000, bug_size=200, rect_x=100, rect_y=100, name="BigBug")
         self._atk_interval = 7
         self._shoot_index = 7
         self._atk_index = 7
+        self.damaged = 20
+        self.jumping = None
 
         self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","alive", f"{i}.png")), (200, 200)) for i in range(8)]
         self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","dead", f"{i}.png")), (200, 200)) for i in range(14)]
