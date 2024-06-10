@@ -199,7 +199,7 @@ def draw_level_select(screen, width, height, brightness):
         screen.blit(background_img, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return 0
+                return "exit"
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 for i in range(len(buttons)):
                     if buttons[i].check_hovering(mouse_x, mouse_y):
