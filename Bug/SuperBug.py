@@ -30,8 +30,8 @@ class SuperBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed=40, max_health=1000, bug_size=350, rect_x=120, rect_y=100, name="SuperBug")
-        self._animate_time = {0: 500, 1: 2000, 2: 1000, 3: 2000, 4: 1500}
+        super().__init__(x, y, speed=60, max_health=4000, bug_size=350, rect_x=120, rect_y=100, name="SuperBug")
+        self._animate_time = {0: 3000, 1: 2000, 2: 1000, 3: 2000, 4: 1500}
         self._atk_index = [6, 14, 31, 39]
         self._modifiled = 200
         self.fix_coli = 100

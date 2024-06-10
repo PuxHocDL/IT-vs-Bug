@@ -283,8 +283,6 @@ if __name__ == "__main__":
             pygame.mixer.music.play(-1)
             
             # Run the level
-
-
             option = level1.run(fps, brightness)
 
     # Stop any playing music when exiting
