@@ -70,5 +70,29 @@
     {
         "time": 40,
         "name": "HexagonBug"
+    },
+    {
+        "time": 20,
+        "name": "NormalBug"
+    },
+    {
+        "time": 20,
+        "name": "NormalBug"
+    },
+    {
+        "time": 22,
+        "name": "NormalBug"
+    },
+    {
+        "time": 25,
+        "name": "NormalBug"
+    },
+    {
+        "time": 30,
+        "name": "NormalBug"
+    },
+    {
+        "time": 35,
+        "name": "NormalBug"
     }
 ]

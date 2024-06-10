@@ -215,8 +215,6 @@ def draw_level_select(screen, width, height, brightness):
 
 # Vòng lặp chính của chương trình
 if __name__ == "__main__":
-    level1_schedule = load_json(os.path.join("level_data", "level1.json"))
-    level1 = Level([0, 1, 2, 3], level1_schedule)
     fps = 60
     brightness = 1
 
@@ -227,4 +225,6 @@ if __name__ == "__main__":
         if option == "main_menu":
             option, fps, brightness = draw_main_menu(fps, brightness)
         else:
+            level1_schedule = load_json(os.path.join("level_data", "level1.json"))
+            level1 = Level([0, 1, 2, 3, 4], level1_schedule)
             option = level1.run(fps, brightness)
