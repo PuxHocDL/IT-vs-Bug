@@ -66,6 +66,9 @@ class Hand:
     def add_energy(self, value):
         self.__energy += value
 
+    def set_select(self, index):
+        self.__selected = index
+
     def __remove_energy(self):
         self.__energy -= Hand.__card_types[self.__selected].price
 

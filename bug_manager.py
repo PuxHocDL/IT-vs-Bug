@@ -50,7 +50,7 @@ class BugManager:
                             if bug.jumping == False:
                                 bug.jump()
                             else:
-                                if bug.get_img_index() == bug.get_atk_index():
+                                if bug.get_img_index() in bug.get_atk_index():
                                     obj.damage(bug.damaged)
                                         
                                 if not obj.is_dead() and bug.jumping == None:

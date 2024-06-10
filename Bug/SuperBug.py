@@ -31,15 +31,15 @@ class SuperBug(Bug):
             name (str): The name of the bug.
         """
         super().__init__(x, y, speed=40, max_health=1000, bug_size=300, rect_x=120, rect_y=100, name="SuperBug")
-        self._animate_time = {0: 500, 1: 4000, 2: 1000, 3: 2000, 4: 1500}
-        self._atk_index = 6
+        self._animate_time = {0: 500, 1: 2000, 2: 1000, 3: 2000, 4: 1500}
+        self._atk_index = [6, 14, 31, 39]
         self._modifiled = 150
         self._jump_height = 100
         self._jump_duration = 1500
-        self.damaged= 100
+        self.damaged= 20
 
-        self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","run", f"{i}.png")), (300, 300)) for i in range(7)]
-        self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","dead", f"{i}.png")), (300, 300)) for i in range(14)]
-        self._images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","attack", f"{i}.png")), (300, 300)) for i in range(10)]
-        self._jump_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","run", f"{i}.png")), (300, 300)) for i in range(7)]
+        self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","run", f"{i}.png")), (300, 300)) for i in range(8)]
+        self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","dead", f"{i}.png")), (300, 300)) for i in range(16)]
+        self._images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","attack", f"{i}.png")), (300, 300)) for i in range(40)]
+        self._jump_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","run", f"{i}.png")), (300, 300)) for i in range(8)]
         self._load_imgs()
