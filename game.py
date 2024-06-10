@@ -1,13 +1,9 @@
 import pygame
-from config import *
-from bug import *
-from interact import Interact
-from bug_manager import BugManager
-from vfx_manager import VFXManager
-import time
-from bulldozer import Bulldozer
 import os
 import sys
+from level import Level
+from button import Button
+from utilities import load_json
 
 def initialize_game(x, y, FPS):
     global screen, WIDTH, HEIGHT, tile_imgs, grid, projectiles, bug_projectiles, hand, \
@@ -154,54 +150,60 @@ def initialize_game(x, y, FPS):
     {"time": 31, "name": "HexagonBug"},
     {"time": 40, "name": "HexagonBug"}]]
 
-# Initialize Pygame
-initialize_game(1080,607,FPS)
-
-# Trạng thái của màn hình
-# Trạng thái của màn hình
-current_screen = "main_menu"
-button_pressed = False  # Biến theo dõi trạng thái nhấn nút
 def apply_brightness(surface, brightness):
     """Apply brightness to the surface."""
     overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-    if brightness > 0 :
+    if brightness > 0:
         # Decrease brightness
         overlay.fill((0, 0, 0, int((1 - brightness) * 255)))
-    
+
     surface.blit(overlay, (0,0))
     return surface
 
-def draw_options_menu(mouse_pos):
-    global FPS, brightness
+def draw_options_menu(fps, brightness, screen, width, height):
+    center_x = width // 2
 
-    screen.fill(white)
-    center_x = menu_screen_width // 2
+    back_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
+    back_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
+    back_button = Button(center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), back_button_img, back_button_choose_img, back_button_img)
 
-    # Draw FPS Slider
-    fps_text = pygame.font.SysFont(None, 40).render(f"FPS: {FPS}", True, black)
-    screen.blit(fps_text, (center_x - 100, 200))
-    if draw_slider(center_x, 250, 200, mouse_pos, FPS, 30, 120):
-        FPS = int(adjust_value_based_on_slider(center_x, 250, 200, mouse_pos, 30, 120))
+    while True:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        screen.fill("white")
 
-    # Draw Brightness Slider
-    brightness_text = pygame.font.SysFont(None, 40).render(f"Brightness: {int(brightness * 100)}%", True, black)
-    screen.blit(brightness_text, (center_x - 100, 350))
-    if draw_slider(center_x, 400, 200, mouse_pos, brightness * 100, 0, 100):  # Adjusted min and max values
-        brightness = adjust_value_based_on_slider(center_x, 400, 200, mouse_pos, 0, 100) / 100.0  # Adjusted to 0-100 range
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "exit", fps, brightness
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button.check_hovering(mouse_x, mouse_y):
+                    back_button.click()
+                    return "lmao", fps, brightness
 
-    # Draw Back Button
-    if draw_button(back_button_img, back_button_choose_img, center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), mouse_pos):
-        return "main_menu"
-        
-    return "options_menu"
+        # Draw FPS Slider
+        fps_text = pygame.font.SysFont(None, 40).render(f"FPS: {fps}", True, "black")
+        screen.blit(fps_text, (center_x - 100, 200))
+        if draw_slider(screen, center_x, 250, 200, (mouse_x, mouse_y), fps, 30, 120):
+            fps = int(adjust_value_based_on_slider(center_x, 250, 200, (mouse_x, mouse_y), 30, 120))
 
-def draw_slider(x, y, width, mouse_pos, current_value, min_value, max_value):
+        # Draw Brightness Slider
+        brightness_text = pygame.font.SysFont(None, 40).render(f"Brightness: {int(brightness * 100)}%", True, "black")
+        screen.blit(brightness_text, (center_x - 100, 350))
+        if draw_slider(screen, center_x, 400, 200, (mouse_x, mouse_y), brightness * 100, 0, 100):  # Adjusted min and max values
+            brightness = adjust_value_based_on_slider(center_x, 400, 200, (mouse_x, mouse_y), 0, 100) / 100.0  # Adjusted to 0-100 range
+
+        back_button.draw(screen, mouse_x, mouse_y)
+        apply_brightness(screen, brightness)
+
+        pygame.display.flip()
+
+
+def draw_slider(screen, x, y, width, mouse_pos, current_value, min_value, max_value):
     # Draw slider background
-    pygame.draw.rect(screen, gray, (x - width // 2, y, width, 5))
+    pygame.draw.rect(screen, "gray", (x - width // 2, y, width, 5))
 
     # Calculate slider position
     slider_pos = int((current_value - min_value) / (max_value - min_value) * width)
-    pygame.draw.rect(screen, black, (x - width // 2 + slider_pos - 5, y - 10, 10, 25))
+    pygame.draw.rect(screen, "black", (x - width // 2 + slider_pos - 5, y - 10, 10, 25))
 
     # Check if the mouse is clicking the slider
     mouse_x, mouse_y = mouse_pos
@@ -209,7 +211,7 @@ def draw_slider(x, y, width, mouse_pos, current_value, min_value, max_value):
         if pygame.mouse.get_pressed()[0]:
             new_value = (mouse_x - (x - width // 2)) / width * (max_value - min_value) + min_value
             return new_value
-    
+
     return None
 
 def adjust_value_based_on_slider(x, y, width, mouse_pos, min_value, max_value):
@@ -219,11 +221,14 @@ def adjust_value_based_on_slider(x, y, width, mouse_pos, min_value, max_value):
         return new_value
     return None
 
-def draw_rules_screen(mouse_pos):
-    global rules_background_img  # Ensure the background image is accessible here
-    
-    screen.blit(rules_background_img, (0, 0))  # Draw the background image first
-    center_x = menu_screen_width // 2
+
+def draw_rules_screen(screen, width, height, brightness):
+    center_x = width // 2
+
+    rules_background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
+    back_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
+    back_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
+    back_button = Button(center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), back_button_img, back_button_choose_img, back_button_img)
 
     # Display game rules
     rules = [
@@ -236,242 +241,137 @@ def draw_rules_screen(mouse_pos):
     ]
 
     font = pygame.font.SysFont(None, 30)
-    y = 100
-    for rule in rules:
-        rule_text = font.render(rule, True, black)
-        screen.blit(rule_text, (50, y))
-        y += 50
 
-    # Draw Back Button
-    if draw_button(back_button_img, back_button_choose_img, center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), mouse_pos):
-        return "main_menu"
+    while True:
+        screen.blit(rules_background_img, (0, 0))  # Draw the background image first
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "exit"
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button.check_hovering(mouse_x, mouse_y):
+                    back_button.click()
+                    return "lmao"
 
-    return "rules_screen"
+        y = 100
+        for rule in rules:
+            rule_text = font.render(rule, True, "black")
+            screen.blit(rule_text, (50, y))
+            y += 50
 
+        back_button.draw(screen, mouse_x, mouse_y)
+        apply_brightness(screen, brightness)
 
+        pygame.display.flip()
 
-def draw_pause_screen(mouse_pos):
-    screen.fill(white)
-    center_x = WIDTH // 2
-    if draw_button(continue_button_img, continue_button_choose_img, center_x - continue_button_img.get_width() // 2, 300, continue_button_img.get_width(), continue_button_img.get_height(), mouse_pos):
-        return "game_resume"
-    if draw_button(exit_game_button_img, exit_game_button_choose_img, center_x - exit_game_button_img.get_width() // 2, 400, exit_game_button_img.get_width(), exit_game_button_img.get_height(), mouse_pos):
-        return "main_menu"
-    return "pause_screen"
-
-
-# Hàm vẽ nút với hình ảnh và hiệu ứng khi rê chuột qua
-def draw_button(image, image_choose, x, y, w, h, mouse_pos):
-    global button_pressed
-    button_rect = pygame.Rect(x, y, w, h)
-    if button_rect.collidepoint(mouse_pos):
-        screen.blit(image_choose, button_rect.topleft)
-        if pygame.mouse.get_pressed()[0] == 1:
-            button_pressed = True
-        elif button_pressed and pygame.mouse.get_pressed()[0] == 0:
-            button_pressed = False
-            return True
-    else:
-        screen.blit(image, button_rect.topleft)
-    return False
 
 # Hàm vẽ màn hình chính
-def draw_main_menu(mouse_pos):
-    screen.blit(background_img, (0, 0))
-    center_x = menu_screen_width // 2
-    if draw_button(play_button_img, play_button_choose_img, center_x - play_button_img.get_width() // 2, 200, play_button_img.get_width(), play_button_img.get_height(), mouse_pos):
-        return "level_select"
-    if draw_button(optition_button_img, optition_button_choose_img, center_x - optition_button_img.get_width() // 2, 300, optition_button_img.get_width(), optition_button_img.get_height(), mouse_pos):
-        return "options_menu"
-    if draw_button(rules_button_img, rules_button_choose_img, center_x - rules_button_img.get_width() // 2, 400, rules_button_img.get_width(), rules_button_img.get_height(), mouse_pos):
-        return "rules_screen"
-    if draw_button(exit_button_img, exit_button_choose_img, center_x - exit_button_img.get_width() // 2, 500, exit_button_img.get_width(), exit_button_img.get_height(), mouse_pos):
-        pygame.quit()
-        sys.exit()
-    return "main_menu"
+def draw_main_menu(fps, brightness):
+    WIDTH, HEIGHT = 1080, 607
 
-def draw_game_over():
-    font = pygame.font.SysFont(None, 75)
-    game_over_text = font.render("Game Over", True, (255, 0, 0))
-    screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2 - game_over_text.get_height() // 2))
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Towers vs Monsters")
+    center_x = WIDTH // 2
 
-# Hàm vẽ màn hình chọn level
-def draw_level_select(mouse_pos):
-    screen.blit(background1_img, (0, 0))
-    for i, (button_img, button_choose_img) in enumerate(zip(level_buttons, level_buttons_choose)):
-        x = (i % 3) * (button_img.get_width() + 20) + (menu_screen_width - 3 * button_img.get_width() - 40) // 2
-        y = (i // 3) * (button_img.get_height() + 20) + 200
-        if draw_button(button_img, button_choose_img, x, y, button_img.get_width(), button_img.get_height(), mouse_pos):
-            return f"game_screen_{i+1}"
-    return "level_select"
+    background_img = pygame.image.load(os.path.join("assets", "Menu", "background.png"))
 
-def game_loop(level):
-    global screen, current_screen, brightness
-    initialize_game(1300, 750, FPS)  
-    
-    bug_manager = BugManager()
-    bulldozers = [Bulldozer(grid, row) for row in range(6)]
-    clock = pygame.time.Clock()
-    dt = 0   
-    print(brightness)
-    slow_placed_time = 0
-    slow_placed = False
-    paused = False
-    game_over = False
-    running = True
-    rect_size = grid.get_cell_size()
-    start_time = time.time()
-    shovel_selected = False
+    play_button_img = pygame.image.load(os.path.join("assets", "menu", "Play.png"))
+    play_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Play_choose.png"))
+    option_button_img = pygame.image.load(os.path.join("assets", "menu", "Option.png"))
+    option_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Option_choose.png"))
+    rules_button_img = pygame.image.load(os.path.join("assets", "menu", "Help.png"))
+    rules_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Help_choose.png"))
+    exit_game_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
+    exit_game_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
 
-    option = -1
+    play_button = Button(center_x - play_button_img.get_width() // 2, 200, play_button_img.get_width(), play_button_img.get_height(), play_button_img, play_button_choose_img, play_button_img)
+    option_button = Button(center_x - option_button_img.get_width() // 2, 300, option_button_img.get_width(), option_button_img.get_height(), option_button_img, option_button_choose_img, option_button_img)
+    rules_button = Button(center_x - rules_button_img.get_width() // 2, 400, rules_button_img.get_width(), rules_button_img.get_height(), rules_button_img, rules_button_choose_img, rules_button_img)
+    exit_button = Button(center_x - exit_game_button_img.get_width() // 2, 500, exit_game_button_img.get_width(), exit_game_button_img.get_height(), exit_game_button_img, exit_game_button_choose_img, exit_game_button_img)
 
-    while running:
-        if not paused:
-            
-            dt = clock.tick(FPS)
+    option = "lmao"
 
+    while True:
+        screen.blit(background_img, (0, 0))
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "exit", fps, brightness
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if play_button.check_hovering(mouse_x, mouse_y):
+                    play_button.click()
+                    option = draw_level_select(screen, WIDTH, HEIGHT, brightness)
+                elif option_button.check_hovering(mouse_x, mouse_y):
+                    option_button.click()
+                    option, fps, brightness = draw_options_menu(fps, brightness, screen, WIDTH, HEIGHT)
+                elif rules_button.check_hovering(mouse_x, mouse_y):
+                    rules_button.click()
+                    option = draw_rules_screen(screen, WIDTH, HEIGHT, brightness)
+                elif exit_button.check_hovering(mouse_x, mouse_y):
+                    exit_button.click()
+                    option = "exit"
 
-            current_time = time.time() - start_time
+        if option != "lmao":
+            break
 
-            for schedule in monster_schedule[:][1]:
-                if current_time >= schedule["time"]:
-                    bug_manager.add_bug(grid, schedule["name"])
-                    monster_schedule[1].remove(schedule)
+        play_button.draw(screen, mouse_x, mouse_y)
+        option_button.draw(screen, mouse_x, mouse_y)
+        rules_button.draw(screen, mouse_x, mouse_y)
+        exit_button.draw(screen, mouse_x, mouse_y)
+        apply_brightness(screen, brightness)
 
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    grid_x, grid_y = grid.convert_to_grid_pos(mouse_x, mouse_y)
-                    
-                    if option not in [-1, -2]:
-                        if not grid.is_occupied(grid_x, grid_y) and grid.is_inside_gird(grid_x, grid_y):
-                            hand.add_tower(grid, grid_x, grid_y)
-                        hand.toggle_select(option)
-                    elif option == -2:  # If shovel is selected, remove the tower
-                        if grid.is_occupied(grid_x, grid_y):
-                            tower = grid.get_object_in_one_grid(grid_x, grid_y)
-                            tower.damage(9999999)
-                    else:
-                        pass
-
-                    option = hand.select(mouse_x, mouse_y)
-
-
-            projectiles.add_projectiles(grid.draw(screen, dt, grid.get_objects(), bug_manager.get_bugs()))
-            # Towers shoot
-            for bug_pos in bug_manager.get_bugs_pos():
-                for tower in grid.get_objs_in_row(grid.convert_to_grid_pos(bug_pos[0], bug_pos[1])[0]):
-                    if tower.get_name() == "Tower":
-                        tower.set_mode(1)
-
-            # Check bullet-bug collision
-            projectiles.check_collision(bug_manager.get_bugs(), WIDTH, HEIGHT)
-            projectiles.remove_projectiles()
-            projectiles.draw(screen, dt)
-
-            grid.remove_objects()
-
-            bug_manager.check_collision(grid)
-
-
-            # Update bugs
-            for bug in bug_manager.get_bugs():
-                if bug.is_dead():
-                    hand.add_energy(50)
-                    bug.draw_dead()
-                    bug_manager.remove_bug(bug)
-                else:
-                    bug_projectiles.add_projectiles(bug.draw(screen, dt))
-                if bug.get_x() <= -60:
-                    row_index = grid.convert_to_grid_pos(bug.get_x(), bug.get_y())[0]
-                    if not bulldozers[row_index].active and not bulldozers[row_index].used:
-                        bulldozers[row_index].activate()
-                    elif bulldozers[row_index].used: 
-                        game_over = True
-
-
-            # Check bullet-tower collision
-            bug_projectiles.check_collision(grid.get_objects(), WIDTH, HEIGHT)
-            bug_projectiles.remove_projectiles()
-            bug_projectiles.draw(screen,dt)
-
-            # Draw vfx
-            VFXManager.draw(screen, dt)
-            hand.draw(screen, dt, mouse_x, mouse_y)
-
-            for bulldozer in bulldozers:
-                bulldozer.update(bug_manager)
-                bulldozer.draw(screen)
-            
-            if game_over:
-                draw_game_over()
-                pygame.display.flip()
-                time.sleep(3)
-                running = False
-                current_screen = "main_menu"
-            
-            # Draws selected tower on mouse pos.
-            hand.draw_selected(screen, mouse_x, mouse_y)
-        # Draw pause button in the top-right corner
-            pause_button_x = WIDTH - pause_button_img.get_width() - 10
-            pause_button_y = 10
-            if draw_button(pause_button_img, pause_button_choose_img, pause_button_x, pause_button_y, pause_button_img.get_width(), pause_button_img.get_height(), (mouse_x, mouse_y)):
-                paused = True
-
-            # Apply brightness adjustment here
-            apply_brightness(screen, brightness)
-
-            pygame.display.flip()
-        else:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:  # Press 'P' to unpause
-                    paused = False
-            
-
-            mouse_pos = pygame.mouse.get_pos()
-            current_screen = draw_pause_screen(mouse_pos)
-            screen = apply_brightness(screen, brightness)
-            if current_screen == "game_resume":
-                paused = False
-                current_screen = f"game_screen_{level}"
-            elif current_screen == "main_menu":
-                running = False
-        
         pygame.display.flip()
 
     pygame.quit()
+    return option, fps, brightness
+
+
+# Hàm vẽ màn hình chọn level
+def draw_level_select(screen, width, height, brightness):
+    background_img = pygame.image.load(os.path.join("assets", "menu", "Background1.png"))
+
+    level_buttons = [pygame.image.load(os.path.join("assets", "menu", f"level_{i}.png")) for i in range(0, 6)]
+    level_buttons_choose = [pygame.image.load(os.path.join("assets", "menu", f"level_{i}_choose.png")) for i in range(0, 6)]
+    buttons = []
+    for i in range(len(level_buttons)):
+        x = (i % 3) * (level_buttons[i].get_width() + 20) + (width - 3 * level_buttons[i].get_width() - 40) // 2
+        y = (i // 3) * (level_buttons[i].get_height() + 20) + 200
+        buttons.append(Button(x, y, level_buttons[i].get_width(), level_buttons[i].get_height(), level_buttons[i], level_buttons_choose[i], level_buttons[i]))
+    while True:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        screen.blit(background_img, (0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return 0
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                for i in range(len(buttons)):
+                    if buttons[i].check_hovering(mouse_x, mouse_y):
+                        buttons[i].click()
+                        return f"level{i+1}"
+
+        for button in buttons:
+            button.draw(screen, mouse_x, mouse_y)
+        apply_brightness(screen, brightness)
+
+        pygame.display.flip()
+
+
 # Vòng lặp chính của chương trình
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-    
-    mouse_pos = pygame.mouse.get_pos()
-    if current_screen == "main_menu":
-        current_screen = draw_main_menu(mouse_pos)
-    elif current_screen == "level_select":
-        current_screen = draw_level_select(mouse_pos)
-    elif current_screen == "options_menu":
-        current_screen = draw_options_menu(mouse_pos)
-    elif current_screen == "rules_screen":
-        current_screen = draw_rules_screen(mouse_pos)
-    elif "game_screen" in current_screen:
-        level = int(current_screen.split('_')[-1])
-        game_loop(level)
-        current_screen = "main_menu"
-        screen = pygame.display.set_mode((menu_screen_width, menu_screen_height))
-        pygame.display.set_caption("Tower Defense Game")
-        pygame.init()
-    elif current_screen == "pause_screen":
-        current_screen = draw_pause_screen(mouse_pos)
-        if current_screen == "game_resume":
-            current_screen = f"game_screen_{level}"
-    screen = apply_brightness(screen, brightness)
-    pygame.display.flip()
+if __name__ == "__main__":
+    level1_schedule = load_json(os.path.join("level_data", "level1.json"))
+    level1 = Level([0, 1, 2, 3], level1_schedule)
+    fps = 60
+    brightness = 1
+
+    option, fps, brightness = draw_main_menu(fps, brightness)
+    while True:
+        if option == "exit":
+            break
+        if option == "main_menu":
+            option, fps, brightness = draw_main_menu(fps, brightness)
+        else:
+            option = level1.run(fps, brightness)
+
+        #screen = apply_brightness(screen, brightness)
+        #pygame.display.flip()
