@@ -20,7 +20,7 @@ class BugManager:
             name (string): Name of the bug.
         """
         bug_x = WIDTH
-        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + 20 
+        bug_y = random.choice(range(HEIGHT - 50 - grid.get_cell_size() * grid.get_rows(), HEIGHT - 50 - grid.get_cell_size(), grid.get_cell_size())) + 20
         self.__bugs.append(BugManager.__bug_types[name](bug_x, bug_y))
 
     def get_bugs(self):
@@ -46,7 +46,7 @@ class BugManager:
                     collision_coordinates = Interact.collide_mask(bug_rect, obj_rect, bug.get_pos(), obj.get_pos())
                     if collision_coordinates:
                         if bug.get_img_index() == bug.get_atk_index():
-                            obj.damage(10)
+                            obj.damage(bug.damaged)
                         if not obj.is_dead():
                             bug.set_mode(1)
             else: 

@@ -40,4 +40,4 @@ class Bulldozer:
         if self.active:
             screen.blit(self.img, (self.x,self.y)) 
         elif not self.used:
-            screen.blit(self.img, (self.x,self.y)) 
+            screen.blit(self.img, (self.x - 30 ,self.y - 20)) 

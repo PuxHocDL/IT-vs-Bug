@@ -57,6 +57,7 @@ class Bug:
         self._bullet_check = False
         self._current_atk_collision = -1
         self._ban = False
+        self._modifiled = 0
 
         self._atk_index = -1
         self._shoot_index = -1
@@ -98,7 +99,7 @@ class Bug:
             self._current_time = 0
             proj = self._shoot()
             self._current_atk_interval +=1 
-        screen.blit(images[self._img_index], (self._x, self._y))
+        screen.blit(images[self._img_index], (self._x, self._y - self._modifiled)) 
         
         if self._img_index == len(images)-1:
             self.set_mode(0)
@@ -124,7 +125,7 @@ class Bug:
         Parameters:
             screen (pygame.Surface): The surface on which to draw the bug.
         """
-        VFXManager.add_vfx(self._x, self._y, self._animate_time[2], self._img_mode[2])
+        VFXManager.add_vfx(self._x, self._y - self._modifiled, self._animate_time[2], self._img_mode[2])
 
     def set_mode(self, mode):
         if mode != self._mode:
@@ -138,7 +139,7 @@ class Bug:
         Returns:
             pygame.Rect: The rectangle representing the bug's area.
         """
-        return pygame.mask.from_surface(self._images[0], threshold=254)
+        return pygame.mask.from_surface(self._images[0], threshold=5)
 
     def update(self, dt):
         """
@@ -171,7 +172,7 @@ class Bug:
         return self._slowed 
 
     def get_pos(self):
-        return self._x, self._y
+        return self._x, self._y - 50
     
     def get_x(self):
         return self._x
@@ -190,6 +191,7 @@ class Bug:
 
     def get_size(self):
         return self._bug_size
+        
 
 monster_schedule = [
     {"time": 1, "name": "BigBug"},

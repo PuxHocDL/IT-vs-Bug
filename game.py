@@ -135,24 +135,10 @@ def initialize_game(x, y, FPS):
     {"time": 30, "name": "HexagonBug"},
     {"time": 31, "name": "HexagonBug"},
     {"time": 40, "name": "HexagonBug"},
-    ], [{"time": 5, "name": "BigBug"},
-    {"time": 6, "name": "TriangleBug"},
-    {"time": 10, "name": "BigBug"},
-    {"time": 11, "name": "HexagonBug"},
-    {"time": 12, "name": "HexagonBug"},
-    {"time": 21, "name": "HexagonBug"},
-    {"time": 22, "name": "HexagonBug"},
-    {"time": 27, "name": "HexagonBug"},
-    {"time": 21, "name": "BigBug"},
-    {"time": 22, "name": "BigBug"},
-    {"time": 27, "name": "BigBug"},
-    {"time": 21, "name": "HexagonBug"},
-    {"time": 22, "name": "HexagonBug"},
-    {"time": 27, "name": "HexagonBug"},
-    {"time": 28, "name": "BigBug"},
-    {"time": 30, "name": "TriangleBug"},
-    {"time": 31, "name": "HexagonBug"},
-    {"time": 40, "name": "HexagonBug"}]]
+    ], [{"time": 5, "name": "NormalBug"},
+    {"time": 12, "name": "NormalBug"},
+    {"time": 14, "name": "HexagonBug"}
+    ]]
 
 # Initialize Pygame
 initialize_game(1080,607,FPS)
@@ -313,7 +299,7 @@ def game_loop(level):
     bulldozers = [Bulldozer(grid, row) for row in range(6)]
     clock = pygame.time.Clock()
     dt = 0   
-    print(brightness)
+
     slow_placed_time = 0
     slow_placed = False
     paused = False
