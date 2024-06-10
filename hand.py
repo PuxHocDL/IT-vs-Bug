@@ -3,7 +3,7 @@ from button import Button
 
 
 class Hand:
-    __card_types = {-1: Card, 0: BasicTowerCard, 1: IceTowerCard, 2: FireTowerCard, 3: TheWallCard, 4: TheRookCard}
+    __card_types = {-1: Card, 0: BasicTowerCard, 1: IceTowerCard, 2: FireTowerCard, 3: TheWallCard, 4: TheRookCard, 5: ObeliskCard}
     def __init__(self, x, y, card_size):
         self.__x = x
         self.__y = y

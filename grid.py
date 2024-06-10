@@ -103,7 +103,7 @@ class Grid:
                     VFXManager.add_vfx(pos[0], pos[1] - self.__size//2, 1000, self.__upgrade_imgs)
                     hand.remove_energy(self.__objects[i][j].get_price())
 
-    def draw(self, screen, dt, towers, bugs):
+    def draw(self, screen, dt, towers, bugs, hand):
         """
         Draws the Grid to the screen.
 
@@ -118,10 +118,12 @@ class Grid:
         for i in range(self.__rows):
             for j in range(self.__cols):
                 if self.__objects[i][j]:
-                    if self.__objects[i][j].get_name() != "Utility":
-                        projectiles.extend(self.__objects[i][j].draw(screen, dt))
-                    else:
+                    if self.__objects[i][j].get_name() == "Obelisk":
+                        hand.add_energy(self.__objects[i][j].utility(screen, dt))
+                    elif self.__objects[i][j].get_name() == "Utility":
                         projectiles.extend(self.__objects[i][j].utility(screen, dt, towers, bugs))
+                    else:
+                        projectiles.extend(self.__objects[i][j].draw(screen, dt))
         return projectiles
 
     def draw_on_mouse_pos(self, screen, pos, img=None):

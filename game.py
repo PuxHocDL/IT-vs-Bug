@@ -226,5 +226,5 @@ if __name__ == "__main__":
             option, fps, brightness = draw_main_menu(fps, brightness)
         else:
             level1_schedule = load_json(os.path.join("level_data", "level1.json"))
-            level1 = Level([0, 1, 2, 3, 4], level1_schedule)
+            level1 = Level([0, 1, 2, 3, 4, 5], level1_schedule)
             option = level1.run(fps, brightness)

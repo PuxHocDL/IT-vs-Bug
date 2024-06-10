@@ -83,7 +83,7 @@ class BasicTowerCard(Card):
 class IceTowerCard(Card):
     price = 500
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "ice_tower_card.png")), 30000, 0, "Ice Tower")
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "ice_tower_card.png")), 15000, 0, "Ice Tower")
         self._price = IceTowerCard.price
         self._tower = IceTower
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "ice_tower.png")), (size, size))
@@ -114,4 +114,13 @@ class TheRookCard(Card):
         self._price = TheRookCard.price
         self._tower = TheRook
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "the_rook.png")), (size, size))
+        self._load_price()
+
+class ObeliskCard(Card):
+    price = 500
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "obelisk_card.png")), 20000, 15000, "Obelisk")
+        self._price = ObeliskCard.price
+        self._tower = Obelisk
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "obelisk.png")), (size, size))
         self._load_price()

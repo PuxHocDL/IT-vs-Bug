@@ -40,7 +40,7 @@ class Tower:
         if self._level == 1:
             return [Bullet(self._x, self._y)]
         elif self._level == 2:
-            return [Bullet(self._x, self._y, angle=-0.2), Bullet(self._x, self._y, angle=-0.2), Bullet(self._x, self._y, angle=0.2)]
+            return [Bullet(self._x, self._y, angle=-0.2), Bullet(self._x, self._y, angle=0.0), Bullet(self._x, self._y, angle=0.2)]
         else:
             self._animate_time[1] = 1500
             return [Bullet(self._x, self._y, angle=-0.2, extra_dmg=30), Bullet(self._x, self._y, angle=0, extra_dmg=30), Bullet(self._x, self._y, angle=0.2, extra_dmg=30)]
@@ -169,22 +169,26 @@ class TheRook(Tower):
         proj = []
         if bugs:
             self.set_mode(1)
+
         current_imgs = self._img_mode[self._mode]
-        if self._current_time > self._animate_time[self._mode]/len(current_imgs):
-            self._img_index = (self._img_index + 1) % len(current_imgs)
-            self._current_time = 0
-        screen.blit(current_imgs[self._img_index], (self._x - self._size // 2, self._y - self._size // 2))
-        self._current_time += dt
+        index_interval = self._animate_time[self._mode]//len(current_imgs)
+        self._current_time = self._current_time + dt
+        additional_index = self._current_time // index_interval
+        self._current_time %= index_interval
+
         if self._mode == 1:
-            if self._img_index == 4 and not self._vfx_added:
+            if self._img_index <= 3 and self._img_index + additional_index > 3 and not self._vfx_added:
                 pos = self.get_pos()
                 VFXManager.add_vfx(pos[0], 0, 1800, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, pos[1]+20)) for i in range(8)])
                 self._vfx_added = True
-            elif self._img_index == len(current_imgs)-1:
+            elif self._img_index + additional_index >= len(current_imgs)-1:
                 if bugs:
                     proj = self._utility(bugs[0])
                 self.set_mode(0)
                 self._vfx_added = False
+
+        self._img_index = (self._img_index + additional_index) % len(current_imgs)
+        screen.blit(current_imgs[self._img_index], (self._x - self._size // 2, self._y - self._size // 2))
 
         if self._health < self._max_health:
             self._health_bar.draw(screen)
@@ -197,31 +201,65 @@ class TheRook(Tower):
     def get_name(self):
         return "Utility"
 
-class Obelisk(TheRook):
+class Obelisk(Tower):
     def __init__(self, x, y, size, price):
         super().__init__(x, y, size, price, 1000)
-        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "TheRook", f"the_rook{i}.png")), (size, size)) for i in range(8)]
-        self._atk_imgs = []
+        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "Obelisk", f"obelisk{i}.png")), (size, size)) for i in range(14)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "Obelisk", f"obelisk{i}.png")), (size, 19/12*size)) for i in range(14)]
+        self._animate_time = 2000
         self._load_imgs()
+        self.__energy_interval = 0
+        self._vfx_added = False
 
-    def utility(self, screen, dt, towers, bugs):
+    def utility(self, screen, dt):
+        energy = 0
         current_imgs = self._img_mode[0]
-        if self._current_time > self._animate_time[self._mode]/len(current_imgs):
-            self._img_index = (self._img_index + 1) % len(current_imgs)
-            self._current_time = 0
-        screen.blit(current_imgs[self._img_index], (self._x - self._size // 2, self._y - self._size // 2))
-        self._current_time += dt
+
+        if self.__energy_interval > len(current_imgs)*5:
+            self.set_mode(1)
+            self.__energy_interval = 0
+
+        index_interval = self._animate_time//len(current_imgs)
+        self._current_time = self._current_time + dt
+        additional_index = self._current_time // index_interval
+        self._current_time %= index_interval
+
         if self._mode == 1:
-            if self._img_index == 4 and not self._vfx_added:
+            if not self._vfx_added:
                 pos = self.get_pos()
-                VFXManager.add_vfx(pos[0], 0, 1800, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, pos[1]+20)) for i in range(8)])
+                VFXManager.add_vfx(pos[0], pos[1] - 7/12*self._size, self._animate_time, self._img_mode[1][self._img_index + additional_index:])
                 self._vfx_added = True
-            elif self._img_index == len(current_imgs)-1:
-                if bugs:
-                    proj = self._utility(bugs[0])
+            if self._img_index <= 11 and self._img_index + additional_index > 11:
+                energy = self._utility()
+            elif self._img_index + additional_index >= len(current_imgs)-1:
                 self.set_mode(0)
+                self.__energy_interval = 0
                 self._vfx_added = False
-        return []
+        else:
+            self.__energy_interval += additional_index
+
+        self._img_index = (self._img_index + additional_index) % len(current_imgs)
+        screen.blit(current_imgs[self._img_index], (self._x - self._size // 2, self._y - self._size // 2))
+        self.__update_speed()
+
+        if self._health < self._max_health:
+            self._health_bar.draw(screen)
+        return energy
+
+    def _utility(self):
+        if self._level == 1:
+            return 50
+        elif self._level == 2:
+            return 100
+        else:
+            return 150
+
+    def __update_speed(self):
+        if self._level == 3:
+            self._animate_time = 1000
+
+    def get_name(self):
+        return "Obelisk"
 
 class TheBomb:
     pass
