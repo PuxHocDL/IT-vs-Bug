@@ -29,6 +29,7 @@ class TriangleBug(Bug):
         self._shoot_index = 7
         self._atk_index = 7
         self.damaged = 40
+        self.jumping = None
 
         self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","alive", f"{i}.png")), (180, 180)) for i in range(7)]
         self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","dead", f"{i}.png")), (180, 180)) for i in range(7)]

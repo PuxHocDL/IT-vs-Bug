@@ -39,15 +39,20 @@ class BugManager:
         for bug in self.__bugs:
             bug_rect = bug.get_rect()
             bug_pos = bug.get_bug_pos()
-            if grid.get_objs_in_row(grid.convert_to_grid_pos(bug_pos[0], bug_pos[1])[0]):
+            grid_pos = grid.convert_to_grid_pos(bug_pos[0], bug_pos[1])
+            if grid.get_objs_in_row(grid_pos[0]):
                 bug.attacking = True
-                for obj in grid.get_objs_in_row(grid.convert_to_grid_pos(bug_pos[0], bug_pos[1])[0]):
+                for obj in grid.get_objs_in_row(grid_pos[0]):
                     obj_rect = obj.get_rect()
                     collision_coordinates = Interact.collide_mask(bug_rect, obj_rect, bug.get_pos(), obj.get_pos())
                     if collision_coordinates:
-                        if bug.get_img_index() == bug.get_atk_index():
-                            obj.damage(bug.damaged)
-                        if not obj.is_dead():
-                            bug.set_mode(1)
-            else: 
+                            if bug.jumping == False:
+                                bug.jump()
+                            else:
+                                if bug.get_img_index() == bug.get_atk_index():
+                                    obj.damage(bug.damaged)
+                                        
+                                if not obj.is_dead() and bug.jumping == None:
+                                    bug.set_mode(1)
+            else:
                 bug.attacking = False

@@ -34,9 +34,12 @@ class NormalBug(Bug):
         self._animate_time = {0: 500, 1: 300, 2: 1000, 3: 2000}
         self._atk_index = 6
         self._modifiled = 120
+        self._jump_height = 100
+        self._jump_duration = 1500
         self.damaged= 100
 
         self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_6","run", f"{i}.png")), (300, 300)) for i in range(7)]
         self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_6","dead", f"{i}.png")), (300, 300)) for i in range(14)]
         self._images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_6","attack", f"{i}.png")), (300, 300)) for i in range(10)]
+        self._jump_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_6","run", f"{i}.png")), (300, 300)) for i in range(7)]
         self._load_imgs()

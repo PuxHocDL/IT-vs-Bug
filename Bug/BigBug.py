@@ -36,6 +36,7 @@ class BigBug(Bug):
         self._shoot_index = 7
         self._atk_index = 7
         self.damaged = 20
+        self.jumping = None
 
         self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","alive", f"{i}.png")), (200, 200)) for i in range(8)]
         self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_2","dead", f"{i}.png")), (200, 200)) for i in range(14)]

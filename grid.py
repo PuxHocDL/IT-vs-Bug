@@ -65,7 +65,7 @@ class Grid:
         Returns:
             (x, y): the xy position of the Grid. (-1, -1) if the passed position is beyond Grid's position or the Cell already has an object.
         """
-        return (y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, (x-50)//self.__size
+        return int(y - (self.__screen_height - 50 - self.__size*self.__rows))//self.__size, int(x-50)//self.__size
 
     def is_inside_gird(self, i, j):
         if j in range(self.__cols) and i in range(self.__rows):

@@ -32,6 +32,7 @@ class Bug:
         """
         self._x = x
         self._y = y
+        self._original_y = y
         self._speed = speed
         self._original_speed = speed
         self._max_health = max_health
@@ -63,47 +64,81 @@ class Bug:
         self._shoot_index = -1
         self._atk_interval = 0
         self._mode = 0
-        self._animate_time = {0: 1000, 1: 1000, 2: 1500, 3: 1500}    # 0: Move, 1: Attack, 2: Dead, 3: Shoot
+        self._animate_time = {0: 1000, 1: 1000, 2: 1500, 3: 1500, 4: 1500}    # 0: Move, 1: Attack, 2: Dead, 3: Shoot, 4: Jump
 
         self._images = []
         self._images_attack = []
         self._images_dead = []
         self._images_shoot = []
+        self._jump_images = []  
+        self.jumping = False
+        self._jump_height = 0
+        self._jump_speed = 0
+        self._jump_duration = 0
+        self._jump_start_time = 0
+       
+        self._current_jump_frame = 0  
+        self._jump_frame_duration = 100
+        self._current_jump_time = 0  
         
 
         self._load_imgs()
 
     def _load_imgs(self):
-        self._img_mode = {0: self._images, 1: self._images_attack, 2: self._images_dead, 3: self._images_shoot}
+        self._img_mode = {0: self._images, 1: self._images_attack, 2: self._images_dead, 3: self._images_shoot, 4: self._jump_images}
     def get_bug_pos(self):
         return [self.get_x(), self.get_y()]
 
     def get_bug_size(self): 
         return self._bug_size
+    
+    def jump(self):
+        """
+        Makes the bug jump over an object.
+
+        Parameters:
+            height (int): The height of the jump.
+            speed (int): The speed of the jump.
+            duration (int): The duration of the jump in milliseconds.
+        """
+        if not self.jumping:
+            self.set_mode(4)
+            self.jumping = True
+            self._jump_start_time = pygame.time.get_ticks()
+            
+    
+
     def draw(self, screen, dt):
         """
-        Draws the normal bug on the screen.
-        
+        Draws the bug on the screen.
+
         Parameters:
             screen (pygame.Surface): The surface on which to draw the bug.
         """
         proj = []
-        if self._current_atk_interval > self._atk_interval*len(self._images) and self._atk_interval: 
+        if self._current_atk_interval > self._atk_interval * len(self._images) and self._atk_interval:
             if self.attacking:
                 self.set_mode(3)
             self._current_atk_interval = 0
         images = self._img_mode[self._mode]
         self._current_time += dt
-        if self._current_time >= self._animate_time[self._mode]/len(images):
-            self._img_index = (self._img_index +1) % len(images)
-            self._current_time = 0
-            proj = self._shoot()
-            self._current_atk_interval +=1 
-        screen.blit(images[self._img_index], (self._x, self._y - self._modifiled)) 
-        
-        if self._img_index == len(images)-1:
+        if self._mode !=4:
+            if self._current_time >= self._animate_time[self._mode] / len(images):
+                self._img_index = (self._img_index + 1) % len(images)
+                self._current_time = 0
+                proj = self._shoot()
+                self._current_atk_interval += 1
+            screen.blit(images[self._img_index], (self._x, self._y - self._modifiled))
+        if self._mode == 4:  
+            self._current_jump_time += dt
+            if self._current_jump_time >= self._jump_frame_duration:
+                self._current_jump_frame = (self._current_jump_frame + 1) % len(self._jump_images)
+                self._current_jump_time = 0
+            screen.blit(self._jump_images[self._current_jump_frame], (self._x, self._y - self._modifiled))
+
+        if self._img_index == len(images) - 1:
             self.set_mode(0)
-        if self._mode not in [1,3]:
+        if self._mode not in [1, 3]:
             self.update(dt)
         return proj
     def get_img_index(self): 
@@ -142,14 +177,25 @@ class Bug:
         return pygame.mask.from_surface(self._images[0], threshold=5)
 
     def update(self, dt):
-        """
-        Updates the bug's position and speed based on its current state.
-        """
         if self._slowed and pygame.time.get_ticks() > self._slow_timer:
             self._speed = self._original_speed
             self._slowed = False
 
-        self._x -= self._speed*dt/1000
+        if self.jumping:
+            current_time = pygame.time.get_ticks()
+            elapsed_time = current_time - self._jump_start_time
+            jump_progress = elapsed_time / self._jump_duration
+
+            if jump_progress <= 1.0:
+                self._y = self._original_y - self._jump_height * (4 * jump_progress * (1 - jump_progress))
+            else:
+                self.jumping = None
+                self._y = self._original_y
+                self.set_mode(0)
+        if not self.jumping:
+            self._x -= self._speed * dt / 1000 
+        else: 
+            self._x -= self._speed * (dt / 1000)*5
 
     def apply_slow(self, slow, slow_time):
         """
