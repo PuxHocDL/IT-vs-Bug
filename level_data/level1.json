@@ -94,5 +94,101 @@
     {
         "time": 35,
         "name": "NormalBug"
+    },
+    {
+        "time": 42,
+        "name": "SuperBug"
+    },
+    {
+        "time": 6,
+        "name": "SuperBug"
+    },
+    {
+        "time": 10,
+        "name": "SuperBug"
+    },
+    {
+        "time": 11,
+        "name": "SuperBug"
+    },
+    {
+        "time": 42,
+        "name": "SuperBug"
+    },
+    {
+        "time": 49,
+        "name": "SuperBug"
+    },
+    {
+        "time": 56,
+        "name": "SuperBug"
+    },
+    {
+        "time": 54,
+        "name": "NormalBug"
+    },
+    {
+        "time": 53,
+        "name": "NormalBug"
+    },
+    {
+        "time": 53,
+        "name": "NormalBug"
+    },
+    {
+        "time": 51,
+        "name": "TriangleBug"
+    },
+    {
+        "time": 52,
+        "name": "TriangleBug"
+    },
+    {
+        "time": 53,
+        "name": "HexagonBug"
+    },
+    {
+        "time": 54,
+        "name": "HexagonBug"
+    },
+    {
+        "time": 55,
+        "name": "TriangleBug"
+    },
+    {
+        "time": 51,
+        "name": "TriangleBug"
+    },
+    {
+        "time": 53,
+        "name": "TriangleBug"
+    },
+    {
+        "time": 52,
+        "name": "HexagonBug"
+    },
+    {
+        "time": 52,
+        "name": "NormalBug"
+    },
+    {
+        "time": 53,
+        "name": "NormalBug"
+    },
+    {
+        "time": 56,
+        "name": "NormalBug"
+    },
+    {
+        "time": 53,
+        "name": "NormalBug"
+    },
+    {
+        "time": 57,
+        "name": "NormalBug"
+    },
+    {
+        "time": 60,
+        "name": "NormalBug"
     }
 ]

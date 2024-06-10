@@ -261,5 +261,50 @@ class Obelisk(Tower):
     def get_name(self):
         return "Obelisk"
 
-class TheBomb:
-    pass
+class HealingTower(TheRook):
+    def __init__(self, x, y, size, price):
+        super().__init__(x, y, size, price)
+        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "HealingTower", f"tower{i}.png")), (size, size)) for i in range(14)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "HealingTower", f"tower{i}.png")), (size, size)) for i in range(14)]
+        self._load_imgs()
+        self._vfx_added = False
+        self._animate_time = {0: 200, 1: 4000, 2: 500}
+
+    def utility(self, screen, dt):
+        energy = 0
+        current_imgs = self._img_mode[0]
+
+        if self.__energy_interval > len(current_imgs)*5:
+            self.set_mode(1)
+            self.__energy_interval = 0
+
+        index_interval = self._animate_time//len(current_imgs)
+        self._current_time = self._current_time + dt
+        additional_index = self._current_time // index_interval
+        self._current_time %= index_interval
+
+        if self._mode == 1:
+            if not self._vfx_added:
+                pos = self.get_pos()
+                VFXManager.add_vfx(pos[0], pos[1] - 7/12*self._size, self._animate_time, self._img_mode[1][self._img_index + additional_index:])
+                self._vfx_added = True
+            if self._img_index <= 11 and self._img_index + additional_index > 11:
+                energy = self._utility()
+            elif self._img_index + additional_index >= len(current_imgs)-1:
+                self.set_mode(0)
+                self.__energy_interval = 0
+                self._vfx_added = False
+        else:
+            self.__energy_interval += additional_index
+
+        self._img_index = (self._img_index + additional_index) % len(current_imgs)
+        screen.blit(current_imgs[self._img_index], (self._x - self._size // 2, self._y - self._size // 2))
+        self.__update_speed()
+
+        if self._health < self._max_health:
+            self._health_bar.draw(screen)
+        return energy
+
+    def _utility(self, obj):
+        VFXManager.add_vfx(obj.get_x() + obj.get_size()//4, 0, 500, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, obj.get_y())) for i in range(8)])
+        return [SilverLining(obj.get_x() + obj.get_size()//4, obj.get_y())]
