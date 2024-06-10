@@ -27,7 +27,7 @@ class TriangleBug(Bug):
         self._animate_time = {0: 1000, 1: 1000, 2: 1000, 3: 2000}
         self._atk_interval = 7
         self._shoot_index = 7
-        self._atk_index = 7
+        self._atk_index = [7]
         self.damaged = 40
         self.jumping = None
 

@@ -128,7 +128,7 @@ class Bug:
                 proj = self._shoot()
                 self._current_atk_interval += 1
             screen.blit(images[self._img_index], (self._x, self._y - self._modifiled))
-        if self._mode == 4:  
+        if self._mode == 4:
             self._current_jump_time += dt
             if self._current_jump_time >= self._jump_frame_duration:
                 self._current_jump_frame = (self._current_jump_frame + 1) % len(self._jump_images)
@@ -200,7 +200,7 @@ class Bug:
         """
         Applies a slowing effect to the bug.
         """
-        self._speed = self._original_speed * slow
+        self._speed = self._original_speed * (1-slow)
         self._slowed = True
         self._slow_timer = slow_time + pygame.time.get_ticks()
 

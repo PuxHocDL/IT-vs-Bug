@@ -34,7 +34,7 @@ class BigBug(Bug):
         super().__init__(x, y, speed=15, max_health=1000, bug_size=200, rect_x=100, rect_y=100, name="BigBug")
         self._atk_interval = 7
         self._shoot_index = 7
-        self._atk_index = 7
+        self._atk_index = [7]
         self.damaged = 20
         self.jumping = None
 

@@ -1,6 +1,7 @@
 import pygame
 import colors
 import os
+from vfx_manager import VFXManager
 
 class Grid:
     """
@@ -28,6 +29,8 @@ class Grid:
             for _ in range(self.__cols):
                 temp.append(None)
             self.__objects.append(temp)
+
+        self.__upgrade_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "LevelUp", f"level_up{i}.png")), (self.__size, self.__size)) for i in range(16)]
 
     def reset(self):
         """
@@ -92,9 +95,13 @@ class Grid:
         y = y_offset + i*self.__size
         return x, y
 
-    def upgrade_tower(self, i, j):
+    def upgrade_tower(self, i, j, hand):
         if self.is_occupied(i, j):
-            self.__objects[i][j].upgrade()
+            if hand.is_affordable(self.__objects[i][j].get_price()):
+                if self.__objects[i][j].upgrade():
+                    pos = self.__objects[i][j].get_pos()
+                    VFXManager.add_vfx(pos[0], pos[1] - self.__size//2, 1000, self.__upgrade_imgs)
+                    hand.remove_energy(self.__objects[i][j].get_price())
 
     def draw(self, screen, dt, towers, bugs):
         """

@@ -29,3 +29,7 @@ class VFXManager:
         for vfx in VFXManager.__vfx:
             if vfx.draw(screen, dt):
                 VFXManager.__vfx.remove(vfx)
+
+    @staticmethod
+    def clear():
+        VFXManager.__vfx = []

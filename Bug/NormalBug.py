@@ -32,7 +32,7 @@ class NormalBug(Bug):
         """
         super().__init__(x, y, speed=40, max_health=1000, bug_size=300, rect_x=120, rect_y=100, name="NormalBug")
         self._animate_time = {0: 500, 1: 300, 2: 1000, 3: 2000}
-        self._atk_index = 6
+        self._atk_index = [6]
         self._modifiled = 120
         self._jump_height = 100
         self._jump_duration = 1500

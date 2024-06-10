@@ -33,7 +33,7 @@ class HexagonBug(Bug):
         super().__init__(x, y, speed=35, max_health=1000, bug_size=200, rect_x=120, rect_y=100, name="HexagonBug")
         self._atk_interval = 7
         self._shoot_index = 9
-        self._atk_index = 6
+        self._atk_index = [6]
         self._modifiled = 20
         self.damaged = 20
         self.jumping = None
