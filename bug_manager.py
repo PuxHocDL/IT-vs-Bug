@@ -4,10 +4,11 @@ from Bug.BigBug import *
 from Bug.HexagonBug import *
 from Bug.NormalBug import *
 from Bug.TriangleBug import *
+from Bug.SuperBug import *
 from interact import *
 
 class BugManager:
-    __bug_types = {"NormalBug": NormalBug, "BigBug": BigBug, "TriangleBug": TriangleBug, "HexagonBug": HexagonBug}
+    __bug_types = {"NormalBug": NormalBug, "BigBug": BigBug, "TriangleBug": TriangleBug, "HexagonBug": HexagonBug, "SuperBug": SuperBug}
     def __init__(self):
         self.__bugs = []
 
