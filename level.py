@@ -17,6 +17,7 @@ class Level:
         self.__monster_schedule = monster_schedule
         self.__tower_ids = tower_ids
         self.__total_time = max(event["time"] for event in monster_schedule) if monster_schedule else 0
+        self.__max_progress = len(monster_schedule)
 
     def run(self, fps, brightness):
 
@@ -159,7 +160,7 @@ class Level:
             pause_button.draw(screen, mouse_x, mouse_y)
 
             # Draw progress bar
-            self.__draw_progress_bar(screen, current_time, self.__total_time)
+            self.__draw_progress_bar(screen, len(self.__monster_schedule) + len(bug_manager.get_bugs()), self.__max_progress)
 
             # Apply brightness adjustment here
             self.__apply_brightness(screen, brightness)
@@ -225,7 +226,7 @@ class Level:
         bar_y = Level.__HEIGHT - bar_height - 20
 
         # Calculate the progress
-        progress = int((current_time / total_time) * bar_width)
+        progress = int(((total_time - current_time) / total_time) * bar_width)
         progress = min(progress, bar_width)  # Ensure progress doesn't exceed bar width
 
         # Draw the white background

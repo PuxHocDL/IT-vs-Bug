@@ -54,7 +54,7 @@ class Tower:
         additional_index = self._current_time // index_interval
         self._current_time %= index_interval
 
-        if self._mode == 1 and self._img_index + additional_index >= len(current_imgs)-1:
+        if self._mode == 1 and self._img_index + additional_index > len(current_imgs)-1:
             proj = self._shoot()
             self.set_mode(0)
 
@@ -67,6 +67,10 @@ class Tower:
 
     def damage(self, val):
         self._health -= val
+        self._health_bar.set_val(self._health)
+
+    def heal(self, val):
+        self._health = min(self._health + val, self._max_health)
         self._health_bar.set_val(self._health)
 
     def apply_slow(self, slow, slow_time):
@@ -100,6 +104,9 @@ class Tower:
 
     def get_price(self):
         return self.__price
+
+    def get_max_health(self):
+        return self._max_health
 
 class BasicTower(Tower):
     def __init__(self, x, y, size, price):
@@ -149,11 +156,20 @@ class FireTower(Tower):
 
 class TheWall(Tower):
     def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price, 1000)
+        super().__init__(x, y, size, price, 5000)
         self._idle_imgs = self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "TheWall", f"wall.png")), (size, size))]
         self._load_imgs()
+        self._animate_time = {0: 5000, 1: 5000}
 
     def _shoot(self):
+        if self._level == 1:
+            pass
+        elif self._level == 2:
+            self._max_health = 5300
+        else:
+            self._max_health = 5500
+            self.heal(100)
+
         return []
 
 class TheRook(Tower):
@@ -265,18 +281,19 @@ class HealingTower(TheRook):
     def __init__(self, x, y, size, price):
         super().__init__(x, y, size, price)
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "HealingTower", f"tower{i}.png")), (size, size)) for i in range(14)]
-        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "HealingTower", f"tower{i}.png")), (size, size)) for i in range(14)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "HealingTower", f"tower{i}.png")), (size, 39/32*size)) for i in range(14)]
         self._load_imgs()
         self._vfx_added = False
-        self._animate_time = {0: 200, 1: 4000, 2: 500}
+        self._animate_time = 2000
+        self.__heal_interval = 0
+        self._vfx_added = False
 
-    def utility(self, screen, dt):
-        energy = 0
+    def utility(self, screen, dt, towers, bugs):
         current_imgs = self._img_mode[0]
 
-        if self.__energy_interval > len(current_imgs)*5:
+        if self.__heal_interval > len(current_imgs)*5:
             self.set_mode(1)
-            self.__energy_interval = 0
+            self.__heal_interval = 0
 
         index_interval = self._animate_time//len(current_imgs)
         self._current_time = self._current_time + dt
@@ -286,25 +303,38 @@ class HealingTower(TheRook):
         if self._mode == 1:
             if not self._vfx_added:
                 pos = self.get_pos()
-                VFXManager.add_vfx(pos[0], pos[1] - 7/12*self._size, self._animate_time, self._img_mode[1][self._img_index + additional_index:])
+                VFXManager.add_vfx(pos[0], pos[1] - 7/32*self._size, self._animate_time, self._img_mode[1][self._img_index + additional_index:])
                 self._vfx_added = True
             if self._img_index <= 11 and self._img_index + additional_index > 11:
-                energy = self._utility()
-            elif self._img_index + additional_index >= len(current_imgs)-1:
+                if towers:
+                    self._utility(towers)
+            elif self._img_index + additional_index > len(current_imgs)-1:
                 self.set_mode(0)
-                self.__energy_interval = 0
+                self.__heal_interval = 0
                 self._vfx_added = False
         else:
-            self.__energy_interval += additional_index
+            self.__heal_interval += additional_index
 
         self._img_index = (self._img_index + additional_index) % len(current_imgs)
         screen.blit(current_imgs[self._img_index], (self._x - self._size // 2, self._y - self._size // 2))
-        self.__update_speed()
 
         if self._health < self._max_health:
             self._health_bar.draw(screen)
-        return energy
+        return []
 
     def _utility(self, obj):
-        VFXManager.add_vfx(obj.get_x() + obj.get_size()//4, 0, 500, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, obj.get_y())) for i in range(8)])
-        return [SilverLining(obj.get_x() + obj.get_size()//4, obj.get_y())]
+        print("Lmao")
+        if self._level == 1:
+            healing_power = 100
+            healing_number = 1
+        elif self._level == 2:
+            healing_power = 200
+            healing_number = 2
+        else:
+            healing_power = 500
+            healing_number = 3
+        for o in sorted(obj, key=lambda o: o.get_health()):
+            o.heal(healing_power)
+            healing_number -= 1
+            if healing_number == 0:
+                break

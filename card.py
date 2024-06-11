@@ -128,8 +128,8 @@ class ObeliskCard(Card):
 class HealingTowerCard(Card):
     price = 500
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "obelisk_card.png")), 20000, 20000, "Healing Tower")
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "healing_tower_card.png")), 20000, 20000, "Healing Tower")
         self._price = HealingTowerCard.price
         self._tower = HealingTower
-        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "obelisk.png")), (size, size))
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "healing_tower.png")), (size, size))
         self._load_price()
