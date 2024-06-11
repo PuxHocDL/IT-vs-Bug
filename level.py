@@ -13,13 +13,14 @@ class Level:
     __WIDTH = 1300
     __HEIGHT = 750
 
-    def __init__(self, tower_ids, monster_schedule, map, music):
+    def __init__(self, tower_ids, monster_schedule, starting_energy, map_img, music):
         self.__monster_schedule = monster_schedule
         self.__tower_ids = tower_ids
+        self.__starting_energy = starting_energy
         self.__music = music
         self.__total_time = max(event["time"] for event in monster_schedule) if monster_schedule else 0
         self.__max_progress = len(monster_schedule)
-        self.__map = map
+        self.__map = map_img
         pygame.mixer.music.load(self.__music)
         pygame.mixer.music.set_volume(0.3) 
         pygame.mixer.music.play(-1)
@@ -39,7 +40,7 @@ class Level:
         click_sound.set_volume(0.5)
 
         grid = Grid(Level.__WIDTH, Level.__HEIGHT, self.__map)
-        hand = Hand(50, 5, 80)
+        hand = Hand(50, 5, 80, self.__starting_energy)
         for tid in self.__tower_ids:
             hand.add_card(tid)
 
@@ -105,7 +106,6 @@ class Level:
                         hand.set_select(-1)
                         option = -1
 
-
             hand.set_affordable()
 
             projectiles.add_projectiles(grid.draw(screen, dt, grid.get_objects(), bug_manager.get_bugs(), hand))
@@ -128,7 +128,7 @@ class Level:
             # Update bugs
             for bug in bug_manager.get_bugs():
                 if bug.is_dead():
-                    hand.add_energy(50)
+                    hand.add_energy(80)
                     bug.draw_dead()
                     bug_manager.remove_bug(bug)
                 else:
@@ -153,7 +153,6 @@ class Level:
                 bulldozer.update(bug_manager)
                 bulldozer.draw(screen)
 
-            game_over = True
             if game_over:
                 Level.__draw_game_over(screen)
                 pygame.display.flip()

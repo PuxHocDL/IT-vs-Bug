@@ -54,5 +54,4 @@ shoot_counters = []
 projectiles = ProjectileManager()
 bug_projectiles = ProjectileManager()
 
-hand = Hand(50, 5, 80)
 brightness = 1

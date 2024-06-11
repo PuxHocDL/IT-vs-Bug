@@ -2,7 +2,9 @@
     [
         0,
         1,
-        2
+        2,
+        3,
+        7
     ],
     [
         {
@@ -77,46 +79,306 @@
             "time": 30,
             "name": "HexagonBug"
         },
-        //Lmao
         {
-            "time": 21,
+            "time": 35,
             "name": "SuperBug"
         },
         {
-            "time": 21,
+            "time": 36,
             "name": "HexagonBug"
         },
         {
-            "time": 22,
+            "time": 36,
+            "name": "NormalBug"
+        },
+        {
+            "time": 38,
             "name": "BigBug"
         },
         {
-            "time": 24,
-            "name": "BigBug"
-        },
-        {
-            "time": 26,
+            "time": 39,
             "name": "TriangleBug"
         },
         {
-            "time": 27,
+            "time": 40,
             "name": "BigBug"
         },
         {
-            "time": 28,
+            "time": 43,
+            "name": "NormalBug"
+        },
+        {
+            "time": 44,
+            "name": "BigBug"
+        },
+        {
+            "time": 45,
+            "name": "NormalBug"
+        },
+        {
+            "time": 47,
             "name": "TriangleBug"
         },
         {
-            "time": 29,
-            "name": "BigBug"
-        },
-        {
-            "time": 30,
+            "time": 48,
             "name": "SuperBug"
         },
         {
-            "time": 30,
+            "time": 50,
             "name": "HexagonBug"
+        },
+        {
+            "time": 51,
+            "name": "BigBug"
+        },
+        {
+            "time": 53,
+            "name": "NormalBug"
+        },
+        {
+            "time": 54,
+            "name": "NormalBug"
+        },
+        {
+            "time": 55,
+            "name": "BigBug"
+        },
+        {
+            "time": 56,
+            "name": "TriangleBug"
+        },
+        {
+            "time": 56,
+            "name": "BigBug"
+        },
+        {
+            "time": 57,
+            "name": "SuperBug"
+        },
+        {
+            "time": 57,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 58,
+            "name": "SuperBug"
+        },
+        {
+            "time": 58,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 59,
+            "name": "NormalBug"
+        },
+        {
+            "time": 62,
+            "name": "BigBug"
+        },
+        {
+            "time": 65,
+            "name": "TriangleBug"
+        },
+        {
+            "time": 66,
+            "name": "BigBug"
+        },
+        {
+            "time": 67,
+            "name": "NormalBug"
+        },
+        {
+            "time": 68,
+            "name": "BigBug"
+        },
+        {
+            "time": 69,
+            "name": "SuperBug"
+        },
+        {
+            "time": 70,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 80,
+            "name": "SuperBug"
+        },
+        {
+            "time": 82,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 84,
+            "name": "NormalBug"
+        },
+        {
+            "time": 86,
+            "name": "BigBug"
+        },
+        {
+            "time": 88,
+            "name": "TriangleBug"
+        },
+        {
+            "time": 90,
+            "name": "BigBug"
+        },
+        {
+            "time": 93,
+            "name": "NormalBug"
+        },
+        {
+            "time": 94,
+            "name": "BigBug"
+        },
+        {
+            "time": 96,
+            "name": "NormalBug"
+        },
+        {
+            "time": 99,
+            "name": "TriangleBug"
+        },
+        {
+            "time": 100,
+            "name": "SuperBug"
+        },
+        {
+            "time": 105,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 108,
+            "name": "BigBug"
+        },
+        {
+            "time": 110,
+            "name": "NormalBug"
+        },
+        {
+            "time": 115,
+            "name": "NormalBug"
+        },
+        {
+            "time": 120,
+            "name": "BigBug"
+        },
+        {
+            "time": 125,
+            "name": "TriangleBug"
+        },
+        {
+            "time": 130,
+            "name": "BigBug"
+        },
+        {
+            "time": 132,
+            "name": "SuperBug"
+        },
+        {
+            "time": 134,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 137,
+            "name": "SuperBug"
+        },
+        {
+            "time": 140,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 145,
+            "name": "NormalBug"
+        },
+        {
+            "time": 150,
+            "name": "BigBug"
+        },
+        {
+            "time": 152,
+            "name": "TriangleBug"
+        },
+        {
+            "time": 154,
+            "name": "BigBug"
+        },
+        {
+            "time": 156,
+            "name": "NormalBug"
+        },
+        {
+            "time": 158,
+            "name": "BigBug"
+        },
+        {
+            "time": 159,
+            "name": "SuperBug"
+        },
+        {
+            "time": 160,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 170,
+            "name": "SuperBug"
+        },
+        {
+            "time": 170,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 170,
+            "name": "NormalBug"
+        },
+        {
+            "time": 171,
+            "name": "BigBug"
+        },
+        {
+            "time": 171,
+            "name": "TriangleBug"
+        },
+        {
+            "time": 172,
+            "name": "BigBug"
+        },
+        {
+            "time": 172,
+            "name": "NormalBug"
+        },
+        {
+            "time": 173,
+            "name": "BigBug"
+        },
+        {
+            "time": 173,
+            "name": "NormalBug"
+        },
+        {
+            "time": 174,
+            "name": "TriangleBug"
+        },
+        {
+            "time": 174,
+            "name": "SuperBug"
+        },
+        {
+            "time": 175,
+            "name": "HexagonBug"
+        },
+        {
+            "time": 175,
+            "name": "BigBug"
+        },
+        {
+            "time": 176,
+            "name": "NormalBug"
+        },
+        {
+            "time": 176,
+            "name": "NormalBug"
         }
-    ]
+    ],
+    10000
 ]

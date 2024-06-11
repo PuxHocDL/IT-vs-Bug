@@ -235,7 +235,7 @@ def draw_level_select(screen, width, height, brightness, hover_sound, click_soun
                 for i in range(len(buttons)):
                     if buttons[i].check_hovering(mouse_x, mouse_y):
                         buttons[i].click()
-                        return f"level{i+1}"
+                        return i+1
 
         for button in buttons:
             button.draw(screen, mouse_x, mouse_y)
@@ -269,20 +269,13 @@ if __name__ == "__main__":
         else:
             # Initialize Pygame display for loading screen
             screen = pygame.display.set_mode((WIDTH, HEIGHT))
-            
             # Display the loading screen
             draw_loading_screen(screen, WIDTH, HEIGHT, brightness)
-            
-            # Load the level data
-            level1_schedule = load_json(os.path.join("level_data", "level1.json"))
-            level1_schedule = [{"time": 3, "name": "NormalBug"}]
-            level1 = Level([0, 1, 2, 3, 4, 5, 6, 7], level1_schedule, pygame.image.load(os.path.join("assets", "menu", "background3.png")), os.path.join("assets", "music", "battle_map3.ogg"))
 
-            # Load and play level music
-            
-            
+            tower_ids, level_schedule, starting_energy = load_json(os.path.join("level_data", f"level{option}.json"))
+            level = Level(tower_ids, level_schedule, starting_energy, pygame.image.load(os.path.join("assets", "menu", f"map{option%3}.png")), os.path.join("assets", "music", f"battle_map{option%3}.ogg"))
             # Run the level
-            option = level1.run(fps, brightness)
+            option = level.run(fps, brightness)
 
     # Stop any playing music when exiting
     pygame.mixer.init()

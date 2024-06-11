@@ -3,10 +3,10 @@ from button import Button
 
 class Hand:
     __card_types = {-1: Card, 0: BasicTowerCard, 1: IceTowerCard, 2: FireTowerCard, 3: TheWallCard, 4: TheRookCard, 5: ObeliskCard, 6: HealingTowerCard, 7: TheBombCard, 8: GoldenRookCard}
-    def __init__(self, x, y, card_size):
+    def __init__(self, x, y, card_size, starting_energy):
         self.__x = x
         self.__y = y
-        self.__energy = 10000
+        self.__energy = starting_energy
         self.__card_size = card_size
         self.__cards = []
         self.__selected = -1

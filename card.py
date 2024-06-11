@@ -137,7 +137,7 @@ class HealingTowerCard(Card):
 class TheBombCard(Card):
     price = 500
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "the_bomb_card.png")), 2000, 2000, "The Bomb")
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "the_bomb_card.png")), 5000, 0, "The Bomb")
         self._price = TheBombCard.price
         self._tower = TheBomb
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "the_bomb.png")), (size, size))

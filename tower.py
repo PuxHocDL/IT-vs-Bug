@@ -8,7 +8,7 @@ from vfx_manager import VFXManager
 class Tower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
 
-    def __init__(self, x, y, size, price, max_health=500):
+    def __init__(self, x, y, size, price, max_health=1000):
         self._x = x
         self._y = y
         self._level = 1
@@ -112,18 +112,10 @@ class BasicTower(Tower):
     def __init__(self, x, y, size, price):
         super().__init__(x, y, size, price)
 
-class SlowTower(Tower):
-    """Tháp làm chậm, kế thừa từ basic_tower, làm chậm tốc độ di chuyển của quái"""
-
-    def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price)
-        self._tower_type = "Slow"
-
-
 class IceTower(Tower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
     def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price)
+        super().__init__(x, y, size, price, 2000)
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "IceTower", f"tower{i}.png")), (size, size)) for i in range(1, 7)]
         self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "IceTower", f"tower{i}.png")), (size, size)) for i in range(16)]
         self._load_imgs()
@@ -140,7 +132,7 @@ class IceTower(Tower):
 class FireTower(Tower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
     def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price)
+        super().__init__(x, y, size, price, 800)
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "FireTower", f"tower{i}.png")), (size, size)) for i in range(8)]
         self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "FireTower", f"tower{i}.png")), (size, size)) for i in range(16)]
         self._load_imgs()
@@ -165,10 +157,10 @@ class TheWall(Tower):
         if self._level == 1:
             pass
         elif self._level == 2:
-            self._max_health = 3300
+            self._max_health = 4000
         else:
-            self._max_health = 4500
-            self.heal(100)
+            self._max_health = 5000
+            self.heal(200)
 
         return []
 
@@ -235,7 +227,7 @@ class TheRook(Tower):
 
 class Obelisk(Tower):
     def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price, 1000)
+        super().__init__(x, y, size, price, 2000)
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "Obelisk", f"obelisk{i}.png")), (size, size)) for i in range(14)]
         self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "Obelisk", f"obelisk{i}.png")), (size, 19/12*size)) for i in range(14)]
         self._animate_time = 2000
@@ -295,7 +287,7 @@ class Obelisk(Tower):
 
 class HealingTower(TheRook):
     def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price)
+        super().__init__(x, y, size, price, 3000)
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "HealingTower", f"tower{i}.png")), (size, size)) for i in range(14)]
         self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "HealingTower", f"tower{i}.png")), (size, 39/32*size)) for i in range(14)]
         self._load_imgs()
@@ -402,7 +394,7 @@ class TheBomb(TheRook):
 
 class GoldenRook(TheRook):
     def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price)
+        super().__init__(x, y, size, price, 1200)
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "GoldenRook", f"golden_rook{i}.png")), (size, size)) for i in range(8)]
         self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "GoldenRook", f"golden_rook{i}.png")), (size, size)) for i in range(8)]
         self._load_imgs()
