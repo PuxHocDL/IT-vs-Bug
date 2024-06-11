@@ -199,7 +199,7 @@ class TheRook(Tower):
                 self._vfx_added = True
             elif self._img_index + additional_index >= len(current_imgs)-1:
                 if bugs:
-                    proj = self._utility(bugs[0])
+                    proj = self._utility(bugs)
                 self.set_mode(0)
                 self._vfx_added = False
 
@@ -211,8 +211,21 @@ class TheRook(Tower):
         return proj
 
     def _utility(self, obj):
-        VFXManager.add_vfx(obj.get_x() + obj.get_size()//4, 0, 500, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, obj.get_y())) for i in range(8)])
-        return [SilverLining(obj.get_x() + obj.get_size()//4, obj.get_y())]
+        if self._level == 1:
+            lining_num = 1
+        elif self._level == 2:
+            lining_num = 2
+        else:
+            lining_num = 3
+
+        proj = []
+        for o in sorted(obj, key=lambda o: o.get_health(), reverse=True):
+            proj.append(SilverLining(o.get_x() + o.get_size()//4, o.get_y()))
+            VFXManager.add_vfx(o.get_x() + o.get_size()//4, 0, 500, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, o.get_y())) for i in range(8)])
+            lining_num -= 1
+            if lining_num == 0:
+                break
+        return proj
 
     def get_name(self):
         return "Utility"

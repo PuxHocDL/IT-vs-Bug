@@ -239,6 +239,9 @@ class Bug:
 
     def get_size(self):
         return self._bug_size
+
+    def get_health(self):
+        return self._health
         
 
 monster_schedule = [
