@@ -165,6 +165,10 @@ class Level:
             # Apply brightness adjustment here
             self.__apply_brightness(screen, brightness)
 
+            for bug in bug_manager.get_bugs():
+                pygame.draw.rect(screen, "red", pygame.Rect(bug.get_x() + bug.get_size()*3//5, bug.get_y(), 4, 4))
+
+
             pygame.display.flip()
 
         VFXManager.clear()

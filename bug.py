@@ -1,6 +1,7 @@
 import pygame
 from projectile import *
 from vfx_manager import VFXManager
+from bar import Bar
 
 class Bug:
     """
@@ -150,6 +151,11 @@ class Bug:
             self.set_mode(0)
         if self._mode not in [1, 3]:
             self.update(dt)
+
+        if self.name == "BossBug":
+            health_bar = Bar(self._x + self.get_size()//2, self._y + 30, 200, 10, "green", "white", self._max_health)
+            health_bar.set_val(self._health)
+            health_bar.draw(screen)
         return proj
     def get_img_index(self): 
         return self._img_index
@@ -163,7 +169,7 @@ class Bug:
             if self.name == "HexagonBug": 
                 proj = [Bomb(self._x, self._y+self._rect_y//2, reverse=True)]
             if self.name == "BossBug":
-                proj = [Skull(self._x, 750 - 50 - 100 *i + 30, reverse=True)for i in range(1,7)]
+                proj = [Skull(self._x, 750 - 50 - 100 *i + 30, reverse=True, extra_dmg=120)for i in range(1,7)]
         return proj
         
     def draw_dead(self):
