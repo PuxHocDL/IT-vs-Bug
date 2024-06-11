@@ -1,2 +1,1 @@
-
-# Hàm vẽ màn hình chính
+s,

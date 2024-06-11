@@ -275,12 +275,10 @@ if __name__ == "__main__":
             
             # Load the level data
             level1_schedule = load_json(os.path.join("level_data", "level1.json"))
-            level1 = Level([0, 1, 2, 3, 4, 5, 6, 7, 8], level1_schedule)
+            level1 = Level([0, 1, 2, 3, 4, 5, 6, 7], level1_schedule, pygame.image.load(os.path.join("assets", "menu", "background3.png")), os.path.join("assets", "music", "battle_map3.ogg"))
 
             # Load and play level music
-            pygame.mixer.music.load(os.path.join("assets", "music", "battle.wav"))
-            pygame.mixer.music.set_volume(1) 
-            pygame.mixer.music.play(-1)
+            
             
             # Run the level
             option = level1.run(fps, brightness)

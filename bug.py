@@ -128,7 +128,6 @@ class Bug:
                     self.set_mode(5)
                     bug_manager.add_bug(grid, "NormalBug")
                     bug_manager.add_bug(grid, "NormalBug")
-                    bug_manager.add_bug(grid, "NormalBug")
                     self.turn +=1
                 elif self.turn%3==1: 
                     self.set_mode(3)
@@ -177,7 +176,7 @@ class Bug:
             if self.name == "HexagonBug": 
                 proj = [Bomb(self._x, self._y+self._rect_y//2, reverse=True)]
             if self.name == "BossBug":
-                proj = [Skull(self._x, 750 - 50 - 100 *i + 30, reverse=True, extra_dmg=120)for i in range(1,7)]
+                proj = [Skull(self._x, 750 - 50 - 100 *i + 30, reverse=True, extra_dmg=500)for i in range(1,7)]
         return proj
         
     def draw_dead(self):

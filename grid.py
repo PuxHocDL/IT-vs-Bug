@@ -7,7 +7,7 @@ class Grid:
     """
     Class for Grid object.
     """
-    def __init__(self, width, height):
+    def __init__(self, width, height, map):
         """
         Initializes the Grid object.
 
@@ -22,7 +22,7 @@ class Grid:
         self.__size = (width - 150)//12
         self.__rows = 6
         self.__cols = 11
-        self.__map = pygame.image.load(os.path.join("assets", "menu", "background2.png"))
+        self.__map = map
         self.__objects = []
         for _ in range(self.__rows):
             temp = []

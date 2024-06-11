@@ -49,7 +49,7 @@ gold = gold()
 shoot_delay = 60
 shoot_counters = []
 
-grid = Grid(WIDTH, HEIGHT)
+
 
 projectiles = ProjectileManager()
 bug_projectiles = ProjectileManager()
