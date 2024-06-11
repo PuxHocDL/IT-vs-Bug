@@ -275,7 +275,7 @@ if __name__ == "__main__":
             
             # Load the level data
             level1_schedule = load_json(os.path.join("level_data", "level1.json"))
-            level1 = Level([0, 1, 2, 3, 4, 5, 6, 7], level1_schedule)
+            level1 = Level([0, 1, 2, 3, 4, 5, 6, 7], level1_schedule, pygame.image.load(os.path.join("assets", "menu", "background4.png")))
 
             # Load and play level music
             pygame.mixer.music.load(os.path.join("assets", "music", "battle.wav"))

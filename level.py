@@ -13,11 +13,12 @@ class Level:
     __WIDTH = 1300
     __HEIGHT = 750
 
-    def __init__(self, tower_ids, monster_schedule):
+    def __init__(self, tower_ids, monster_schedule, map):
         self.__monster_schedule = monster_schedule
         self.__tower_ids = tower_ids
         self.__total_time = max(event["time"] for event in monster_schedule) if monster_schedule else 0
         self.__max_progress = len(monster_schedule)
+        self.__map = map
 
     def run(self, fps, brightness):
 
@@ -33,7 +34,7 @@ class Level:
         hover_sound.set_volume(0.5)
         click_sound.set_volume(0.5)
 
-        grid = Grid(Level.__WIDTH, Level.__HEIGHT)
+        grid = Grid(Level.__WIDTH, Level.__HEIGHT, self.__map)
         hand = Hand(50, 5, 80)
         for tid in self.__tower_ids:
             hand.add_card(tid)
