@@ -30,12 +30,12 @@ class NormalBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed=40, max_health=2000, bug_size=200, rect_x=120, rect_y=100, name="NormalBug")
+        super().__init__(x, y, speed=45, max_health=2000, bug_size=200, rect_x=120, rect_y=100, name="NormalBug")
         self._animate_time = {0: 500, 1: 300, 2: 1000, 3: 2000}
         self._atk_index = [6]
         self._modifiled = 120
         self._jump_height = 100
-        self._jump_duration = 1500
+        self._jump_duration = 1300
         self.damaged= 100
         self.fix_thunder = 30
 

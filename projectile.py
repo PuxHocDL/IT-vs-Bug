@@ -111,7 +111,7 @@ class Winter(Bullet):
         self._destroy_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "explode", "Winter", f"{i}.png")).convert_alpha(), (130, 130)) for i in range(5)]
         self._reverse()
 class Bomb(Bullet): 
-    def __init__(self,x,y, reverse = True, angle=0.0): 
+    def __init__(self,x,y, reverse = True, angle=0.0, extra_dmg=0): 
         super().__init__(x, y, reverse, angle)
         self._size = 200
         self._damage = 30
