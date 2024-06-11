@@ -153,8 +153,15 @@ class Level:
                 bulldozer.update(bug_manager)
                 bulldozer.draw(screen)
 
+            game_over = True
             if game_over:
                 Level.__draw_game_over(screen)
+                pygame.display.flip()
+                time.sleep(3)
+                running = False
+
+            if len(self.__monster_schedule) + len(bug_manager.get_bugs()) == 0:
+                Level.__draw_victory(screen)
                 pygame.display.flip()
                 time.sleep(3)
                 running = False
@@ -182,9 +189,16 @@ class Level:
 
     @staticmethod
     def __draw_game_over(screen):
-        font = pygame.font.SysFont(None, 75)
-        game_over_text = font.render("Game Over", True, (255, 0, 0))
-        screen.blit(game_over_text, (Level.__WIDTH // 2 - game_over_text.get_width() // 2, Level.__HEIGHT // 2 - game_over_text.get_height() // 2))
+        game_over_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "game_over.png")), (Level.__WIDTH, Level.__HEIGHT))
+        screen.blit(game_over_img, (0, 0))
+
+    @staticmethod
+    def __draw_victory(screen):
+        font = pygame.font.Font(os.path.join("assets", "arcadeclassic.ttf"), 75)
+        vip_text = font.render("Vip", True, (255, 0, 0))
+        vip_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "victory_img.png")), (Level.__WIDTH, Level.__HEIGHT))
+        screen.blit(vip_img, (0, 0))
+        screen.blit(vip_text, (Level.__WIDTH // 2 - vip_text.get_width() // 2, Level.__HEIGHT // 2 - vip_text.get_height() // 2))
 
     @staticmethod
     def __draw_pause_screen(screen, hover_sound, click_sound):
