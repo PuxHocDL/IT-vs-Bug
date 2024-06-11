@@ -23,7 +23,8 @@ class Bullet:
         self._ani_interval = 1000
         self._reverse()
         self.destroy_sound = pygame.mixer.Sound(os.path.join("assets", "music", "fire_destroy_sound.wav"))
-        self.fire_sound = pygame.mixer.Sound(os.path.join("assets", "music", "fire_fire_sound.wav"))
+        self.fire_sound = pygame.mixer.Sound(os.path.join("assets", "music", "posion.wav"))
+        self.fire_sound.play()
         
 
     def _reverse(self):
@@ -91,6 +92,7 @@ class FireBullet(Bullet):
         super().__init__(x, y, reverse, angle)
         self._damage = 200 + extra_dmg
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "fire_bullet.png")), (self._size, self._size)).convert_alpha()]
+        self.fire_sound = pygame.mixer.Sound(os.path.join("assets", "music", "fire_fire_sound.wav"))
         self.fire_sound.play()
 
 class Skull(Bullet): 
@@ -110,15 +112,20 @@ class Winter(Bullet):
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_3","Winter_attack", f"0{i}.png")), (self._size, self._size)).convert_alpha() for i in range(0, 5)]
         self._destroy_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "explode", "Winter", f"{i}.png")).convert_alpha(), (130, 130)) for i in range(5)]
         self._reverse()
+        self.fire_sound = pygame.mixer.Sound(os.path.join("assets", "music", "water_fire_sound.wav"))
+        self.fire_sound.play()
 class Bomb(Bullet): 
     def __init__(self,x,y, reverse = True, angle=0.0, extra_dmg=0): 
         super().__init__(x, y, reverse, angle)
+        pygame.mixer.init()
         self._size = 200
         self._damage = 30
         self._speed = 700
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets","Projectiles","Bomb", "Bomb", f"{i}.png")), (self._size, self._size)).convert_alpha() for i in range(0, 3)]
         self._destroy_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets","Projectiles","Bomb", "Bomb_explotion", f"{i}.png")).convert_alpha(), (200, 200)) for i in range(11)]
         self._reverse()
+        self.destroy_sound = pygame.mixer.Sound(os.path.join("assets", "music", "boom.wav"))
+        
 
 class SilverLining(Bullet):
     def __init__(self, x, y, reverse=False, angle=0.0, extra_dmg=0):

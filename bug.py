@@ -76,6 +76,7 @@ class Bug:
         self._jump_speed = 0
         self._jump_duration = 0
         self._jump_start_time = 0
+        self.death_sound = pygame.mixer.Sound(os.path.join("assets", "music", "death.wav"))
        
         self._current_jump_frame = 0  
         self._jump_frame_duration = 100
@@ -126,12 +127,15 @@ class Bug:
                     self.set_mode(5)
                     bug_manager.add_bug(grid, "NormalBug")
                     bug_manager.add_bug(grid, "NormalBug")
+                    self.spam_sound.play()
                     self.turn +=1
                 elif self.turn%3==1: 
                     self.set_mode(3)
+                    self.attacking_sound.play()
                     self.turn +=1
                 elif self.turn%3==2: 
                     self.set_mode(5)
+                    self.healing_sound.play()
                     for bug in bug_manager.get_bugs(): 
                         bug.healing(500)
                     self.turn +=1
@@ -183,6 +187,7 @@ class Bug:
         Parameters:
             screen (pygame.Surface): The surface on which to draw the bug.
         """
+        self.death_sound.play()
         VFXManager.add_vfx(self._x, self._y - self._modifiled, self._animate_time[2], self._img_mode[2])
 
     def set_mode(self, mode):
@@ -212,6 +217,7 @@ class Bug:
             if jump_progress <= 1.0:
                 self._y = self._original_y - self._jump_height * (4 * jump_progress * (1 - jump_progress))
             else:
+                
                 self.jumping = None
                 self._y = self._original_y
                 self.set_mode(0)

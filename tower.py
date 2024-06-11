@@ -9,6 +9,7 @@ class Tower:
     """Tháp cơ bản, bắn đạn gây sát thương lên quái vật"""
 
     def __init__(self, x, y, size, price, max_health=1000):
+        pygame.mixer.init()
         self._x = x
         self._y = y
         self._level = 1
@@ -23,6 +24,7 @@ class Tower:
         self._current_time = 0
         self._load_imgs()
         self._health_bar = Bar(self._x - self._size//4, self._y - self._size//2, self._size//2, 5, colors.green, colors.gray, self._max_health)
+        self.__upgrade_sound = pygame.mixer.Sound(os.path.join("assets", "music", "upgrade.wav"))
 
         self.__price = price
 
@@ -32,6 +34,7 @@ class Tower:
     def upgrade(self):
         if self._level < 3:
             self._level += 1
+            self.__upgrade_sound.play()
             return True
         return False
 
@@ -111,6 +114,7 @@ class Tower:
 class BasicTower(Tower):
     def __init__(self, x, y, size, price):
         super().__init__(x, y, size, price)
+        
 
 class IceTower(Tower):
     """Tháp băng, bắn đạn gây sát thương và làm chậm kẻ địch"""
@@ -349,12 +353,14 @@ class HealingTower(TheRook):
 class TheBomb(TheRook):
     def __init__(self, x, y, size, price):
         super().__init__(x, y, size, price)
+        pygame.mixer.init()
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "TheBomb", f"the_bomb{i}.png")), (size, size)) for i in range(3)]
         self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "TheBomb", f"the_bomb{i}.png")), (size, size)) for i in range(11)]
         self._load_imgs()
         self._vfx_added = False
         self._animate_time = 1000
         self.__detonate_interval = 0
+        self.boom = pygame.mixer.Sound(os.path.join("assets", "music", "boom.wav"))
 
     def upgrade(self):
         return False
@@ -363,6 +369,7 @@ class TheBomb(TheRook):
         current_imgs = self._img_mode[0]
 
         if self.__detonate_interval > len(current_imgs)*2:
+            self.boom.play()
             self.set_mode(1)
 
         index_interval = self._animate_time//len(current_imgs)
