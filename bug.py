@@ -64,13 +64,14 @@ class Bug:
         self._shoot_index = -1
         self._atk_interval = 0
         self._mode = 0
-        self._animate_time = {0: 1000, 1: 1000, 2: 1500, 3: 1500, 4: 1500}    # 0: Move, 1: Attack, 2: Dead, 3: Shoot, 4: Jump
+        self._animate_time = {0: 1000, 1: 1000, 2: 1500, 3: 1500, 4: 1500, 5:2000}    # 0: Move, 1: Attack, 2: Dead, 3: Shoot, 4: Jump
 
         self._images = []
         self._images_attack = []
         self._images_dead = []
         self._images_shoot = []
         self._jump_images = []  
+        self._images_healing = []
         self.jumping = False
         self._jump_height = 0
         self._jump_speed = 0
@@ -83,11 +84,11 @@ class Bug:
         self.fix_coli = 50
         self.fix_thunder = 0
         self.monster_attacking_sound = pygame.mixer.Sound(os.path.join("assets", "music", "monster_attack.wav"))
-
+        self.turn = 0 
         self._load_imgs()
 
     def _load_imgs(self):
-        self._img_mode = {0: self._images, 1: self._images_attack, 2: self._images_dead, 3: self._images_shoot, 4: self._jump_images}
+        self._img_mode = {0: self._images, 1: self._images_attack, 2: self._images_dead, 3: self._images_shoot, 4: self._jump_images, 5: self._images_healing}
     def get_bug_pos(self):
         return [self.get_x(), self.get_y()]
 
@@ -121,6 +122,13 @@ class Bug:
         if self._current_atk_interval > self._atk_interval * len(self._images) and self._atk_interval:
             if self.attacking:
                 self.set_mode(3)
+            elif self.attacking == False and self.name == "BossBug": 
+                if self.turn%2==0: 
+                    self.set_mode(5)
+                    self.turn +=1
+                else: 
+                    self.set_mode(3)
+                    self.turn +=1
             self._current_atk_interval = 0
         images = self._img_mode[self._mode]
         self._current_time += dt
@@ -154,6 +162,8 @@ class Bug:
                 proj = [Skull(self._x, self._y+self._rect_y//2, reverse=True)]
             if self.name == "HexagonBug": 
                 proj = [Bomb(self._x, self._y+self._rect_y//2, reverse=True)]
+            if self.name == "BossBug":
+                proj = [Skull(self._x, 750 - 50 - 100 *i + 30, reverse=True)for i in range(1,7)]
         return proj
         
     def draw_dead(self):
