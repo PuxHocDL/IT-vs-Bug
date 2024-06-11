@@ -156,7 +156,7 @@ class FireTower(Tower):
 
 class TheWall(Tower):
     def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price, 5000)
+        super().__init__(x, y, size, price, 3000)
         self._idle_imgs = self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "TheWall", f"wall.png")), (size, size))]
         self._load_imgs()
         self._animate_time = {0: 5000, 1: 5000}
@@ -165,9 +165,9 @@ class TheWall(Tower):
         if self._level == 1:
             pass
         elif self._level == 2:
-            self._max_health = 5300
+            self._max_health = 3300
         else:
-            self._max_health = 5500
+            self._max_health = 4500
             self.heal(100)
 
         return []

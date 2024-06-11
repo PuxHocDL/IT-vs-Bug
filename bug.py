@@ -170,11 +170,11 @@ class Bug:
         proj = []
         if self._mode == 3 and self._img_index == self._shoot_index:
             if self.name == "BigBug":
-                proj = [Winter(self._x, self._y+self._rect_y//2+30, reverse=True)]
+                proj = [Winter(self._x, self._y+self._rect_y//2+30, reverse=True,extra_dmg=100)]
             if self.name == "TriangleBug": 
-                proj = [Skull(self._x, self._y+self._rect_y//2, reverse=True)]
+                proj = [Skull(self._x, self._y+self._rect_y//2, reverse=True,extra_dmg=100)]
             if self.name == "HexagonBug": 
-                proj = [Bomb(self._x, self._y+self._rect_y//2, reverse=True)]
+                proj = [Bomb(self._x, self._y+self._rect_y//2, reverse=True,extra_dmg=100)]
             if self.name == "BossBug":
                 proj = [Skull(self._x, 750 - 50 - 100 *i + 30, reverse=True, extra_dmg=500)for i in range(1,7)]
         return proj
