@@ -235,7 +235,7 @@ def draw_level_select(screen, width, height, brightness, hover_sound, click_soun
                 for i in range(len(buttons)):
                     if buttons[i].check_hovering(mouse_x, mouse_y):
                         buttons[i].click()
-                        return i+1
+                        return i
 
         for button in buttons:
             button.draw(screen, mouse_x, mouse_y)
@@ -272,7 +272,7 @@ if __name__ == "__main__":
             # Display the loading screen
             draw_loading_screen(screen, WIDTH, HEIGHT, brightness)
 
-            tower_ids, level_schedule, starting_energy = load_json(os.path.join("level_data", f"level{option}.json"))
+            tower_ids, level_schedule, starting_energy = load_json(os.path.join("level_data", f"level{option+1}.json"))
             level = Level(tower_ids, level_schedule, starting_energy, pygame.image.load(os.path.join("assets", "menu", f"map{option%3}.png")), os.path.join("assets", "music", f"battle_map{option%3}.ogg"))
             # Run the level
             option = level.run(fps, brightness)

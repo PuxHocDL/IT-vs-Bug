@@ -57,8 +57,6 @@ class Bug:
         self._current_atk_interval = 0
         self._attack_times = 0
         self._bullet_check = False
-        self._current_atk_collision = -1
-        self._ban = False
         self._modifiled = 0
 
         self._atk_index = -1
