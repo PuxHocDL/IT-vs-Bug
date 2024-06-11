@@ -52,6 +52,7 @@ class BugManager:
                             else:
                                 if bug.get_img_index() in bug.get_atk_index():
                                     obj.damage(bug.damaged)
+                                    bug.monster_attacking_sound.play()
                                         
                                 if not obj.is_dead() and bug.jumping == None:
                                     bug.set_mode(1)

@@ -30,18 +30,18 @@ class SuperBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed=60, max_health=4000, bug_size=350, rect_x=120, rect_y=100, name="SuperBug")
-        self._animate_time = {0: 3000, 1: 2000, 2: 1000, 3: 2000, 4: 1500}
+        super().__init__(x, y, speed=20, max_health=200, bug_size=400, rect_x=120, rect_y=100, name="SuperBug")
+        self._animate_time = {0: 1500, 1: 2000, 2: 1000, 3: 2000, 4: 1500}
         self._atk_index = [6, 14, 31, 39]
-        self._modifiled = 200
+        self._modifiled = 120
         self.fix_coli = 100
         self._jump_height = 100
-        self._jump_duration = 1500
+        self._jump_duration = 2400
         self.damaged= 20
-        self.fix_thunder = 130
+        self.fix_thunder = 100
 
-        self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","run", f"{i}.png")), (500, 500)) for i in range(8)]
-        self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","dead", f"{i}.png")), (500, 500)) for i in range(16)]
-        self._images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","attack", f"{i}.png")), (500, 500)) for i in range(40)]
-        self._jump_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","run", f"{i}.png")), (500, 500)) for i in range(8)]
+        self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","run", f"{i}.png")), (400, 400)) for i in range(8)]
+        self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","dead", f"{i}.png")), (400, 400)) for i in range(16)]
+        self._images_attack = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","attack", f"{i}.png")), (400, 400)) for i in range(40)]
+        self._jump_images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_7","run", f"{i}.png")), (400, 400)) for i in range(8)]
         self._load_imgs()

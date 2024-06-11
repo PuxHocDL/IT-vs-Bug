@@ -29,6 +29,7 @@ class Bug:
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
+        pygame.mixer.init()
         self._x = x
         self._y = y
         self._original_y = y
@@ -81,6 +82,7 @@ class Bug:
         self._current_jump_time = 0  
         self.fix_coli = 50
         self.fix_thunder = 0
+        self.monster_attacking_sound = pygame.mixer.Sound(os.path.join("assets", "music", "monster_attack.wav"))
 
         self._load_imgs()
 
