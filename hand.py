@@ -10,7 +10,6 @@ class Hand:
         self.__card_size = card_size
         self.__cards = []
         self.__selected = -1
-        self.__energy_index = -1
         self.__energy_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "energy.png")), (card_size, card_size))
         self.__shovel_avt = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "Hammer.png")), (card_size, card_size))
         self.__font = pygame.font.Font(os.path.join("assets", "vinque.otf"), 15)

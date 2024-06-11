@@ -18,7 +18,6 @@ class Level:
         self.__tower_ids = tower_ids
         self.__starting_energy = starting_energy
         self.__music = music
-        self.__total_time = max(event["time"] for event in monster_schedule) if monster_schedule else 0
         self.__max_progress = len(monster_schedule)
         self.__map = map_img
         pygame.mixer.music.load(self.__music)
@@ -209,8 +208,8 @@ class Level:
         exit_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
         exit_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
 
-        continue_button = Button(center_x - continue_button_img.get_width() // 2, 400, continue_button_img.get_width(), continue_button_img.get_height(), continue_button_img, continue_button_choose_img, continue_button_img, hover_sound, click_sound)
-        exit_button = Button(center_x - exit_button_img.get_width() // 2, 500, exit_button_img.get_width(), exit_button_img.get_height(), exit_button_img, exit_button_choose_img, exit_button_img, hover_sound, click_sound)
+        continue_button = Button(center_x - continue_button_img.get_width() // 2, 300, continue_button_img.get_width(), continue_button_img.get_height(), continue_button_img, continue_button_choose_img, continue_button_img, hover_sound, click_sound)
+        exit_button = Button(center_x - exit_button_img.get_width() // 2, 400, exit_button_img.get_width(), exit_button_img.get_height(), exit_button_img, exit_button_choose_img, exit_button_img, hover_sound, click_sound)
 
         while True:
             screen.fill("white")

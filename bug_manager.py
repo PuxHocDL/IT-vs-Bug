@@ -35,10 +35,6 @@ class BugManager:
     def remove_bug(self, bug):
         self.__bugs.remove(bug)
 
-    def apply_slow_effect(self):
-        for bug in self.__bugs:
-            bug.apply_slow(0.5, 3)
-
     def check_collision(self, grid):
         for bug in self.__bugs:
             if bug.name != "BossBug": 

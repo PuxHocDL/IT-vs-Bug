@@ -112,7 +112,7 @@ def draw_rules_screen(screen, width, height, brightness, hover_sound, click_soun
 
         y = 100
         for rule in rules:
-            rule_text = font.render(rule, True, "black")
+            rule_text = font.render(rule, True, "white")
             screen.blit(rule_text, (50, y))
             y += 50
 
@@ -142,6 +142,13 @@ def draw_main_menu(fps, brightness, hover_sound, click_sound):
     exit_game_button_img = pygame.image.load(os.path.join("assets", "menu", "exit.png"))
     exit_game_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "exit_choose.png"))
 
+    font = pygame.font.Font(os.path.join("assets", "arcadeclassic.ttf"), 100)
+    font2 = pygame.font.Font(os.path.join("assets", "arcadeclassic.ttf"), 50)
+    title_towers = font.render("Towers", True, "red")
+    title_vs = font2.render("vs", True, "white")
+    title_monsters = font.render(" Monsters", True, "blue")
+    title_width = title_towers.get_width() + title_vs.get_width() + title_monsters.get_width()
+
     play_button = Button(center_x - play_button_img.get_width() // 2, 200, play_button_img.get_width(), play_button_img.get_height(), play_button_img, play_button_choose_img, play_button_img, hover_sound, click_sound)
     option_button = Button(center_x - option_button_img.get_width() // 2, 300, option_button_img.get_width(), option_button_img.get_height(), option_button_img, option_button_choose_img, option_button_img, hover_sound, click_sound)
     rules_button = Button(center_x - rules_button_img.get_width() // 2, 400, rules_button_img.get_width(), rules_button_img.get_height(), rules_button_img, rules_button_choose_img, rules_button_img, hover_sound, click_sound)
@@ -156,6 +163,9 @@ def draw_main_menu(fps, brightness, hover_sound, click_sound):
 
     while True:
         screen.blit(background_img, (0, 0))
+        screen.blit(title_towers, (center_x-title_width//2, 100))
+        screen.blit(title_vs, (center_x-title_vs.get_width()//2, 130))
+        screen.blit(title_monsters, (center_x+title_vs.get_width(), 100))
         mouse_x, mouse_y = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -268,9 +278,9 @@ if __name__ == "__main__":
             option, fps, brightness = draw_main_menu(fps, brightness, hover_sound, click_sound)
         else:
             # Initialize Pygame display for loading screen
-            screen = pygame.display.set_mode((WIDTH, HEIGHT))
+            screen = pygame.display.set_mode((1300, 750))
             # Display the loading screen
-            draw_loading_screen(screen, WIDTH, HEIGHT, brightness)
+            draw_loading_screen(screen, 1300, 750, brightness)
 
             tower_ids, level_schedule, starting_energy = load_json(os.path.join("level_data", f"level{option+1}.json"))
             level = Level(tower_ids, level_schedule, starting_energy, pygame.image.load(os.path.join("assets", "menu", f"map{option%3}.png")), os.path.join("assets", "music", f"battle_map{option%3}.ogg"))
