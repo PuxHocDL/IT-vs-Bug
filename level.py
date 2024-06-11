@@ -13,12 +13,16 @@ class Level:
     __WIDTH = 1300
     __HEIGHT = 750
 
-    def __init__(self, tower_ids, monster_schedule, map):
+    def __init__(self, tower_ids, monster_schedule, map, music):
         self.__monster_schedule = monster_schedule
         self.__tower_ids = tower_ids
+        self.__music = music
         self.__total_time = max(event["time"] for event in monster_schedule) if monster_schedule else 0
         self.__max_progress = len(monster_schedule)
         self.__map = map
+        pygame.mixer.music.load(self.__music)
+        pygame.mixer.music.set_volume(0.3) 
+        pygame.mixer.music.play(-1)
 
     def run(self, fps, brightness):
 
