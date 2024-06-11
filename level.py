@@ -127,7 +127,7 @@ class Level:
                     bug.draw_dead()
                     bug_manager.remove_bug(bug)
                 else:
-                    bug_projectiles.add_projectiles(bug.draw(screen, dt))
+                    bug_projectiles.add_projectiles(bug.draw(screen, dt, bug_manager,grid))
                 if bug.get_x() <= -60:
                     row_index = grid.convert_to_grid_pos(bug.get_x(), bug.get_y())[0]
                     if not bulldozers[row_index].active and not bulldozers[row_index].used:

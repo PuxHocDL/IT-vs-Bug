@@ -112,7 +112,7 @@ class Bug:
             
     
 
-    def draw(self, screen, dt):
+    def draw(self, screen, dt, bug_manager, grid):
         """
         Draws the bug on the screen.
 
@@ -124,11 +124,17 @@ class Bug:
             if self.attacking:
                 self.set_mode(3)
             elif self.attacking == False and self.name == "BossBug": 
-                if self.turn%2==0: 
+                if self.turn%3==0: 
                     self.set_mode(5)
+                    bug_manager.add_bug(grid, "NormalBug")
                     self.turn +=1
-                else: 
+                elif self.turn%3==1: 
                     self.set_mode(3)
+                    self.turn +=1
+                elif self.turn%3==2: 
+                    self.set_mode(5)
+                    for bug in bug_manager.get_bugs(): 
+                        bug.healing(500)
                     self.turn +=1
             self._current_atk_interval = 0
         images = self._img_mode[self._mode]
@@ -258,6 +264,9 @@ class Bug:
 
     def get_health(self):
         return self._health
+    
+    def healing(self, value): 
+        self._health = min(self._health + value, self._max_health)
         
 
 monster_schedule = [
