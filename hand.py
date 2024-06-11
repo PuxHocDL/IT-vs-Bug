@@ -10,6 +10,7 @@ class Hand:
         self.__card_size = card_size
         self.__cards = []
         self.__selected = -1
+        self.__energy_index = -1
         self.__energy_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "energy.png")), (card_size, card_size))
         self.__shovel_avt = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "Hammer.png")), (card_size, card_size))
         self.__font = pygame.font.Font(os.path.join("assets", "vinque.otf"), 15)
@@ -50,7 +51,7 @@ class Hand:
     def select(self, mouse_x, mouse_y):
         for i, card in enumerate(self.__cards):
             if card.check_input(mouse_x, mouse_y) and card.check_avail():
-                if self.is_affordable(Hand.__card_types[i].price):
+                if self.is_affordable(card.price):
                     self.toggle_select(i)
                     self.__selected = i
                     return i
@@ -69,7 +70,7 @@ class Hand:
             return
         self.__cards[self.__selected].add_tower(grid, grid_x, grid_y)
         self.__reset_time()
-        self.remove_energy(Hand.__card_types[self.__selected].price)
+        self.remove_energy(self.__cards[self.__selected].price)
 
     def add_energy(self, value):
         self.__energy += value

@@ -135,7 +135,7 @@ class HealingTowerCard(Card):
         self._load_price()
 
 class TheBombCard(Card):
-    price = 500
+    price = 50
     def __init__(self, x, y, size):
         super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "the_bomb_card.png")), 5000, 0, "The Bomb")
         self._price = TheBombCard.price
