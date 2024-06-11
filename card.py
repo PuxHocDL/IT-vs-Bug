@@ -108,7 +108,7 @@ class TheWallCard(Card):
         self._load_price()
 
 class TheRookCard(Card):
-    price = 1000
+    price = 1200
     def __init__(self, x, y, size):
         super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "the_rook_card.png")), 30000, 30000, "The Rook")
         self._price = TheRookCard.price
@@ -126,7 +126,7 @@ class ObeliskCard(Card):
         self._load_price()
 
 class HealingTowerCard(Card):
-    price = 500
+    price = 300
     def __init__(self, x, y, size):
         super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "healing_tower_card.png")), 20000, 20000, "Healing Tower")
         self._price = HealingTowerCard.price
@@ -137,8 +137,17 @@ class HealingTowerCard(Card):
 class TheBombCard(Card):
     price = 500
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "healing_tower_card.png")), 2000, 2000, "The Bomb")
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "the_bomb_card.png")), 2000, 2000, "The Bomb")
         self._price = TheBombCard.price
         self._tower = TheBomb
-        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "healing_tower.png")), (size, size))
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "the_bomb.png")), (size, size))
+        self._load_price()
+
+class GoldenRookCard(Card):
+    price = 1000
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size, pygame.image.load(os.path.join("assets", "UI", "golden_rook_card.png")), 5000, 40000, "Golden Rook")
+        self._price = GoldenRookCard.price
+        self._tower = GoldenRook
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "golden_rook.png")), (size, size))
         self._load_price()

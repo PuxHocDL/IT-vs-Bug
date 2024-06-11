@@ -213,14 +213,17 @@ class TheRook(Tower):
     def _utility(self, obj):
         if self._level == 1:
             lining_num = 1
+            extra_dmg = 0
         elif self._level == 2:
             lining_num = 2
+            extra_dmg = 100
         else:
             lining_num = 3
+            extra_dmg = 300
 
         proj = []
         for o in sorted(obj, key=lambda o: o.get_health(), reverse=True):
-            proj.append(SilverLining(o.get_x() + o.get_size()//4, o.get_y()))
+            proj.append(SilverLining(o.get_x() + o.get_size()//4, o.get_y(), extra_dmg=extra_dmg))
             VFXManager.add_vfx(o.get_x() + o.get_size()//4, 0, 500, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, o.get_y())) for i in range(8)])
             lining_num -= 1
             if lining_num == 0:
@@ -397,17 +400,14 @@ class TheBomb(TheRook):
             if self._x - range < o.get_x() + o.get_size()*3//5 < self._x + range and self._y - range < o.get_y() < self._y + range:
                 o.damage(1000)
 
-class TheThunder(Tower):
+class GoldenRook(TheRook):
     def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price, 1000)
-        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "TheRook", f"the_rook{i}.png")), (size, size)) for i in range(8)]
-        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "TheRook", f"the_rook{i}.png")), (size, size)) for i in range(8)]
+        super().__init__(x, y, size, price)
+        self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "GoldenRook", f"golden_rook{i}.png")), (size, size)) for i in range(8)]
+        self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "GoldenRook", f"golden_rook{i}.png")), (size, size)) for i in range(8)]
         self._load_imgs()
-        self._vfx_added = False
-        self._animate_time = {0: 200, 1: 4000, 2: 500}
 
     def utility(self, screen, dt, towers, bugs):
-        proj = []
         if bugs:
             self.set_mode(1)
 
@@ -420,11 +420,11 @@ class TheThunder(Tower):
         if self._mode == 1:
             if self._img_index <= 3 and self._img_index + additional_index > 3 and not self._vfx_added:
                 pos = self.get_pos()
-                VFXManager.add_vfx(pos[0], 0, 1800, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "SilverLining", f"silver_lining{i}.png")), (self._size, pos[1]+20)) for i in range(8)])
+                VFXManager.add_vfx(pos[0], 0, 1800, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "GoldenLining", f"golden_lining{i}.png")), (self._size, pos[1]+20)) for i in range(8)])
                 self._vfx_added = True
             elif self._img_index + additional_index >= len(current_imgs)-1:
                 if bugs:
-                    proj = self._utility(bugs)
+                    self._utility(bugs)
                 self.set_mode(0)
                 self._vfx_added = False
 
@@ -433,23 +433,18 @@ class TheThunder(Tower):
 
         if self._health < self._max_health:
             self._health_bar.draw(screen)
-        return proj
+        return []
 
     def _utility(self, obj):
         if self._level == 1:
-            lining_num = 1
+            explode_range = 150
         elif self._level == 2:
-            lining_num = 2
+            explode_range = 200
         else:
-            lining_num = 3
-
-        proj = []
-        for o in sorted(obj, key=lambda o: o.get_health(), reverse=True):
-            VFXManager.add_vfx(o.get_x() + o.get_size()*3//5 - self._size//2, o.get_y() - self._size//2, 200, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "Thunder", f"thunder{i}.png")), (self._size, self._size)) for i in range(12)])
-            lining_num -= 1
-            if lining_num == 0:
-                break
-        return proj
-
-    def get_name(self):
-        return "Utility"
+            explode_range = 300
+        x = obj[0].get_x() + obj[0].get_size()*3//5 - self._size//2
+        y = obj[0].get_y() - self._size//2
+        VFXManager.add_vfx(x - explode_range, y - explode_range, 960, [pygame.transform.scale(pygame.image.load(os.path.join("assets", "VFX", "Thunder", f"thunder{i}.png")), (self._size + explode_range, self._size + explode_range)) for i in range(12)])
+        for o in obj:
+            if x - explode_range < o.get_x() + o.get_size()*3//5 < x + explode_range and y - explode_range < o.get_y() < y + explode_range:
+                o.damage(200)

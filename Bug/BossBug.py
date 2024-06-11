@@ -32,7 +32,7 @@ class BossBug(Bug):
             name (str): The name of the bug.
         """
         super().__init__(x, y, speed=15, max_health=30000, bug_size=250, rect_x=100, rect_y=100, name="BossBug")
-        self._atk_interval = 7
+        self._atk_interval = 3
         self._shoot_index = 7
         self._atk_index = [7]
         self.damaged = 100

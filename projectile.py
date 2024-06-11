@@ -4,8 +4,6 @@ import math
 from vfx_manager import VFXManager
 
 
-
-
 class Bullet:
     def __init__(self, x, y, reverse=False, angle=0.0, extra_dmg=0):
         pygame.mixer.init()
@@ -13,7 +11,7 @@ class Bullet:
         self._size = 32
         self._y = y - self._size//2
         self._angle = angle
-        self._damage = 50 + extra_dmg
+        self._damage = 100 + extra_dmg
         self._speed = 1000
         self._slow = 1
         self._slow_time = 0
@@ -78,7 +76,7 @@ class IceBullet(Bullet):
     def __init__(self, x, y, reverse=False, angle=0.0, extra_slow=0, extra_slow_time=0):
         super().__init__(x, y, reverse, angle)
         self._speed = 800
-        self._damage = 30
+        self._damage = 50
         self._slow = 0.2 + extra_slow
         self._slow_time = 2000 + extra_slow_time
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "ice_bullet.png")), (self._size, self._size)).convert_alpha()]
@@ -91,15 +89,8 @@ class IceBullet(Bullet):
 class FireBullet(Bullet):
     def __init__(self, x, y, reverse=False, angle=0.0, extra_dmg=0):
         super().__init__(x, y, reverse, angle)
-        self._damage = 100 + extra_dmg
+        self._damage = 200 + extra_dmg
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "fire_bullet.png")), (self._size, self._size)).convert_alpha()]
-        self.fire_sound.play()
-
-class IceFireBullet(Bullet):
-    def __init__(self, x, y, reverse=False, angle=0.0):
-        super().__init__(x, y, reverse, angle)
-        self._damage = 100
-        self._slow = 2
         self.fire_sound.play()
 
 class Skull(Bullet): 
