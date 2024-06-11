@@ -6,7 +6,17 @@ from utilities import load_json
 
 
 def apply_brightness(surface, brightness):
-    """Apply brightness to the surface."""
+    """
+    Apply brightness adjustment to the given surface.
+
+    Parameters:
+    surface (pygame.Surface): The surface to adjust brightness for.
+    brightness (float): The brightness level, where 1 is the original brightness, 
+                        values < 1 decrease brightness, and values > 1 are not supported.
+
+    Returns:
+    pygame.Surface: The surface with the applied brightness adjustment.
+    """
     overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
     if brightness > 0:
         # Decrease brightness
@@ -17,6 +27,21 @@ def apply_brightness(surface, brightness):
 
 
 def draw_options_menu(fps, brightness, screen, width, height, hover_sound, click_sound):
+    """
+    Display the options menu and handle user interactions.
+
+    Parameters:
+    fps (int): The current frames per second setting.
+    brightness (float): The current brightness setting.
+    screen (pygame.Surface): The screen surface to draw on.
+    width (int): The width of the screen.
+    height (int): The height of the screen.
+    hover_sound (pygame.mixer.Sound): The sound to play when hovering over a button.
+    click_sound (pygame.mixer.Sound): The sound to play when clicking a button.
+
+    Returns:
+    tuple: A tuple containing the next screen to display ("exit" or "lmao"), the updated FPS, and the updated brightness.
+    """
     center_x = width // 2
     rules_background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
     back_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
@@ -54,6 +79,22 @@ def draw_options_menu(fps, brightness, screen, width, height, hover_sound, click
 
 
 def draw_slider(screen, x, y, width, mouse_pos, current_value, min_value, max_value):
+    """
+    Draw a slider on the screen and handle user interactions.
+
+    Parameters:
+    screen (pygame.Surface): The screen surface to draw on.
+    x (int): The x-coordinate of the slider's center.
+    y (int): The y-coordinate of the slider.
+    width (int): The width of the slider.
+    mouse_pos (tuple): The current position of the mouse cursor.
+    current_value (float): The current value of the slider.
+    min_value (float): The minimum value of the slider.
+    max_value (float): The maximum value of the slider.
+
+    Returns:
+    float or None: The new value of the slider if adjusted, or None if not adjusted.
+    """
     # Draw slider background
     pygame.draw.rect(screen, "gray", (x - width // 2, y, width, 5))
 
@@ -72,6 +113,20 @@ def draw_slider(screen, x, y, width, mouse_pos, current_value, min_value, max_va
 
 
 def adjust_value_based_on_slider(x, y, width, mouse_pos, min_value, max_value):
+    """
+    Adjust the value based on the slider's position and mouse interaction.
+
+    Parameters:
+    x (int): The x-coordinate of the slider's center.
+    y (int): The y-coordinate of the slider.
+    width (int): The width of the slider.
+    mouse_pos (tuple): The current position of the mouse cursor.
+    min_value (float): The minimum value of the slider.
+    max_value (float): The maximum value of the slider.
+
+    Returns:
+    float or None: The new value based on the slider's position and mouse interaction, or None if not adjusted.
+    """
     mouse_x, mouse_y = mouse_pos
     if y - 10 <= mouse_y <= y + 15 and x - width // 2 <= mouse_x <= x + width // 2:
         new_value = (mouse_x - (x - width // 2)) / width * (max_value - min_value) + min_value
@@ -80,6 +135,20 @@ def adjust_value_based_on_slider(x, y, width, mouse_pos, min_value, max_value):
 
 
 def draw_rules_screen(screen, width, height, brightness, hover_sound, click_sound):
+    """
+    Display the rules screen and handle user interactions.
+
+    Parameters:
+    screen (pygame.Surface): The screen surface to draw on.
+    width (int): The width of the screen.
+    height (int): The height of the screen.
+    brightness (float): The current brightness setting.
+    hover_sound (pygame.mixer.Sound): The sound to play when hovering over a button.
+    click_sound (pygame.mixer.Sound): The sound to play when clicking a button.
+
+    Returns:
+    str: The next screen to display ("exit" or "lmao").
+    """
     center_x = width // 2
 
     rules_background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
@@ -122,8 +191,19 @@ def draw_rules_screen(screen, width, height, brightness, hover_sound, click_soun
         pygame.display.flip()
 
 
-# Hàm vẽ màn hình chính
 def draw_main_menu(fps, brightness, hover_sound, click_sound):
+    """
+    Display the main menu and handle user interactions.
+
+    Parameters:
+    fps (int): The current frames per second setting.
+    brightness (float): The current brightness setting.
+    hover_sound (pygame.mixer.Sound): The sound to play when hovering over a button.
+    click_sound (pygame.mixer.Sound): The sound to play when clicking a button.
+
+    Returns:
+    tuple: A tuple containing the next screen to display ("exit", "main_menu", or a level index), the updated FPS, and the updated brightness.
+    """
     WIDTH, HEIGHT = 1080, 607
 
     pygame.init()
@@ -190,6 +270,15 @@ def draw_main_menu(fps, brightness, hover_sound, click_sound):
 
 
 def draw_loading_screen(screen, width, height, brightness):
+    """
+    Display the loading screen.
+
+    Parameters:
+    screen (pygame.Surface): The screen surface to draw on.
+    width (int): The width of the screen.
+    height (int): The height of the screen.
+    brightness (float): The current brightness setting.
+    """
     center_x = width // 2
     center_y = height // 2
 
@@ -208,8 +297,21 @@ def draw_loading_screen(screen, width, height, brightness):
     pygame.time.delay(2000)  # Display for 2 seconds
 
 
-# Hàm vẽ màn hình chọn level
 def draw_level_select(screen, width, height, brightness, hover_sound, click_sound):
+    """
+    Display the level selection screen and handle user interactions.
+
+    Parameters:
+    screen (pygame.Surface): The screen surface to draw on.
+    width (int): The width of the screen.
+    height (int): The height of the screen.
+    brightness (float): The current brightness setting.
+    hover_sound (pygame.mixer.Sound): The sound to play when hovering over a button.
+    click_sound (pygame.mixer.Sound): The sound to play when clicking a button.
+
+    Returns:
+    int: The selected level index, or "exit" if the user quits.
+    """
     background_img = pygame.image.load(os.path.join("assets", "menu", "Background1.png"))
 
     level_buttons = [pygame.image.load(os.path.join("assets", "menu", f"level_{i}.png")) for i in range(0, 6)]
@@ -244,7 +346,6 @@ def draw_level_select(screen, width, height, brightness, hover_sound, click_soun
         pygame.display.flip()
 
 
-# Vòng lặp chính của chương trình
 if __name__ == "__main__":
     pygame.init()
     pygame.mixer.init()  # Initialize the mixer
