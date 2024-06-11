@@ -127,6 +127,8 @@ class Bug:
                 if self.turn%3==0: 
                     self.set_mode(5)
                     bug_manager.add_bug(grid, "NormalBug")
+                    bug_manager.add_bug(grid, "NormalBug")
+                    bug_manager.add_bug(grid, "NormalBug")
                     self.turn +=1
                 elif self.turn%3==1: 
                     self.set_mode(3)
