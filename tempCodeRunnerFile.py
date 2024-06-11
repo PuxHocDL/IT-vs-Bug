@@ -1,1 +1,2 @@
-brightness
+
+# Hàm vẽ màn hình chính

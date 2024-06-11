@@ -3,8 +3,12 @@ import pygame
 import math
 from vfx_manager import VFXManager
 
+
+
+
 class Bullet:
     def __init__(self, x, y, reverse=False, angle=0.0, extra_dmg=0):
+        pygame.mixer.init()
         self._x = x
         self._size = 32
         self._y = y - self._size//2
@@ -20,6 +24,9 @@ class Bullet:
         self._img_index = 0
         self._ani_interval = 1000
         self._reverse()
+        self.destroy_sound = pygame.mixer.Sound(os.path.join("assets", "music", "fire_destroy_sound.wav"))
+        self.fire_sound = pygame.mixer.Sound(os.path.join("assets", "music", "fire_fire_sound.wav"))
+        
 
     def _reverse(self):
         if self._is_reverse:
@@ -45,6 +52,7 @@ class Bullet:
 
     def draw_destroy(self):
         VFXManager.add_vfx(self._x, self._y, 200, self._destroy_imgs)
+        self.destroy_sound.play()
         
     def get_rect(self):
         return pygame.mask.from_surface(self._imgs[0], threshold=254)
@@ -75,6 +83,9 @@ class IceBullet(Bullet):
         self._slow_time = 2000 + extra_slow_time
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "ice_bullet.png")), (self._size, self._size)).convert_alpha()]
         self._destroy_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "explode", "IceBullet", f"bullet{i}.png")), (self._size, self._size)).convert_alpha() for i in range(12)]
+        self.fire_sound = pygame.mixer.Sound(os.path.join("assets", "music", "ice_fire_sound.wav"))
+        self.fire_sound.play()
+        self.destroy_sound = pygame.mixer.Sound(os.path.join("assets", "music", "ice_destroy_sound.mp3"))
         self._reverse()
 
 class FireBullet(Bullet):
@@ -82,12 +93,14 @@ class FireBullet(Bullet):
         super().__init__(x, y, reverse, angle)
         self._damage = 100 + extra_dmg
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "fire_bullet.png")), (self._size, self._size)).convert_alpha()]
+        self.fire_sound.play()
 
 class IceFireBullet(Bullet):
     def __init__(self, x, y, reverse=False, angle=0.0):
         super().__init__(x, y, reverse, angle)
         self._damage = 100
         self._slow = 2
+        self.fire_sound.play()
 
 class Skull(Bullet): 
     def __init__(self, x, y, reverse=True, angle=0.0):
@@ -123,3 +136,5 @@ class SilverLining(Bullet):
         self._imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "ice_bullet.png")), (self._size, self._size)).convert_alpha()]
         self._destroy_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Projectiles", "explode", "Electricity", f"electricity{i}.png")), (4*self._size, 4*self._size)).convert_alpha() for i in range(16)]
         self._reverse()
+        self.fire_sound = pygame.mixer.Sound(os.path.join("assets", "music", "thunder_fire_sound.wav"))
+        self.fire_sound.play()
