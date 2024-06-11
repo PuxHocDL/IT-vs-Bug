@@ -59,6 +59,7 @@ class Level:
         game_over = False
         running = True
         start_time = time.time()
+        victory_timer = None  # Add this variable to track the time when the last bug dies
 
         option = -1
 
@@ -154,12 +155,18 @@ class Level:
                 bulldozer.draw(screen)
 
             if game_over:
+                pygame.time.delay(2000)
                 Level.__draw_game_over(screen)
                 pygame.display.flip()
                 time.sleep(3)
                 running = False
 
-            if len(self.__monster_schedule) + len(bug_manager.get_bugs()) == 0:
+            # Start victory timer if all monsters are dead and there are no more scheduled
+            if victory_timer is None and len(self.__monster_schedule) + len(bug_manager.get_bugs()) == 0:
+                victory_timer = time.time()
+
+            # Display victory screen after 3 seconds of the last monster's death
+            if victory_timer and time.time() - victory_timer >= 3:
                 Level.__draw_victory(screen)
                 pygame.display.flip()
                 time.sleep(3)

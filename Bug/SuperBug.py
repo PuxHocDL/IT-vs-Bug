@@ -30,13 +30,15 @@ class SuperBug(Bug):
             rect_y (int): The height of the bug's rectangle.
             name (str): The name of the bug.
         """
-        super().__init__(x, y, speed=20, max_health=500, bug_size=400, rect_x=120, rect_y=100, name="SuperBug")
+        super().__init__(x, y, speed=20, max_health=3000, bug_size=400, rect_x=120, rect_y=100, name="SuperBug")
+        pygame.mixer.init()
         self._animate_time = {0: 1500, 1: 2000, 2: 1000, 3: 2000, 4: 1500}
         self._atk_index = [6, 14, 31, 39]
         self._modifiled = 120
         self.fix_coli = 100
         self._jump_height = 100
         self._jump_duration = 2400
+        self.jump_sound = pygame.mixer.Sound(os.path.join("assets", "music", "jump.wav"))
         self.damaged= 20
         self.fix_thunder = 100
 

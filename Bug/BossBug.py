@@ -32,6 +32,7 @@ class BossBug(Bug):
             name (str): The name of the bug.
         """
         super().__init__(x, y, speed=15, max_health=30000, bug_size=250, rect_x=100, rect_y=100, name="BossBug")
+        pygame.mixer.init()
         self._atk_interval = 3
         self._shoot_index = 7
         self._atk_index = [7]
@@ -39,6 +40,10 @@ class BossBug(Bug):
         self._modifiled = 160
         self.jumping = None
         self.fix_thunder = 90
+        self.healing_sound = pygame.mixer.Sound(os.path.join("assets", "music", "healing.wav"))
+        self.attacking_sound = pygame.mixer.Sound(os.path.join("assets", "music", "boss_attacking.wav"))
+        self.spam_sound = pygame.mixer.Sound(os.path.join("assets", "music", "boss_spam.wav"))
+        
 
         self._images = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","alive", f"{i}.png")), (400, 400)) for i in range(12)]
         self._images_dead = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Monster_1","dead", f"{i}.png")), (400, 400)) for i in range(9)]

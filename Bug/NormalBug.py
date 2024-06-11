@@ -31,11 +31,13 @@ class NormalBug(Bug):
             name (str): The name of the bug.
         """
         super().__init__(x, y, speed=45, max_health=2000, bug_size=200, rect_x=120, rect_y=100, name="NormalBug")
+        pygame.mixer.init()
         self._animate_time = {0: 500, 1: 300, 2: 1000, 3: 2000}
         self._atk_index = [6]
         self._modifiled = 120
         self._jump_height = 100
         self._jump_duration = 1300
+        self.jump_sound = pygame.mixer.Sound(os.path.join("assets", "music", "jump.wav"))
         self.damaged= 100
         self.fix_thunder = 30
 

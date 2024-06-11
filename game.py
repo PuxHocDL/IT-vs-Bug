@@ -18,14 +18,14 @@ def apply_brightness(surface, brightness):
 
 def draw_options_menu(fps, brightness, screen, width, height, hover_sound, click_sound):
     center_x = width // 2
-
+    rules_background_img = pygame.image.load(os.path.join("assets", "menu", "background.png"))
     back_button_img = pygame.image.load(os.path.join("assets", "menu", "Back.png"))
     back_button_choose_img = pygame.image.load(os.path.join("assets", "menu", "Back_choose.png"))
     back_button = Button(center_x - back_button_img.get_width() // 2, 500, back_button_img.get_width(), back_button_img.get_height(), back_button_img, back_button_choose_img, back_button_img, hover_sound, click_sound)
 
     while True:
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        screen.fill("white")
+        screen.blit(rules_background_img, (0, 0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -36,13 +36,13 @@ def draw_options_menu(fps, brightness, screen, width, height, hover_sound, click
                     return "lmao", fps, brightness
 
         # Draw FPS Slider
-        fps_text = pygame.font.SysFont(None, 40).render(f"FPS: {fps}", True, "black")
+        fps_text = pygame.font.SysFont(None, 40).render(f"FPS: {fps}", True, "white")
         screen.blit(fps_text, (center_x - 100, 200))
         if draw_slider(screen, center_x, 250, 200, (mouse_x, mouse_y), fps, 30, 120):
             fps = int(adjust_value_based_on_slider(center_x, 250, 200, (mouse_x, mouse_y), 30, 120))
 
         # Draw Brightness Slider
-        brightness_text = pygame.font.SysFont(None, 40).render(f"Brightness: {int(brightness * 100)}%", True, "black")
+        brightness_text = pygame.font.SysFont(None, 40).render(f"Brightness: {int(brightness * 100)}%", True, "white")
         screen.blit(brightness_text, (center_x - 100, 350))
         if draw_slider(screen, center_x, 400, 200, (mouse_x, mouse_y), brightness * 100, 0, 100):  # Adjusted min and max values
             brightness = adjust_value_based_on_slider(center_x, 400, 200, (mouse_x, mouse_y), 0, 100) / 100.0  # Adjusted to 0-100 range
@@ -59,7 +59,7 @@ def draw_slider(screen, x, y, width, mouse_pos, current_value, min_value, max_va
 
     # Calculate slider position
     slider_pos = int((current_value - min_value) / (max_value - min_value) * width)
-    pygame.draw.rect(screen, "black", (x - width // 2 + slider_pos - 5, y - 10, 10, 25))
+    pygame.draw.rect(screen, "white", (x - width // 2 + slider_pos - 5, y - 10, 10, 25))
 
     # Check if the mouse is clicking the slider
     mouse_x, mouse_y = mouse_pos
@@ -93,7 +93,7 @@ def draw_rules_screen(screen, width, height, brightness, hover_sound, click_soun
         "1. Place towers to defend against incoming bugs.",
         "2. Each tower type has different abilities.",
         "3. Earn gold by defeating bugs.",
-        "4. Use gold to place more towers or upgrade existing ones.",
+        "4. Use energy to place more towers or upgrade existing ones.",
         "5. Stop the bugs from reaching the left edge of the screen."
     ]
 
@@ -112,7 +112,7 @@ def draw_rules_screen(screen, width, height, brightness, hover_sound, click_soun
 
         y = 100
         for rule in rules:
-            rule_text = font.render(rule, True, "black")
+            rule_text = font.render(rule, True, "white")
             screen.blit(rule_text, (50, y))
             y += 50
 
@@ -271,7 +271,7 @@ if __name__ == "__main__":
             screen = pygame.display.set_mode((WIDTH, HEIGHT))
             # Display the loading screen
             draw_loading_screen(screen, WIDTH, HEIGHT, brightness)
-
+            
             tower_ids, level_schedule, starting_energy = load_json(os.path.join("level_data", f"level{option+1}.json"))
             level = Level(tower_ids, level_schedule, starting_energy, pygame.image.load(os.path.join("assets", "menu", f"map{option%3}.png")), os.path.join("assets", "music", f"battle_map{option%3}.ogg"))
             # Run the level

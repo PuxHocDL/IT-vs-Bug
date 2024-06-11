@@ -52,6 +52,7 @@ class BugManager:
                         collision_coordinates = Interact.collide_mask(bug_rect, obj_rect, bug.get_pos(), obj.get_pos())
                         if collision_coordinates:
                                 if bug.jumping == False:
+                                    bug.jump_sound.play()
                                     bug.jump()
                                 else:
                                     if bug.get_img_index() in bug.get_atk_index():

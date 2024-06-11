@@ -4,6 +4,7 @@ from button import Button
 class Hand:
     __card_types = {-1: Card, 0: BasicTowerCard, 1: IceTowerCard, 2: FireTowerCard, 3: TheWallCard, 4: TheRookCard, 5: ObeliskCard, 6: HealingTowerCard, 7: TheBombCard, 8: GoldenRookCard}
     def __init__(self, x, y, card_size, starting_energy):
+        
         self.__x = x
         self.__y = y
         self.__energy = starting_energy
@@ -14,6 +15,7 @@ class Hand:
         self.__energy_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "energy.png")), (card_size, card_size))
         self.__shovel_avt = pygame.transform.scale(pygame.image.load(os.path.join("assets", "UI", "Avatar", "Hammer.png")), (card_size, card_size))
         self.__font = pygame.font.Font(os.path.join("assets", "vinque.otf"), 15)
+        
 
     def add_card(self, card_num):
         self.__cards.append(Hand.__card_types[card_num](self.__x + (len(self.__cards) + 1) * (self.__card_size + 10), self.__y, size=self.__card_size))
