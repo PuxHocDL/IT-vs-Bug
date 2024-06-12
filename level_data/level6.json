@@ -378,6 +378,10 @@
         {
             "time": 176,
             "name": "NormalBug"
+        },
+        {
+            "time": 180,
+            "name": "BossBug"
         }
     ],
     10000
