@@ -10,10 +10,35 @@ from vfx_manager import VFXManager
 from button import Button
 
 class Level:
+    """
+    Represents a game level in a tower defense game.
+
+    Attributes:
+        __WIDTH (int): The width of the game window.
+        __HEIGHT (int): The height of the game window.
+        __monster_schedule (list): The schedule of monster appearances.
+        __tower_ids (list): The IDs of towers available in the level.
+        __starting_energy (int): The starting energy for the player.
+        __music (str): The path to the background music file.
+        __total_time (int): The total time for the monster schedule.
+        __max_progress (int): The maximum progress based on the monster schedule.
+        __map (str): The path to the map image file.
+    """
+
     __WIDTH = 1300
     __HEIGHT = 750
 
     def __init__(self, tower_ids, monster_schedule, starting_energy, map_img, music):
+        """
+        Initializes the Level instance.
+
+        Args:
+            tower_ids (list): The IDs of towers available in the level.
+            monster_schedule (list): The schedule of monster appearances.
+            starting_energy (int): The starting energy for the player.
+            map_img (str): The path to the map image file.
+            music (str): The path to the background music file.
+        """
         self.__monster_schedule = monster_schedule
         self.__tower_ids = tower_ids
         self.__starting_energy = starting_energy
@@ -25,7 +50,16 @@ class Level:
         pygame.mixer.music.play(-1)
 
     def run(self, fps, brightness):
+        """
+        Runs the main game loop.
 
+        Args:
+            fps (int): The frames per second for the game loop.
+            brightness (float): The brightness level to apply to the screen.
+        
+        Returns:
+            str: The next screen to display, typically "main_menu".
+        """
         pygame.init()
         pygame.mixer.init()
         screen = pygame.display.set_mode((Level.__WIDTH, Level.__HEIGHT))
@@ -194,11 +228,23 @@ class Level:
 
     @staticmethod
     def __draw_game_over(screen):
+        """
+        Draws the game over screen.
+
+        Args:
+            screen (pygame.Surface): The game screen to draw on.
+        """
         game_over_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "game_over.png")), (Level.__WIDTH, Level.__HEIGHT))
         screen.blit(game_over_img, (0, 0))
 
     @staticmethod
     def __draw_victory(screen):
+        """
+        Draws the victory screen.
+
+        Args:
+            screen (pygame.Surface): The game screen to draw on.
+        """
         font = pygame.font.Font(os.path.join("assets", "arcadeclassic.ttf"), 75)
         vip_text = font.render("Vip", True, (255, 0, 0))
         vip_img = pygame.transform.scale(pygame.image.load(os.path.join("assets", "victory_img.png")), (Level.__WIDTH, Level.__HEIGHT))
@@ -207,6 +253,17 @@ class Level:
 
     @staticmethod
     def __draw_pause_screen(screen, hover_sound, click_sound):
+        """
+        Draws the pause screen and handles user input for continuing or exiting the game.
+
+        Args:
+            screen (pygame.Surface): The game screen to draw on.
+            hover_sound (pygame.mixer.Sound): The sound to play when hovering over a button.
+            click_sound (pygame.mixer.Sound): The sound to play when clicking a button.
+
+        Returns:
+            int: 1 if the game should continue, 0 if the game should exit.
+        """
         screen.fill("white")
         center_x = Level.__WIDTH // 2
 
@@ -238,7 +295,13 @@ class Level:
             pygame.display.flip()
 
     def __apply_brightness(self, surface, brightness):
-        """Apply brightness to the surface."""
+        """
+        Applies brightness to the surface.
+
+        Args:
+            surface (pygame.Surface): The game surface to apply brightness to.
+            brightness (float): The brightness level to apply.
+        """
         overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
         if brightness > 0:
             # Decrease brightness
@@ -247,6 +310,14 @@ class Level:
         surface.blit(overlay, (0, 0))
 
     def __draw_progress_bar(self, screen, current_time, total_time):
+        """
+        Draws the progress bar.
+
+        Args:
+            screen (pygame.Surface): The game screen to draw on.
+            current_time (int): The current progress time.
+            total_time (int): The total time for the level.
+        """
         # Define the size and position of the progress bar
         bar_width = 200
         bar_height = 20
