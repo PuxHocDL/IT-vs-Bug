@@ -169,8 +169,8 @@ class TheWall(Tower):
         return []
 
 class TheRook(Tower):
-    def __init__(self, x, y, size, price):
-        super().__init__(x, y, size, price, 1000)
+    def __init__(self, x, y, size, price, max_health=1000):
+        super().__init__(x, y, size, price, max_health)
         self._idle_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "idle", "TheRook", f"the_rook{i}.png")), (size, size)) for i in range(8)]
         self._atk_imgs = [pygame.transform.scale(pygame.image.load(os.path.join("assets", "Towers", "shoot", "TheRook", f"the_rook{i}.png")), (size, size)) for i in range(8)]
         self._load_imgs()
